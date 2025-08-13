@@ -11,14 +11,16 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.54.0",
     "@tanstack/react-query": "^5.84.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "next": "15.4.6",
-    "prettier-plugin-tailwindcss": "^0.6.14",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.62.0",
     "sweetalert2": "^11.22.3",
     "swiper": "^11.2.10",
+    "tailwind-merge": "^3.3.1",
     "zod": "^4.0.17"
   },
   "devDependencies": {
@@ -28,6 +30,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
+import clsx from 'clsx'
 
 const myFont = localFont({
   src: "../../public/font/SUIT-Variable.woff2",
@@ -25,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={myFont.className}>{children}</body>
+      <body className={clsx(myFont.className,'p-5 h-[100dvh]]')}>{children}</body>
     </html>
   );
 }

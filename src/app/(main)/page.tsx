@@ -1,19 +1,16 @@
+import ContentsBox from "@/components/Contents";
 import { getTodayPick } from "@/features/home/api/services";
 import SurveyButton from "@/features/home/survey-button";
 
 const Home = async () => {
-  await getTodayPick();
+  const contents = await getTodayPick();
 
   return (
-    <section className="flex h-full flex-col justify-around bg-red-300">
-      <h3 className="text-center text-3xl font-bold">Today's Pick</h3>
-      <div className="flex w-full">
-        <div className="mx-10 h-80 w-36 rounded-[40px] border bg-pink-200" />
-        <div className="mx-10 h-80 w-36 rounded-[40px] border bg-pink-200" />
-        <div className="mx-10 h-80 w-36 rounded-[40px] border bg-pink-200" />
-        <div className="mx-10 h-80 w-36 rounded-[40px] border bg-pink-200" />
+    <section className="flex h-full flex-col justify-center">
+      <div className="mb-16">
+        <h3 className="mb-8 text-center text-3xl font-extrabold">Today&apos;s Pick</h3>
+        <ContentsBox contents={contents} />
       </div>
-
       <SurveyButton />
     </section>
   );

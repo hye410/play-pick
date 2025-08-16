@@ -4,6 +4,16 @@
 
 @layer base {
   body {
-   @apply text-white bg-black
+    @apply bg-black text-white;
   }
+}
+
+.swiper-wrapper {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.swiper-scrollbar-drag {
+  background: #8c8c8c !important;
+  cursor: pointer;
 }

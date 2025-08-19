@@ -10,7 +10,7 @@ type ButtonProps = {
   type?: "submit" | "button" | "reset";
 };
 
-const buttonVariants = cva(["rounded-[20px] px-8 py-4"], {
+const buttonVariants = cva(["rounded-lg px-8 py-4 w-full whitespace-nowrap"], {
   variants: {
     color: {
       primary: ["bg-primary"],

@@ -7,8 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { postSignUp } from "./api/services";
 import { signUpDefaultValues, signUpSchema } from "./utils/form-schema";
+import { SweetAlertResult } from "sweetalert2";
+import { alert } from "@/utils/alert";
+import { ALERT_TYPE } from "@/constants/alert-constants";
 const { email, password, confirmPassword } = FORM_CONSTANTS;
-
+const { ERROR, SUCCESS } = ALERT_TYPE;
 const SignUpForm = () => {
   const { handleSubmit, control } = useForm<SignUp>({
     resolver: zodResolver(signUpSchema),
@@ -16,8 +19,13 @@ const SignUpForm = () => {
     defaultValues: signUpDefaultValues,
   });
 
-  const handleSignUp = (value: SignUp): void => {
-    postSignUp({ email: value.email, password: value.password });
+  const handleSignUp = async (value: SignUp): Promise<SweetAlertResult> => {
+    try {
+      const res = await postSignUp({ email: value.email, password: value.password });
+      return alert({ type: SUCCESS, message: res });
+    } catch (error) {
+      return alert({ type: ERROR, message: error as string });
+    }
   };
 
   const onSubmit: SubmitHandler<SignUp> = (data) => handleSignUp(data);

@@ -11,4 +11,5 @@ export const TODAY_PICK_MESSAGE = Object.freeze({
 export const SIGN_UP_MESSAGE = Object.freeze({
   DUPLICATION_ERROR: "이미 존재하는 계정이거나 이메일 인증이 필요한 계정입니다.",
   SIGN_UP_SUCCESS: "이메일이 발송되었습니다.\n인증 후 회원가입이 완료됩니다.",
+  OVER_SEND_LIMIT: "인증 메일이 이미 전송되었습니다. 인증을 마저 진행해 주세요.",
 } as const);

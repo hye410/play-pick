@@ -5,8 +5,9 @@ type ButtonProps = {
   size?: "small" | "medium" | "large";
   color?: "primary" | "secondary";
   children: React.ReactNode;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  type?: "submit" | "button" | "reset";
 };
 
 const buttonVariants = cva(["rounded-[20px] px-8 py-4"], {
@@ -30,7 +31,7 @@ const buttonVariants = cva(["rounded-[20px] px-8 py-4"], {
 });
 
 const Button = (props: ButtonProps) => {
-  const { size = "medium", color = "primary", children, onClick, disabled = false } = props;
+  const { size = "medium", color = "primary", children, onClick, disabled = false, type = "button" } = props;
 
   const colorVariant = () => {
     if (disabled) return color === "primary" ? "inactivePrimary" : "inactiveSecondary";
@@ -38,7 +39,12 @@ const Button = (props: ButtonProps) => {
   };
 
   return (
-    <button onClick={onClick} className={buttonVariants({ size, color: colorVariant() })} disabled={disabled}>
+    <button
+      onClick={onClick}
+      type={type}
+      className={buttonVariants({ size, color: colorVariant() })}
+      disabled={disabled}
+    >
       {children}
     </button>
   );

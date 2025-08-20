@@ -11,7 +11,9 @@ const Home = async () => {
         <h3 className="mb-8 text-center text-3xl font-extrabold">Today&apos;s Pick</h3>
         <ContentsBox contents={contents} />
       </div>
-      <SurveyButton />
+      <div className="mx-auto w-1/3">
+        <SurveyButton />
+      </div>
     </section>
   );
 };

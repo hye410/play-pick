@@ -30,12 +30,13 @@ const ContentsBox = ({ contents }: ContentsBoxProps) => {
       >
         {contents.map((content) => (
           <SwiperSlide key={`swiper_content_${content.id}`}>
-            <section className="h-80 w-full">
+            <section className="relative h-80 w-full">
               <h4>
-                <Link href={`/detail/${content.id}`}>
+                <Link className="absolute inset-0" href={`/detail/${content.id}`}>
                   <Image
                     src={`${TMDB_IMAGE_URL}/${content.imgUrl}`}
                     fill
+                    sizes="25%"
                     alt={content.title}
                     className="rounded-[10px]"
                   />

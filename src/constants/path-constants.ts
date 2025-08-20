@@ -13,6 +13,8 @@ export const MY_PAGE = "/my-page";
 export const SURVEY = "/survey";
 export const DETAIL = "/detail";
 export const RESULT = "/result";
+export const FIND_PASSWORD = "/find-password";
+export const UPDATE_PASSWORD = "/update-password";
 
 //**Home > Today's Pick get api */
 export const GET_TODAY_PICK = (contentsType: "movie" | "tv") =>

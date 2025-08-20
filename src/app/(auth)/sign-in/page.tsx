@@ -1,4 +1,5 @@
 import { SUPABASE_IMAGE_URL } from "@/constants/path-constants";
+import FindUserInfoField from "@/features/sign-in/find-user-info-field";
 import SignInForm from "@/features/sign-in/sign-in-form";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,6 +18,7 @@ const Signin = () => {
         />
       </Link>
       <SignInForm />
+      <FindUserInfoField />
     </section>
   );
 };

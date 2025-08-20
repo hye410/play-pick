@@ -1,6 +1,7 @@
 export const DEFAULT_ERROR_MESSAGE = Object.freeze({
   SERVER_ERROR: "내부 서버 오류가 발생했습니다.",
   FETCH_ERROR: "데이터를 받아오는데 실패했습니다.",
+  CLIENT_ERROR: "에러가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
 } as const);
 
 export const TODAY_PICK_MESSAGE = Object.freeze({
@@ -17,4 +18,9 @@ export const SIGN_UP_MESSAGE = Object.freeze({
 export const SIGN_IN_MESSAGE = Object.freeze({
   EMAIL_NOT_CONFIRMED: "이메일 인증 후 로그인해 주세요.",
   INVALID_ERROR: "아이디 혹은 비밀번호를 다시 확인해 주세요.",
+} as const);
+
+export const FIND_PASSWORD_MESSAGE = Object.freeze({
+  SUCCESS_SENDING_EMAIL: "이메일이 전송되었습니다. 가입하신 이메일을 확인해 주세요.",
+  OVER_EMAIL_SEND_RATE_LIMIT: "이미 이메일이 전송되었습니다. 가입하신 이메일을 확인해 주세요.",
 } as const);

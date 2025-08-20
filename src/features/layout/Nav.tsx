@@ -1,21 +1,54 @@
+"use client";
+import { ALERT_TYPE } from "@/constants/alert-constants";
+import { privateMenus, publicMenus } from "@/constants/menu-constants";
+import { useAuthStatus } from "@/hook/use-auth-status";
+import { Menu } from "@/types/menu-types";
+import { alert } from "@/utils/alert";
+import { createClientSuperbase } from "@/utils/supabase-client";
+import clsx from "clsx";
 import Link from "next/link";
-const menus = [
-  {
-    name: "로그인",
-    path: "/sign-in",
-  },
-  {
-    name: "회원가입",
-    path: "/sign-up",
-  },
-];
-const Nav = () => {
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
+import { SweetAlertResult } from "sweetalert2";
+const { ERROR } = ALERT_TYPE;
+type NavProps = {
+  initialIsLoggedIn: boolean;
+};
+
+const supabase = createClientSuperbase();
+
+const Nav = ({ initialIsLoggedIn }: NavProps) => {
+  const { isLoggedIn } = useAuthStatus(initialIsLoggedIn);
+  const router = useRouter();
+
+  const handleSignOut = async (): Promise<SweetAlertResult | void> => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      router.replace("/");
+    } catch (error) {
+      console.error(error);
+      alert({
+        type: ERROR,
+        message: "로그아웃 중 오류가 발생했습니다.",
+      });
+    }
+  };
+
+  const menus: Menu[] = useMemo(() => (isLoggedIn ? privateMenus(handleSignOut) : publicMenus), [isLoggedIn]);
+
   return (
     <nav>
       <ul className="flex">
-        {menus.map((menu) => (
-          <li key={menu.name} className="ml-3">
-            <Link href={menu.path}>{menu.name}</Link>
+        {menus.map((menu, idx) => (
+          <li key={`menu_${menu.name}`} className={clsx(idx !== menus.length - 1 ? "mr-2" : "")}>
+            {menu.type === "link" ? (
+              <Link href={menu.path as string}>{menu.name}</Link>
+            ) : (
+              <button onClick={menu.onClick} type="button">
+                {menu.name}
+              </button>
+            )}
           </li>
         ))}
       </ul>

@@ -39,6 +39,7 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
 
   return (
     <nav>
+      <h2 className="hidden">메뉴</h2>
       <ul className="flex">
         {menus.map((menu, idx) => (
           <li key={`menu_${menu.name}`} className={clsx(idx !== menus.length - 1 ? "mr-2" : "")}>

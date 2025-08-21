@@ -32,7 +32,7 @@ const ContentsBox = ({ contents }: ContentsBoxProps) => {
           <SwiperSlide key={`swiper_content_${content.id}`}>
             <section className="relative h-80 w-full">
               <h4>
-                <Link className="absolute inset-0" href={`/detail/${content.id}`}>
+                <Link className="absolute inset-0" href={`/detail/${content.id}?type=${content.type}`}>
                   <Image
                     src={`${TMDB_IMAGE_URL}/${content.imgUrl}`}
                     fill

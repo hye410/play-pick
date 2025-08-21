@@ -12,6 +12,7 @@ export type MovieData = {
   adult: boolean;
   poster_path: string | null;
   original_title: string;
+  media_type: "movie";
 };
 
 export type TVData = {
@@ -19,10 +20,42 @@ export type TVData = {
   adult: boolean;
   poster_path: string | null;
   original_name: string;
+  media_type: "tv";
 };
 
 export type CombinedData = {
   id: number;
   title: string;
   imgUrl: string;
+  type: "movie" | "tv";
+};
+
+export type DetailMovieData = {
+  runtime: string;
+  release_date: string;
+};
+
+export type DetailTVData = {
+  episode_run_time: string[];
+  first_air_date: string;
+};
+
+export type DetailCombinedData = {
+  title: string;
+  original_title: string;
+  poster_path: string;
+  overview: string;
+  vote_average: string;
+  genres: { id: number; name: string }[];
+};
+
+export type DetailContentData = {
+  title: string;
+  originalTitle: string;
+  imgUrl: string;
+  overview: string;
+  runtime: string;
+  releaseDate: string;
+  rating: string;
+  genres: string;
 };

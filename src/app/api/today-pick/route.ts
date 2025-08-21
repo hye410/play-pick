@@ -46,6 +46,7 @@ export const GET = async () => {
           id: data.id,
           title: data.original_title,
           imgUrl: data.poster_path,
+          type: data.media_type,
         }))
         .slice(0, 15);
     };
@@ -64,6 +65,7 @@ export const GET = async () => {
           id: data.id,
           title: data.original_name,
           imgUrl: data.poster_path,
+          type: data.media_type,
         }))
         .slice(0, 15);
     };
@@ -71,6 +73,7 @@ export const GET = async () => {
     const [movies, tvShows] = await Promise.all([fetchMovieData(), fetchTVData()]);
 
     const data: CombinedData[] = [...movies, ...tvShows];
+
     return NextResponse.json(data);
   } catch (error) {
     console.error(error);

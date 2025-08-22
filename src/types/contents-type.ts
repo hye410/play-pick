@@ -35,6 +35,7 @@ export type DetailMovieData = {
   original_title: string;
   runtime: string;
   release_date: string;
+  type: "movie";
 };
 
 export type DetailTVData = {
@@ -42,12 +43,13 @@ export type DetailTVData = {
   original_name: string;
   episode_run_time: string[];
   first_air_date: string;
+  type: "tv";
 };
 
 export type DetailCombinedData = {
   poster_path: string;
   overview: string;
-  vote_average: string;
+  vote_average: number;
   genres: { id: number; name: string }[];
 };
 
@@ -58,6 +60,7 @@ export type DetailContentData = {
   overview: string;
   runtime: string;
   releaseDate: string;
-  rating: string;
+  rating: number;
   genres: string;
+  type: "movie" | "tv";
 };

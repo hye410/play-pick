@@ -11,11 +11,13 @@ type DetailContentProps = {
   };
 };
 
-const DetailContentPage = async ({ params: { contentId }, searchParams: { type } }: DetailContentProps) => {
+const DetailContentPage = async ({ params, searchParams }: DetailContentProps) => {
+  const { contentId } = params;
+  const { type } = searchParams;
   const content = await getDetailContent(contentId, type);
   return (
     <article>
-      <h3>디테일페이지</h3>
+      <h3 className="hidden">{content.name} 상세 페이지</h3>
       <DetailContent content={content} />
     </article>
   );

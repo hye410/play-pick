@@ -1,6 +1,8 @@
 import { TMDB_IMAGE_URL } from "@/constants/path-constants";
 import { DetailContentData } from "@/types/contents-type";
 import Image from "next/image";
+import { getRatingStar } from "./utils/get-rating-star";
+import Star from "@/components/Star";
 
 type DetailContentProps = {
   content: DetailContentData;
@@ -17,16 +19,18 @@ const DetailContent = ({ content }: DetailContentProps) => {
       <dd>{content.title}</dd>
       <dt className="hidden">원제</dt>
       <dd>{content.originalTitle}</dd>
-      <dt className="hidden">런타임</dt>
-      <dd>{content.runtime}</dd>
-      <dt className="hidden">첫 방영일 / 개봉일</dt>
-      <dd>{content.releaseDate}</dd>
+      <dt>평점</dt>
+      <dd>
+        <Star rating={content.rating} />
+      </dd>
       <dt className="hidden">장르</dt>
       <dd>{content.genres}</dd>
+      <dt>런타임</dt>
+      <dd>{content.runtime}</dd>
+      <dt>{content.type === "movie" ? "개봉일" : "첫 방영일"}</dt>
+      <dd>{content.releaseDate}</dd>
       <dt className="hidden">줄거리</dt>
       <dd>{content.overview}</dd>
-      <dt className="hidden">평점</dt>
-      <dd>{content.rating}</dd>
     </dl>
   );
 };

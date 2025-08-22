@@ -22,6 +22,7 @@ const ContentsBox = ({ contents }: ContentsBoxProps) => {
         autoplay={{
           delay: 1000,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true,
         }}
         loop={true}
         modules={[Autoplay, Scrollbar]}

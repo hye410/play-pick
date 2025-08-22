@@ -17,11 +17,12 @@ const filterMovieData = (data: DetailCombinedData & DetailMovieData): DetailCont
     title: data.title,
     originalTitle: data.original_title,
     imgUrl: data.poster_path,
+    type: "movie",
     overview: data.overview,
     runtime: data.runtime,
     releaseDate: data.release_date,
     rating: data.vote_average,
-    genres: data.genres.map(({ name }) => name).join("/"),
+    genres: data.genres.map(({ name }) => name).join(" / "),
   };
 };
 
@@ -30,11 +31,12 @@ const filterTvData = (data: DetailCombinedData & DetailTVData): DetailContentDat
     title: data.name,
     originalTitle: data.original_name,
     imgUrl: data.poster_path,
+    type: "tv",
     overview: data.overview,
     runtime: data.episode_run_time.join(),
     releaseDate: data.first_air_date,
     rating: data.vote_average,
-    genres: data.genres.map(({ name }) => name).join("/"),
+    genres: data.genres.map(({ name }) => name).join(" / "),
   };
 };
 
@@ -50,6 +52,7 @@ export const GET = async (request: NextRequest, { params }: DetailContentParams)
     const res = await fetch(`${TMDB_BASE_URL}/${type}/${contentId}?language=ko-KR&page=1`, options);
     const data = await res.json();
     if (!res.ok) return NextResponse.json({ message: FETCH_ERROR }, { status: 500 });
+
     const parsedData = type === "movie" ? filterMovieData(data) : filterTvData(data);
     return NextResponse.json({ data: parsedData }, { status: 200 });
   } catch (error) {

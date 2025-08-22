@@ -27,8 +27,8 @@ const filterMovieData = (data: DetailCombinedData & DetailMovieData): DetailCont
 
 const filterTvData = (data: DetailCombinedData & DetailTVData): DetailContentData => {
   return {
-    title: data.title,
-    originalTitle: data.original_title,
+    title: data.name,
+    originalTitle: data.original_name,
     imgUrl: data.poster_path,
     overview: data.overview,
     runtime: data.episode_run_time.join(),
@@ -50,9 +50,7 @@ export const GET = async (request: NextRequest, { params }: DetailContentParams)
     const res = await fetch(`${TMDB_BASE_URL}/${type}/${contentId}?language=ko-KR&page=1`, options);
     const data = await res.json();
     if (!res.ok) return NextResponse.json({ message: FETCH_ERROR }, { status: 500 });
-
     const parsedData = type === "movie" ? filterMovieData(data) : filterTvData(data);
-
     return NextResponse.json({ data: parsedData }, { status: 200 });
   } catch (error) {
     console.error(error);

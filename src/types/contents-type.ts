@@ -31,18 +31,20 @@ export type CombinedData = {
 };
 
 export type DetailMovieData = {
+  title: string;
+  original_title: string;
   runtime: string;
   release_date: string;
 };
 
 export type DetailTVData = {
+  name: string;
+  original_name: string;
   episode_run_time: string[];
   first_air_date: string;
 };
 
 export type DetailCombinedData = {
-  title: string;
-  original_title: string;
   poster_path: string;
   overview: string;
   vote_average: string;

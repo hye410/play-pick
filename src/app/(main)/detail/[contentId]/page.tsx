@@ -1,6 +1,6 @@
 import { getDetailContent } from "@/features/detail/api/servies";
 import DetailContent from "@/features/detail/detail-content";
-import { CombinedData } from "@/types/contents-type";
+import type { CombinedData, FilteredDetailData } from "@/types/contents-type";
 
 type DetailContentProps = {
   params: {
@@ -14,10 +14,11 @@ type DetailContentProps = {
 const DetailContentPage = async ({ params, searchParams }: DetailContentProps) => {
   const { contentId } = params;
   const { type } = searchParams;
-  const content = await getDetailContent(contentId, type);
+  const content: FilteredDetailData = await getDetailContent(contentId, type);
+
   return (
-    <article>
-      <h3 className="hidden">{content.name} 상세 페이지</h3>
+    <article className="flex h-full items-center justify-center">
+      <h3 className="hidden">{content.title} 상세 페이지</h3>
       <DetailContent content={content} />
     </article>
   );

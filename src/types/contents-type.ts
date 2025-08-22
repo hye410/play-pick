@@ -1,3 +1,6 @@
+import { CONTENTS_TYPE } from "@/constants/contents-constants";
+
+const { MOVIE, TV } = CONTENTS_TYPE;
 export type TMDBResponse<T> = {
   page: number;
   results: T[];
@@ -12,7 +15,7 @@ export type MovieData = {
   adult: boolean;
   poster_path: string | null;
   original_title: string;
-  media_type: "movie";
+  media_type: typeof MOVIE;
 };
 
 export type TVData = {
@@ -20,47 +23,46 @@ export type TVData = {
   adult: boolean;
   poster_path: string | null;
   original_name: string;
-  media_type: "tv";
+  media_type: typeof TV;
 };
 
 export type CombinedData = {
   id: number;
   title: string;
   imgUrl: string;
-  type: "movie" | "tv";
+  type: typeof MOVIE | typeof TV;
+};
+
+export type CombinedDetailData = {
+  poster_path: string;
+  overview: string;
+  vote_average: number;
+  genres: { name: string }[];
 };
 
 export type DetailMovieData = {
   title: string;
   original_title: string;
-  runtime: string;
+  runtime: number;
   release_date: string;
-  type: "movie";
+  type: typeof MOVIE;
 };
 
 export type DetailTVData = {
   name: string;
   original_name: string;
-  episode_run_time: string[];
-  first_air_date: string;
-  type: "tv";
+  last_air_date: string;
 };
 
-export type DetailCombinedData = {
-  poster_path: string;
-  overview: string;
-  vote_average: number;
-  genres: { id: number; name: string }[];
-};
-
-export type DetailContentData = {
+export type FilteredDetailData = {
   title: string;
   originalTitle: string;
   imgUrl: string;
+  type: typeof TV | typeof MOVIE;
+  runtime?: number;
   overview: string;
-  runtime: string;
-  releaseDate: string;
+  releaseDate?: string;
+  lastAirDate?: string;
   rating: number;
   genres: string;
-  type: "movie" | "tv";
 };

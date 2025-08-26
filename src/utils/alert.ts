@@ -1,5 +1,3 @@
-"use client";
-
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import Swal, { SweetAlertIcon, SweetAlertResult } from "sweetalert2";
 const { SUCCESS, ERROR, INFO, WARNING } = ALERT_TYPE;

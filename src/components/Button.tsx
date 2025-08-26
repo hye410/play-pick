@@ -8,6 +8,7 @@ type ButtonProps = {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   type?: "submit" | "button" | "reset";
+  onMouseEnter?: () => void;
 };
 
 const buttonVariants = cva(["rounded-lg px-8 py-4 w-full whitespace-nowrap"], {
@@ -31,7 +32,15 @@ const buttonVariants = cva(["rounded-lg px-8 py-4 w-full whitespace-nowrap"], {
 });
 
 const Button = (props: ButtonProps) => {
-  const { size = "medium", color = "primary", children, onClick, disabled = false, type = "button" } = props;
+  const {
+    size = "medium",
+    color = "primary",
+    children,
+    onClick,
+    disabled = false,
+    type = "button",
+    onMouseEnter,
+  } = props;
 
   const colorVariant = () => {
     if (disabled) return color === "primary" ? "inactivePrimary" : "inactiveSecondary";
@@ -42,6 +51,7 @@ const Button = (props: ButtonProps) => {
     <button
       onClick={onClick}
       type={type}
+      onMouseEnter={onMouseEnter}
       className={buttonVariants({ size, color: colorVariant() })}
       disabled={disabled}
     >

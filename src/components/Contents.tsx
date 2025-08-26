@@ -1,6 +1,6 @@
 "use client";
 import { DETAIL, TMDB_IMAGE_URL } from "@/constants/path-constants";
-import { CombinedData } from "@/types/contents-type";
+import { CombinedData } from "@/types/contents-types";
 import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";

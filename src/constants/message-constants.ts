@@ -30,3 +30,7 @@ export const UPDATE_PASSWORD_MESSAGE = Object.freeze({
   SUCCESS_TO_CHANGE_PASSWORD: "비밀번호가 변경되었습니다.",
   SAME_PASSWORD: "기존 비밀번호와 같은 비밀번호로 변경할 수 없습니다.",
 });
+
+export const PREVIEW_VIDEO_MESSAGE = Object.freeze({
+  UNABLE_TO_FIND_PREVIEW: "해당 예고편을 찾을 수 없습니다.",
+} as const);

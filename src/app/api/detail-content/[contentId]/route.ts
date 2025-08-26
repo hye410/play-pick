@@ -2,7 +2,7 @@ import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
 import { CONTENTS_TYPE } from "@/constants/contents-constants";
 import { DEFAULT_ERROR_MESSAGE } from "@/constants/message-constants";
 import { TMDB_BASE_URL } from "@/constants/path-constants";
-import type { CombinedDetailData, DetailMovieData, DetailTVData, FilteredDetailData } from "@/types/contents-type";
+import type { CombinedDetailData, DetailMovieData, DetailTVData, FilteredDetailData } from "@/types/contents-types";
 import { NextRequest, NextResponse } from "next/server";
 
 type DetailContentParams = {

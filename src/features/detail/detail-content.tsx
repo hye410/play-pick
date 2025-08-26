@@ -1,8 +1,9 @@
 import Star from "@/components/Star";
 import { CONTENTS_TYPE } from "@/constants/contents-constants";
 import { TMDB_IMAGE_URL } from "@/constants/path-constants";
-import type { FilteredDetailData } from "@/types/contents-type";
+import type { FilteredDetailData } from "@/types/contents-types";
 import Image from "next/image";
+import PreviewVideoButton from "./preview-video-button";
 
 type DetailContentProps = {
   content: FilteredDetailData;
@@ -10,12 +11,19 @@ type DetailContentProps = {
 
 const { MOVIE } = CONTENTS_TYPE;
 const DetailContent = ({ content }: DetailContentProps) => {
+  console.log("content=>", content);
   return (
-    <dl className="flex flex-col items-center gap-3">
+    <dl className="flex flex-col items-center gap-3 pb-8">
       <dt className="hidden">{content.title} 포스터 이미지</dt>
-      <dd>
-        <Image src={`${TMDB_IMAGE_URL}/${content.imgUrl}`} width={250} height={350} alt={content.title} />
+      <dd className="relative h-[350px] w-[250px]">
+        <Image src={`${TMDB_IMAGE_URL}/${content.imgUrl}`} fill alt={content.title} sizes="auto" />
       </dd>
+      <div className="flex w-[250px] justify-end gap-3 p-1">
+        <dt className="hidden">찜하기</dt>
+        <dd>찜</dd>
+        <dt className="hidden">공유하기</dt>
+        <dd>공유</dd>
+      </div>
       <div className="flex items-center">
         <dt className="hidden">제목</dt>
         <dd>{content.title}</dd>
@@ -38,8 +46,14 @@ const DetailContent = ({ content }: DetailContentProps) => {
         <dt className="font-bold">{content.type === MOVIE ? "개봉일" : "최근 방영일"}&nbsp;:&nbsp;</dt>
         <dd>{content.type === MOVIE ? content.releaseDate : content.lastAirDate}</dd>
       </div>
+      <div>
+        <dt className="hidden">예고편 보기</dt>
+        <dd>
+          <PreviewVideoButton title={content.originalTitle} />
+        </dd>
+      </div>
       <dt className="hidden">줄거리</dt>
-      <dd className="w-1/2 text-justify">{content.overview}</dd>
+      <dd className="max-w-[70%] text-justify leading-8">{content.overview}</dd>
     </dl>
   );
 };

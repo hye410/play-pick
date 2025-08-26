@@ -1,6 +1,6 @@
 import { getDetailContent } from "@/features/detail/api/servies";
 import DetailContent from "@/features/detail/detail-content";
-import type { CombinedData, FilteredDetailData } from "@/types/contents-type";
+import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 
 type DetailContentProps = {
   params: {
@@ -12,8 +12,8 @@ type DetailContentProps = {
 };
 
 const DetailContentPage = async ({ params, searchParams }: DetailContentProps) => {
-  const { contentId } = params;
-  const { type } = searchParams;
+  const { contentId } = await params;
+  const { type } = await searchParams;
   const content: FilteredDetailData = await getDetailContent(contentId, type);
 
   return (

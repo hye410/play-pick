@@ -1,7 +1,7 @@
 import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
 import { DEFAULT_ERROR_MESSAGE, TODAY_PICK_MESSAGE } from "@/constants/message-constants";
 import { GET_TODAY_PICK } from "@/constants/path-constants";
-import type { CombinedData, MovieData, TMDBResponse, TVData } from "@/types/contents-type";
+import type { CombinedData, MovieData, TMDBResponse, TVData } from "@/types/contents-types";
 import { NextResponse } from "next/server";
 
 const { SERVER_ERROR, FETCH_ERROR } = DEFAULT_ERROR_MESSAGE;

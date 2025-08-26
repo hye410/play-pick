@@ -1,11 +1,14 @@
 "use client";
 import Button from "@/components/Button";
-import { FaYoutube } from "react-icons/fa";
-import Swal from "sweetalert2";
-import { getPreviewVideo } from "./api/servies";
 import { FilteredDetailData } from "@/types/contents-types";
 import { PREVIEW_VIDEO_TYPE } from "@/types/preview-types";
+import { modal } from "@/utils/modal";
+import { FaYoutube } from "react-icons/fa";
+import { getPreviewVideo } from "@/features/detail/api/services";
+import { alert } from "@/utils/alert";
+import { ALERT_TYPE } from "@/constants/alert-constants";
 
+const { ERROR } = ALERT_TYPE;
 const PreviewVideoButton = ({ title: contentTitle }: Pick<FilteredDetailData, "title">) => {
   const handleSearchTheYoutube = async () => {
     try {
@@ -15,25 +18,26 @@ const PreviewVideoButton = ({ title: contentTitle }: Pick<FilteredDetailData, "t
       });
     } catch (error) {
       console.error(error);
+      alert({
+        type: ERROR,
+        message: error as string,
+      });
     }
   };
 
   const openModal = ({ videoId, videoTitle }: PREVIEW_VIDEO_TYPE) => {
-    Swal.fire({
+    modal({
       html: `
-    <iframe
-      width="100%"
-      height="400px"
-      src="https://www.youtube.com/embed/${videoId}"
-      title="${videoTitle}"
-       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-       allowfullscreen
-    >
-    </iframe>
-  `,
-      showConfirmButton: false,
-      width: "70%",
-      heightAuto: true,
+            <iframe
+              width="100%"
+              height="400px"
+              src="https://www.youtube.com/embed/${videoId}"
+              title="${videoTitle}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            >
+            </iframe>
+          `,
     });
   };
   return (

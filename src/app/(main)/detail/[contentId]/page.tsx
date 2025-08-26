@@ -1,4 +1,4 @@
-import { getDetailContent } from "@/features/detail/api/servies";
+import { getDetailContent } from "@/features/detail/api/services";
 import DetailContent from "@/features/detail/detail-content";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 

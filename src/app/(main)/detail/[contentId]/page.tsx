@@ -4,7 +4,7 @@ import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 
 type DetailContentProps = {
   params: {
-    contentId: string;
+    contentId: Pick<CombinedData, "id">;
   };
   searchParams: {
     type: Pick<CombinedData, "type">;

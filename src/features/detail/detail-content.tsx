@@ -28,7 +28,7 @@ const DetailContent = ({ content }: DetailContentProps) => {
           <ShareButton
             title={`${content.title}(${content.originalTitle})`}
             desc={content.overview}
-            poster={content.imgUrl}
+            posterUrl={content.imgUrl}
           />
         </dd>
       </div>

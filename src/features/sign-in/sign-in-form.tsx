@@ -22,7 +22,9 @@ const SignInForm = () => {
 
   const handleSignIn: SubmitHandler<SignIn> = async (values): Promise<SweetAlertResult | void> => {
     try {
-      await postSignIn({ email: values.email, password: values.password }).then(() => route.replace("/"));
+      await postSignIn({ email: values.email, password: values.password }).then(() => {
+        route.back();
+      });
     } catch (error) {
       alert({
         type: ERROR,

@@ -11,12 +11,13 @@ export const POST = async (request: NextRequest) => {
   try {
     const supabase = await createServerSupabase();
     const { email, password } = await request.json();
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    console.log("!!!!!!!data", data);
+
     if (error) throw error;
+
     return NextResponse.json({ message: "로그인 성공" }, { status: 200 });
   } catch (error) {
     if (error instanceof AuthApiError) {

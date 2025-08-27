@@ -22,7 +22,7 @@ const FindUserInfoField = () => {
         onClick: () => router.push(SIGN_UP),
       },
     ],
-    [],
+    [router],
   );
 
   return (

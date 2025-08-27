@@ -44,7 +44,7 @@ export const usePreviewHook = ({ title }: Pick<FilteredDetailData, "title">) => 
           });
         });
     }
-  }, [data]);
+  }, [data, queryClient, title]);
 
   const openModal = ({ videoId, videoTitle }: PREVIEW_VIDEO_TYPE) => {
     modal({

@@ -8,7 +8,7 @@ import { createClientSuperbase } from "@/utils/supabase-client";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { SweetAlertResult } from "sweetalert2";
 const { ERROR } = ALERT_TYPE;
 type NavProps = {
@@ -21,7 +21,7 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
   const { isLoggedIn } = useAuthStatus(initialIsLoggedIn);
   const router = useRouter();
 
-  const handleSignOut = async (): Promise<SweetAlertResult | void> => {
+  const handleSignOut = useCallback(async (): Promise<SweetAlertResult | void> => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
@@ -33,9 +33,12 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
         message: "로그아웃 중 오류가 발생했습니다.",
       });
     }
-  };
+  }, [router]);
 
-  const menus: Menu[] = useMemo(() => (isLoggedIn ? privateMenus(handleSignOut) : publicMenus), [isLoggedIn]);
+  const menus: Menu[] = useMemo(
+    () => (isLoggedIn ? privateMenus(handleSignOut) : publicMenus),
+    [isLoggedIn, handleSignOut],
+  );
 
   return (
     <nav>

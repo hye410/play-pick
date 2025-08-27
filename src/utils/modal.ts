@@ -1,4 +1,4 @@
-import Swal, { SweetAlertOptions, SweetAlertResult } from "sweetalert2";
+import Swal, { SweetAlertResult } from "sweetalert2";
 
 type ModalProps = {
   html: string | HTMLBodyElement;

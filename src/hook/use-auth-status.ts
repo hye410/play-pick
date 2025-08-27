@@ -13,7 +13,7 @@ export const useAuthStatus = (initialState: boolean = false) => {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, []);
 
   return {
     isLoggedIn,

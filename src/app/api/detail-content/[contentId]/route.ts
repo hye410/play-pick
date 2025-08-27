@@ -14,6 +14,7 @@ const { SERVER_ERROR, FETCH_ERROR } = DEFAULT_ERROR_MESSAGE;
 
 const filterMovieData = (data: DetailMovieData & CombinedDetailData): FilteredDetailData => {
   return {
+    id: data.id,
     title: data.title,
     originalTitle: data.original_title,
     imgUrl: data.poster_path,
@@ -28,6 +29,7 @@ const filterMovieData = (data: DetailMovieData & CombinedDetailData): FilteredDe
 
 const filterTvData = (data: DetailTVData & CombinedDetailData): FilteredDetailData => {
   return {
+    id: data.id,
     title: data.name,
     originalTitle: data.original_name,
     imgUrl: data.poster_path,

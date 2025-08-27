@@ -31,6 +31,7 @@ export type CombinedData = {
 };
 
 export type CombinedDetailData = {
+  id: number;
   poster_path: string;
   overview: string;
   vote_average: number;
@@ -52,6 +53,7 @@ export type DetailTVData = {
 };
 
 export type FilteredDetailData = {
+  id: number;
   title: string;
   originalTitle: string;
   imgUrl: string;

@@ -3,7 +3,8 @@ import { TMDB_IMAGE_URL } from "@/constants/path-constants";
 import PreviewVideoButton from "@/features/detail/preview-video-button";
 import type { FilteredDetailData } from "@/types/contents-types";
 import Image from "next/image";
-import ShareButton from "./share-button";
+import ShareButton from "@/features/detail/share-button";
+import LikeButton from "@/features/detail/like-button";
 type DetailContentProps = {
   content: FilteredDetailData;
 };
@@ -22,7 +23,9 @@ const DetailContent = ({ content }: DetailContentProps) => {
       {/* ----- 찜 / 공유 필드 ----- */}
       <div className="flex w-[250px] justify-end gap-3 p-1">
         <dt className="hidden">찜하기</dt>
-        <dd>찜</dd>
+        <dd>
+          <LikeButton contentId={content.id} />
+        </dd>
         <dt className="hidden">공유하기</dt>
         <dd>
           <ShareButton

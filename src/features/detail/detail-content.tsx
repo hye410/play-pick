@@ -1,10 +1,10 @@
 import Star from "@/components/Star";
 import { CONTENTS_TYPE } from "@/constants/contents-constants";
 import { TMDB_IMAGE_URL } from "@/constants/path-constants";
+import PreviewVideoButton from "@/features/detail/preview-video-button";
 import type { FilteredDetailData } from "@/types/contents-types";
 import Image from "next/image";
-import PreviewVideoButton from "@/features/detail/preview-video-button";
-
+import ShareButton from "./share-button";
 type DetailContentProps = {
   content: FilteredDetailData;
 };
@@ -24,7 +24,13 @@ const DetailContent = ({ content }: DetailContentProps) => {
         <dt className="hidden">찜하기</dt>
         <dd>찜</dd>
         <dt className="hidden">공유하기</dt>
-        <dd>공유</dd>
+        <dd>
+          <ShareButton
+            title={`${content.title}(${content.originalTitle})`}
+            desc={content.overview}
+            poster={content.imgUrl}
+          />
+        </dd>
       </div>
 
       {/* ---- 제목 / 원제 ---- */}

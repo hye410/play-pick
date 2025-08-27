@@ -1,6 +1,3 @@
-import { CONTENTS_TYPE } from "@/constants/contents-constants";
-
-const { MOVIE, TV } = CONTENTS_TYPE;
 export type TMDBResponse<T> = {
   page: number;
   results: T[];
@@ -15,7 +12,7 @@ export type MovieData = {
   adult: boolean;
   poster_path: string | null;
   original_title: string;
-  media_type: typeof MOVIE;
+  media_type: "movie";
 };
 
 export type TVData = {
@@ -23,14 +20,14 @@ export type TVData = {
   adult: boolean;
   poster_path: string | null;
   original_name: string;
-  media_type: typeof TV;
+  media_type: "tv";
 };
 
 export type CombinedData = {
   id: number;
   title: string;
   imgUrl: string;
-  type: typeof MOVIE | typeof TV;
+  type: "movie" | "tv";
 };
 
 export type CombinedDetailData = {
@@ -45,7 +42,7 @@ export type DetailMovieData = {
   original_title: string;
   runtime: number;
   release_date: string;
-  type: typeof MOVIE;
+  type: "movie";
 };
 
 export type DetailTVData = {
@@ -58,7 +55,7 @@ export type FilteredDetailData = {
   title: string;
   originalTitle: string;
   imgUrl: string;
-  type: typeof TV | typeof MOVIE;
+  type: "movie" | "tv";
   runtime?: number;
   overview: string;
   releaseDate?: string;

@@ -1,5 +1,4 @@
 import Star from "@/components/Star";
-import { CONTENTS_TYPE } from "@/constants/contents-constants";
 import { TMDB_IMAGE_URL } from "@/constants/path-constants";
 import PreviewVideoButton from "@/features/detail/preview-video-button";
 import type { FilteredDetailData } from "@/types/contents-types";
@@ -9,7 +8,8 @@ type DetailContentProps = {
   content: FilteredDetailData;
 };
 
-const { MOVIE } = CONTENTS_TYPE;
+const MOVIE = "movie";
+
 const DetailContent = ({ content }: DetailContentProps) => {
   return (
     <dl className="flex flex-col items-center gap-3 pb-8">

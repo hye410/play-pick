@@ -1,9 +1,8 @@
 import { API_HEADER, API_METHOD } from "@/constants/api-constants";
-import { FORM_CONSTANTS } from "@/constants/form-constants";
 import { SignIn } from "@/types/form-types";
 
 const { POST } = API_METHOD;
-const { email } = FORM_CONSTANTS;
+
 export const postSignIn = async (payload: SignIn): Promise<string | void> => {
   try {
     const res = await fetch("/api/sign-in", {
@@ -18,7 +17,7 @@ export const postSignIn = async (payload: SignIn): Promise<string | void> => {
   }
 };
 
-export const postFindPassword = async (payload: Pick<SignIn, typeof email>): Promise<string> => {
+export const postFindPassword = async (payload: Pick<SignIn, "email">): Promise<string> => {
   try {
     const res = await fetch("/api/find-password", {
       method: POST,

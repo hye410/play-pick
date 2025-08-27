@@ -1,16 +1,15 @@
 import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
-import { CONTENTS_TYPE } from "@/constants/contents-constants";
 import { DEFAULT_ERROR_MESSAGE } from "@/constants/message-constants";
 import { TMDB_BASE_URL } from "@/constants/path-constants";
 import type { CombinedDetailData, DetailMovieData, DetailTVData, FilteredDetailData } from "@/types/contents-types";
 import { NextRequest, NextResponse } from "next/server";
 
 type DetailContentParams = {
-  params: {
+  params: Promise<{
     contentId: string;
-  };
+  }>;
 };
-const { MOVIE, TV } = CONTENTS_TYPE;
+
 const { SERVER_ERROR, FETCH_ERROR } = DEFAULT_ERROR_MESSAGE;
 
 const filterMovieData = (data: DetailMovieData & CombinedDetailData): FilteredDetailData => {
@@ -18,7 +17,7 @@ const filterMovieData = (data: DetailMovieData & CombinedDetailData): FilteredDe
     title: data.title,
     originalTitle: data.original_title,
     imgUrl: data.poster_path,
-    type: MOVIE,
+    type: "movie",
     overview: data.overview,
     runtime: data.runtime,
     releaseDate: data.release_date,
@@ -32,7 +31,7 @@ const filterTvData = (data: DetailTVData & CombinedDetailData): FilteredDetailDa
     title: data.name,
     originalTitle: data.original_name,
     imgUrl: data.poster_path,
-    type: TV,
+    type: "tv",
     overview: data.overview,
     lastAirDate: data.last_air_date,
     rating: data.vote_average,
@@ -43,7 +42,7 @@ const filterTvData = (data: DetailTVData & CombinedDetailData): FilteredDetailDa
 export const GET = async (request: NextRequest, { params }: DetailContentParams) => {
   try {
     const type = request.nextUrl.searchParams.get("type");
-    const { contentId } = params;
+    const { contentId } = await params;
 
     const options = {
       method: API_METHOD.GET,
@@ -52,7 +51,7 @@ export const GET = async (request: NextRequest, { params }: DetailContentParams)
     const res = await fetch(`${TMDB_BASE_URL}/${type}/${contentId}?language=ko-KR&page=1`, options);
     const data = await res.json();
     if (!res.ok) return NextResponse.json({ message: FETCH_ERROR }, { status: 500 });
-    const parsedData = type === MOVIE ? filterMovieData(data) : filterTvData(data);
+    const parsedData = type === "movie" ? filterMovieData(data) : filterTvData(data);
     return NextResponse.json({ data: parsedData }, { status: 200 });
   } catch (error) {
     console.error(error);

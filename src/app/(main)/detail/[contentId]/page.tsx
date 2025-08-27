@@ -3,12 +3,12 @@ import DetailContent from "@/features/detail/detail-content";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 
 type DetailContentProps = {
-  params: {
+  params: Promise<{
     contentId: Pick<CombinedData, "id">;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     type: Pick<CombinedData, "type">;
-  };
+  }>;
 };
 
 const DetailContentPage = async ({ params, searchParams }: DetailContentProps) => {

@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import localFont from "next/font/local";
-import clsx from "clsx";
 import { Providers } from "@/provider/query-client-provider";
+import clsx from "clsx";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+
+import "./globals.css";
+import Script from "next/script";
+import { KAKAO_INTEGRITY_VALUE, KAKAO_VERSION } from "@/constants/kakao-constants";
 
 const myFont = localFont({
   src: "../../public/font/SUIT-Variable.woff2",
@@ -28,6 +31,12 @@ export default function RootLayout({
     <html lang="ko">
       <body className={clsx(myFont.className, "h-[100dvh]] p-5")}>
         <Providers>{children}</Providers>
+        <Script
+          src={`https://t1.kakaocdn.net/kakao_js_sdk/${KAKAO_VERSION}/kakao.min.js`}
+          integrity={KAKAO_INTEGRITY_VALUE}
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
       </body>
     </html>
   );

@@ -2,9 +2,10 @@
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { privateMenus, publicMenus } from "@/constants/menu-constants";
 import { useAuthStatus } from "@/hook/use-auth-status";
-import { Menu } from "@/types/menu-types";
+import type { Menu } from "@/types/menu-types";
 import { alert } from "@/utils/alert";
 import { createClientSuperbase } from "@/utils/supabase-client";
+import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,14 +19,15 @@ type NavProps = {
 const supabase = createClientSuperbase();
 
 const Nav = ({ initialIsLoggedIn }: NavProps) => {
+  const queryClient = useQueryClient();
   const { isLoggedIn } = useAuthStatus(initialIsLoggedIn);
-  const router = useRouter();
 
   const handleSignOut = useCallback(async (): Promise<SweetAlertResult | void> => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      router.replace("/");
+      queryClient.clear();
+      window.location.replace("/");
     } catch (error) {
       console.error(error);
       alert({
@@ -33,7 +35,7 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
         message: "로그아웃 중 오류가 발생했습니다.",
       });
     }
-  }, [router]);
+  }, []);
 
   const menus: Menu[] = useMemo(
     () => (isLoggedIn ? privateMenus(handleSignOut) : publicMenus),

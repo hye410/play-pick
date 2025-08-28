@@ -10,8 +10,10 @@ export const postSignIn = async (payload: SignIn): Promise<string | void> => {
       headers: API_HEADER,
       body: JSON.stringify(payload),
     });
-    const { message } = await res.json();
-    if (!res.ok) throw new Error(message);
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message);
+    return result.userId;
   } catch (error) {
     throw error;
   }

@@ -1,31 +1,29 @@
 "use client";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { useAuthStatus } from "@/hook/use-auth-status";
+import { useUserLike } from "@/hook/use-user-like";
 import type { FilteredDetailData } from "@/types/contents-types";
 import { alert } from "@/utils/alert";
-import { useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 
 const { WARNING } = ALERT_TYPE;
 
 type LikeButton = {
   contentId: FilteredDetailData["id"];
-  initialLikeStatus: boolean;
+  initialLikes: FilteredDetailData["id"][];
 };
 
-const LikeButton = ({ initialLikeStatus }: LikeButton) => {
+const LikeButton = ({ contentId, initialLikes }: LikeButton) => {
   const { user } = useAuthStatus();
-  const [isLiked, setIsLiked] = useState<boolean>(initialLikeStatus);
-  const handleLike = async () => {
+  const { isLiked, toggleLike } = useUserLike(Number(contentId), initialLikes);
+
+  const handleLike = () => {
     if (!user) {
       return alert({
         type: WARNING,
         message: "로그인이 필요합니다.",
       });
-    } else {
-      // 찜 추가
-      // 찜 해제
-    }
+    } else toggleLike(contentId);
   };
   return (
     <button onClick={handleLike}>
@@ -35,5 +33,3 @@ const LikeButton = ({ initialLikeStatus }: LikeButton) => {
 };
 
 export default LikeButton;
-
-// const { isUserLike } = useUserLike(contentId);

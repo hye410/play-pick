@@ -34,3 +34,8 @@ export const UPDATE_PASSWORD_MESSAGE = Object.freeze({
 export const PREVIEW_VIDEO_MESSAGE = Object.freeze({
   UNABLE_TO_FIND_PREVIEW: "해당 예고편을 찾을 수 없습니다.",
 } as const);
+
+export const TOGGLE_LIKES_MESSAGE = Object.freeze({
+  ADD_TO_LIKES: "찜 목록에 추가되었습니다.",
+  REMOVE_FROM_LIKES: "찜 목록에서 제거되었습니다.",
+} as const);

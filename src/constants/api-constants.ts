@@ -7,6 +7,7 @@ const YOUTUBE_SEARCH_URL = process.env.YOUTUBE_SEARCH_URL;
 export const API_METHOD = Object.freeze({
   GET: "GET",
   POST: "POST",
+  DELETE: "DELETE",
 } as const);
 
 export const API_HEADER = Object.freeze({

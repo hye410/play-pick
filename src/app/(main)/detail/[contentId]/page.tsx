@@ -18,16 +18,15 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
   const content: FilteredDetailData = await getDetailContent(contentId, type);
   const supabase = await createServerSupabase();
   const { data } = await supabase.auth.getUser();
-  let initialLikeStatus = false;
+  let initialLikes = [];
   if (data?.user) {
-    const userLikes = await getUserLikes(data.user.id);
-    initialLikeStatus = userLikes.includes(Number(contentId)) ?? false;
+    initialLikes = await getUserLikes(data.user.id);
   }
 
   return (
     <article className="flex h-full items-center justify-center">
       <h3 className="hidden">{content.title} 상세 페이지</h3>
-      <DetailContent content={content} initialLikeStatus={initialLikeStatus} />
+      <DetailContent content={content} initialLikes={initialLikes} />
     </article>
   );
 };

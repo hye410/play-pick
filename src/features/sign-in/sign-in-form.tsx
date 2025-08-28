@@ -10,10 +10,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SweetAlertResult } from "sweetalert2";
+import { getUserLikes } from "../detail/api/services";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/query-keys";
+import { FilteredDetailData } from "@/types/contents-types";
+import { User } from "@/types/user-types";
 const { ERROR } = ALERT_TYPE;
-
+const { LIKES } = QUERY_KEYS;
 const SignInForm = () => {
   const route = useRouter();
+  const queryClient = useQueryClient();
   const { control, handleSubmit } = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
@@ -22,9 +28,12 @@ const SignInForm = () => {
 
   const handleSignIn: SubmitHandler<SignIn> = async (values): Promise<SweetAlertResult | void> => {
     try {
-      await postSignIn({ email: values.email, password: values.password }).then(() => {
-        route.back();
-      });
+      const userId = await postSignIn({ email: values.email, password: values.password });
+      if (userId) {
+        const userLikes: FilteredDetailData["id"][] = await getUserLikes(userId);
+        queryClient.setQueryData([LIKES, userId], userLikes);
+      }
+      route.back();
     } catch (error) {
       alert({
         type: ERROR,

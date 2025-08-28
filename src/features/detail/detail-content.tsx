@@ -7,12 +7,12 @@ import ShareButton from "@/features/detail/share-button";
 import LikeButton from "@/features/detail/like-button";
 type DetailContentProps = {
   content: FilteredDetailData;
-  initialLikeStatus: boolean;
+  initialLikes: FilteredDetailData["id"][];
 };
 
 const MOVIE = "movie";
 
-const DetailContent = ({ content, initialLikeStatus }: DetailContentProps) => {
+const DetailContent = ({ content, initialLikes }: DetailContentProps) => {
   return (
     <dl className="flex flex-col items-center gap-3 pb-8">
       {/* ----- 포스터 이미지 ----- */}
@@ -25,7 +25,7 @@ const DetailContent = ({ content, initialLikeStatus }: DetailContentProps) => {
       <div className="flex w-[250px] justify-end gap-3 p-1">
         <dt className="hidden">찜하기</dt>
         <dd>
-          <LikeButton contentId={content.id} initialLikeStatus={initialLikeStatus} />
+          <LikeButton contentId={content.id} initialLikes={initialLikes} />
         </dd>
         <dt className="hidden">공유하기</dt>
         <dd>

@@ -1,6 +1,7 @@
-import { getDetailContent } from "@/features/detail/api/services";
+import { getDetailContent, getUserLikes } from "@/features/detail/api/services";
 import DetailContent from "@/features/detail/detail-content";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
+import { createServerSupabase } from "@/utils/supabase-server";
 
 type DetailContentProps = {
   params: Promise<{
@@ -15,11 +16,18 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
   const { contentId } = await params;
   const { type } = await searchParams;
   const content: FilteredDetailData = await getDetailContent(contentId, type);
+  const supabase = await createServerSupabase();
+  const { data } = await supabase.auth.getUser();
+  let initialLikeStatus = false;
+  if (data?.user) {
+    const userLikes = await getUserLikes(data.user.id);
+    initialLikeStatus = userLikes.includes(Number(contentId)) ?? false;
+  }
 
   return (
     <article className="flex h-full items-center justify-center">
       <h3 className="hidden">{content.title} 상세 페이지</h3>
-      <DetailContent content={content} />
+      <DetailContent content={content} initialLikeStatus={initialLikeStatus} />
     </article>
   );
 };

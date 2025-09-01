@@ -1,4 +1,3 @@
-import { API_HEADER, API_METHOD } from "@/constants/api-constants";
 import { A_DAY } from "@/constants/fetch-time-constants";
 import { BASE_URL } from "@/constants/path-constants";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
@@ -40,33 +39,6 @@ export const getUserLikes = async (userId: User["id"]) => {
     const result = await res.json();
     if (!res.ok) throw result.message;
     return result.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const postUserLike = async (contentId: FilteredDetailData["id"]) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/likes`, {
-      method: API_METHOD.POST,
-      headers: API_HEADER,
-      body: JSON.stringify({ likedContentId: contentId }),
-    });
-    const result = await res.json();
-    if (!res.ok) throw result.message;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const deleteUserLike = async (contentId: FilteredDetailData["id"]) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/likes?contentId=${contentId}`, {
-      method: API_METHOD.DELETE,
-      headers: API_HEADER,
-    });
-    const result = await res.json();
-    if (!res.ok) throw result.message;
   } catch (error) {
     throw error;
   }

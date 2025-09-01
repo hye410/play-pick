@@ -8,7 +8,6 @@ import { createClientSuperbase } from "@/utils/supabase-client";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { SweetAlertResult } from "sweetalert2";
 const { ERROR } = ALERT_TYPE;

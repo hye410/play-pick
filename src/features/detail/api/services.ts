@@ -35,7 +35,7 @@ export const getPreviewVideo = async (title: FilteredDetailData["title"]) => {
 export const getUserLikes = async (userId: User["id"]) => {
   try {
     const res = await fetch(`${BASE_URL}/api/likes?userId=${userId}`, {
-      next: { tags: ["likes"] },
+      next: { revalidate: A_DAY },
     });
     const result = await res.json();
     if (!res.ok) throw result.message;

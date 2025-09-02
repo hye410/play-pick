@@ -5,7 +5,7 @@ const SurveyPage = async () => {
   const questions = await getQuestions();
 
   return (
-    <section>
+    <section className="h-full">
       <Survey questions={questions} />
     </section>
   );

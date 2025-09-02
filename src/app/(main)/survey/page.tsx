@@ -1,7 +1,14 @@
-import React from "react";
+import { getQuestions } from "@/features/survey/api/services";
+import Survey from "@/features/survey/survey";
 
-const Survey = () => {
-  return <div>survey</div>;
+const SurveyPage = async () => {
+  const questions = await getQuestions();
+
+  return (
+    <section>
+      <Survey questions={questions} />
+    </section>
+  );
 };
 
-export default Survey;
+export default SurveyPage;

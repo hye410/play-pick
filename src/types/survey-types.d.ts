@@ -22,5 +22,5 @@ export type Option = {
 };
 
 export type Answer = {
-  [key: string]: string | string[];
+  [key: string]: unknown;
 };

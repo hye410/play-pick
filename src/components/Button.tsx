@@ -1,5 +1,6 @@
 "use client";
 import { cva } from "class-variance-authority";
+import clsx from "clsx";
 
 type ButtonProps = {
   size?: "small" | "medium" | "large";
@@ -52,7 +53,7 @@ const Button = (props: ButtonProps) => {
       onClick={onClick}
       type={type}
       onMouseEnter={onMouseEnter}
-      className={buttonVariants({ size, color: colorVariant() })}
+      className={clsx(buttonVariants({ size, color: colorVariant() }), disabled && "cursor-not-allowed")}
       disabled={disabled}
     >
       {children}

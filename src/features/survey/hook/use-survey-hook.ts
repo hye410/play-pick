@@ -11,7 +11,8 @@ const { ERROR } = ALERT_TYPE;
 
 const useSurveyHook = (initialQuestion: Question[]) => {
   const [questions, setQuestions] = useState<Question[]>(initialQuestion);
-  const { answers, addToAnswers, currentQuestionIndex, setCurrentQuestionIndex } = useSurveyAnswersStore();
+  const { answers, addToAnswers, removeFromAnswer, currentQuestionIndex, setCurrentQuestionIndex } =
+    useSurveyAnswersStore();
   const currentQuestion = questions[currentQuestionIndex] ?? questions[0];
   const currentOptions = currentQuestion.options;
   const isFirstQuestion = currentQuestionIndex <= 0;
@@ -70,6 +71,7 @@ const useSurveyHook = (initialQuestion: Question[]) => {
       }
       addToAnswers(currentKey, newAnswer);
     } else {
+      if (currentKey === "type" && value !== answers["type"]) removeFromAnswer("genres");
       addToAnswers(currentKey, value);
     }
   };

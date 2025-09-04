@@ -10,6 +10,7 @@ type SurveyAnswersAction = {
   setCurrentQuestionIndex: (index: number) => void;
   addToAnswers: (key: string, answer: unknown) => void;
   removeAllAnswers: () => void;
+  removeFromAnswer: (key: string) => void;
 };
 
 const initialState: SurveyAnswersState = {
@@ -26,6 +27,13 @@ export const useSurveyAnswersStore = create<SurveyAnswersState & SurveyAnswersAc
           answers: { ...state.answers, [key]: answer },
         })),
       setCurrentQuestionIndex: (index) => set({ currentQuestionIndex: index }),
+      removeFromAnswer: (key) =>
+        set((state) => {
+          const { [key]: _, ...rest } = state.answers;
+          return {
+            answers: rest,
+          };
+        }),
       removeAllAnswers: () => set(() => ({ ...initialState })),
     }),
     {

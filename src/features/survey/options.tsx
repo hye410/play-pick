@@ -8,7 +8,7 @@ type OptionsProps = {
   options: Option[];
   handleSelectOption: (value: Option["value"]) => void;
   haveManyOptions?: boolean;
-  currentKey: Question["tmdbKey"];
+  currentKey: Question["tmdb_key"];
 };
 
 const Options = ({ options, handleSelectOption, haveManyOptions = false, currentKey }: OptionsProps) => {

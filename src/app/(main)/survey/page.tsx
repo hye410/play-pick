@@ -1,12 +1,11 @@
-import { getQuestions } from "@/features/survey/api/services";
+import { getInitialQuestions } from "@/features/survey/api/services";
 import Survey from "@/features/survey/survey";
 
 const SurveyPage = async () => {
-  const questions = await getQuestions();
-
+  const initialQuestions = await getInitialQuestions();
   return (
     <section className="h-full">
-      <Survey questions={questions} />
+      <Survey initialQuestions={initialQuestions} />
     </section>
   );
 };

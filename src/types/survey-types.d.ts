@@ -1,12 +1,15 @@
 export type Question = {
   id: number;
   question: string;
-  options: Answer[];
-  isMultipleChoices: boolean;
-  tmdbKey: string;
+  options: Option[];
+  is_multiple_choice: boolean;
+  tmdb_key: string;
+  step: number;
+  is_common: boolean;
+  separated_key: string | null;
 };
 
-export type Answer = {
+export type Option = {
   value: string;
   label: string;
   code?:
@@ -16,4 +19,8 @@ export type Answer = {
         gte: number | string;
         lte: number | string;
       };
+};
+
+export type Answer = {
+  [key: string]: string | string[];
 };

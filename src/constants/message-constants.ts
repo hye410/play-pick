@@ -41,3 +41,8 @@ export const TOGGLE_LIKES_MESSAGE = Object.freeze({
   LIKES_REMOVE_SUCCESS: "찜 목록에서 삭제되었습니다.",
   LIKES_REMOVE_FAIL: "찜 목록에서 삭제하는데 실패했습니다.\n다시 시도해 주세요.",
 } as const);
+
+export const SURVEY_MESSAGE = Object.freeze({
+  FETCH_ADDED_QUESTIONS_FAIL: "추가 질문을 가져오는데 실패했습니다.",
+  FETCH_COMMON_QUESTIONS_FAIL: "질문을 받아오는데 실패했습니다.\n새로고침 후 다시 시도해 주세요.",
+} as const);

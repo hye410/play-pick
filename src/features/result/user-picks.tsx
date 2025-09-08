@@ -3,17 +3,18 @@
 import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
 import { useEffect } from "react";
 
-const UserPicks = () => {
-  const { userPicks } = useSurveyAnswersStore();
+type UserPicksProps = {
+  userPicks: string[];
+};
+const UserPicks = ({ userPicks }: UserPicksProps) => {
   const { resetAnswers } = useSurveyAnswersStore();
-
   useEffect(() => {
     resetAnswers();
   }, []);
 
   return (
     <span>
-      <strong className="font-extrabold">{userPicks.join(" / ")}</strong>
+      <strong className="font-extrabold">{userPicks}</strong>
     </span>
   );
 };

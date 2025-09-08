@@ -14,7 +14,8 @@ const { ERROR } = ALERT_TYPE;
 const useSurveyHook = (initialQuestion: Question[]) => {
   const [questions, setQuestions] = useState<Question[]>(initialQuestion);
   const [params, setParams] = useState<Answer>({});
-  const { answers, setUserPicks, addToAnswers, removeFromAnswer, currentQuestionIndex, setCurrentQuestionIndex } =
+  const [userPicks, setUserPicks] = useState<string[]>([]);
+  const { answers, addToAnswers, removeFromAnswer, currentQuestionIndex, setCurrentQuestionIndex } =
     useSurveyAnswersStore();
 
   const currentQuestion = questions[currentQuestionIndex] ?? questions[0];
@@ -49,20 +50,31 @@ const useSurveyHook = (initialQuestion: Question[]) => {
         const targetOption = currentOptions.filter((option) => userPick.includes(option.value));
         const labels = targetOption.map((target) => target.label);
         const codes = targetOption.map((target) => target.code);
-        setUserPicks(labels, currentQuestionIndex);
+
+        setUserPicks((prev) => {
+          const picks = [...prev];
+          picks[currentQuestionIndex] = labels.join(" , ");
+          return picks;
+        });
         setParams((prev) => ({ ...prev, [currentKey]: codes }));
       } else {
         const targetOption = currentOptions.find((option) => option.value === userPick);
         const label = targetOption?.label as string;
-        setUserPicks(label, currentQuestionIndex);
+        setUserPicks((prev) => {
+          const picks = [...prev];
+          picks[currentQuestionIndex] = label;
+          return picks;
+        });
         setParams((prev) => ({ ...prev, [currentKey]: targetOption?.code || targetOption?.value }));
       }
     }
   }, [answers[currentKey], currentOptions, currentQuestionIndex]);
 
   const moveToResult = () => {
-    const queryString = makeQueryParams(params);
-    route.replace(`${RESULT}?queries=${queryString}`);
+    const urlParams = makeQueryParams(params);
+    const userPicksString = userPicks.join(" / ");
+    urlParams.append("picks", userPicksString);
+    route.replace(`${RESULT}?${urlParams.toString()}`);
   };
 
   const moveToNext = () => {

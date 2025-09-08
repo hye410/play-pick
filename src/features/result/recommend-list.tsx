@@ -4,9 +4,8 @@ type RecommendListProps = {
   list: CombinedData[];
 };
 const RecommendList = ({ list }: RecommendListProps) => {
-  console.log("list=>", list);
   return (
-    <div className="grid grid-cols-3 gap-5">
+    <div className="mx-auto grid max-w-[1440px] grid-cols-4 gap-5">
       {list.map((content) => (
         <Content key={`recommended_content_${content.id}`} content={content} />
       ))}

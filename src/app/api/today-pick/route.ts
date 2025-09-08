@@ -2,23 +2,11 @@ import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
 import { DEFAULT_ERROR_MESSAGE, TODAY_PICK_MESSAGE } from "@/constants/message-constants";
 import { GET_TODAY_PICK } from "@/constants/path-constants";
 import type { CombinedData, MovieData, TMDBResponse, TVData } from "@/types/contents-types";
+import { filterAndNarrowData, filterMovieData, filterTvData } from "@/utils/filter-contents";
 import { NextResponse } from "next/server";
 
 const { SERVER_ERROR, FETCH_ERROR } = DEFAULT_ERROR_MESSAGE;
 const { FETCH_MOVIE_ERROR, FETCH_TV_ERROR } = TODAY_PICK_MESSAGE;
-
-/**
- * Today's Pick에 필요한 데이터만 정제해 주는 함수
- * @param dataToFilter 필터링할 데이터 배열
- * @returns 필터링된 데이터(성인물이 아니고 post_image가 존재하는 데이터)
- */
-const filterAndNarrowData = <T extends { poster_path: string | null; adult: boolean }>(
-  dataToFilter: T[],
-): Array<Omit<T, "poster_path"> & { poster_path: string }> => {
-  return dataToFilter.filter((data): data is T & { poster_path: string } => {
-    return !data.adult && data.poster_path !== null;
-  });
-};
 
 export const GET = async () => {
   try {
@@ -41,14 +29,7 @@ export const GET = async () => {
         });
       }
       const filteredMovies = filterAndNarrowData(movieData.results);
-      return filteredMovies
-        .map((data) => ({
-          id: data.id,
-          title: data.original_title,
-          imgUrl: data.poster_path,
-          type: data.media_type,
-        }))
-        .slice(0, 15);
+      return filterMovieData(filteredMovies).slice(0, 15);
     };
 
     const fetchTVData = async (): Promise<CombinedData[]> => {
@@ -60,14 +41,7 @@ export const GET = async () => {
 
       const filteredTVShows = filterAndNarrowData(tvData.results);
 
-      return filteredTVShows
-        .map((data) => ({
-          id: data.id,
-          title: data.original_name,
-          imgUrl: data.poster_path,
-          type: data.media_type,
-        }))
-        .slice(0, 15);
+      return filterTvData(filteredTVShows).slice(0, 15);
     };
 
     const [movies, tvShows] = await Promise.all([fetchMovieData(), fetchTVData()]);

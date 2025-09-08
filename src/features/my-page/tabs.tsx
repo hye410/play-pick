@@ -22,13 +22,13 @@ const Tabs = ({ currentTab }: TabsProps) => {
     <div className="text-right">
       <button
         onClick={() => handleChangeTab(INFO)}
-        className={clsx("w-40 rounded-tl-3xl border py-3", currentTab === INFO && "bg-primary")}
+        className={clsx("w-40 rounded-tl-3xl border border-b-0 py-3", currentTab === INFO && "bg-primary")}
       >
         내 정보
       </button>
       <button
         onClick={() => handleChangeTab(CONTENTS)}
-        className={clsx("w-40 rounded-tl-3xl border py-3", currentTab === CONTENTS && "bg-primary")}
+        className={clsx("w-40 rounded-tl-3xl border border-b-0 py-3", currentTab === CONTENTS && "bg-primary")}
       >
         내 콘텐츠
       </button>

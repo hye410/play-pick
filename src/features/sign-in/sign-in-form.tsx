@@ -2,19 +2,18 @@
 import Button from "@/components/Button";
 import FormInput from "@/components/form-input";
 import { ALERT_TYPE } from "@/constants/alert-constants";
+import { QUERY_KEYS } from "@/constants/query-keys";
 import { postSignIn } from "@/features/sign-in/api/services";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
+import { FilteredDetailData } from "@/types/contents-types";
 import { SignIn } from "@/types/form-types";
 import { alert } from "@/utils/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SweetAlertResult } from "sweetalert2";
-import { getUserLikes } from "../detail/api/services";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/constants/query-keys";
-import { FilteredDetailData } from "@/types/contents-types";
-import { User } from "@/types/user-types";
+import { getUserLikes } from "@/features/detail/api/services";
 const { ERROR } = ALERT_TYPE;
 const { LIKES } = QUERY_KEYS;
 const SignInForm = () => {

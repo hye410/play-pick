@@ -1,26 +1,22 @@
 "use client";
 
-import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
-import type { Option, Question } from "@/types/survey-types";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getQuestionsByKey, getSurveyResult } from "@/features/survey/api/services";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { RESULT } from "@/constants/path-constants";
+import { makeQueryParams } from "@/features/result/util/make-query-params";
+import { getQuestionsByKey } from "@/features/survey/api/services";
+import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
+import type { Answer, Option, Question } from "@/types/survey-types";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const { ERROR } = ALERT_TYPE;
 
 const useSurveyHook = (initialQuestion: Question[]) => {
   const [questions, setQuestions] = useState<Question[]>(initialQuestion);
-  const {
-    answers,
-    resetAnswers,
-    setUserPicks,
-    addToAnswers,
-    removeFromAnswer,
-    currentQuestionIndex,
-    setCurrentQuestionIndex,
-  } = useSurveyAnswersStore();
+  const [params, setParams] = useState<Answer>({});
+  const { answers, setUserPicks, addToAnswers, removeFromAnswer, currentQuestionIndex, setCurrentQuestionIndex } =
+    useSurveyAnswersStore();
+
   const currentQuestion = questions[currentQuestionIndex] ?? questions[0];
   const currentOptions = currentQuestion.options;
   const isFirstQuestion = currentQuestionIndex <= 0;
@@ -47,31 +43,26 @@ const useSurveyHook = (initialQuestion: Question[]) => {
 
   useEffect(() => {
     const userPick = answers[currentKey];
+
     if (userPick) {
       if (Array.isArray(userPick)) {
         const targetOption = currentOptions.filter((option) => userPick.includes(option.value));
         const labels = targetOption.map((target) => target.label);
+        const codes = targetOption.map((target) => target.code);
         setUserPicks(labels, currentQuestionIndex);
+        setParams((prev) => ({ ...prev, [currentKey]: codes }));
       } else {
         const targetOption = currentOptions.find((option) => option.value === userPick);
         const label = targetOption?.label as string;
         setUserPicks(label, currentQuestionIndex);
+        setParams((prev) => ({ ...prev, [currentKey]: targetOption?.code || targetOption?.value }));
       }
     }
   }, [answers[currentKey], currentOptions, currentQuestionIndex]);
 
-  const moveToResult = async () => {
-    try {
-      await getSurveyResult(answers, questions);
-      route.replace(RESULT);
-      resetAnswers();
-      setCurrentQuestionIndex(0);
-    } catch (error) {
-      alert({
-        type: ERROR,
-        message: error as string,
-      });
-    }
+  const moveToResult = () => {
+    const queryString = makeQueryParams(params);
+    route.replace(`${RESULT}?queries=${queryString}`);
   };
 
   const moveToNext = () => {
@@ -81,6 +72,7 @@ const useSurveyHook = (initialQuestion: Question[]) => {
       moveToResult();
     }
   };
+
   const moveToPrev = () => {
     if (!isFirstQuestion) setCurrentQuestionIndex(currentQuestionIndex - 1);
   };

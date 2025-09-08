@@ -2,7 +2,7 @@
 import Button from "@/components/Button";
 import FormInput from "@/components/form-input";
 import { ALERT_TYPE } from "@/constants/alert-constants";
-import { QUERY_KEYS } from "@/constants/query-keys";
+import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { postSignIn } from "@/features/sign-in/api/services";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
 import { FilteredDetailData } from "@/types/contents-types";

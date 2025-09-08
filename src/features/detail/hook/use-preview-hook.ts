@@ -1,5 +1,5 @@
 "use client";
-import { QUERY_KEYS } from "@/constants/query-keys";
+import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPreviewVideo } from "@/features/detail/api/services";
 import { A_DAY } from "@/constants/fetch-time-constants";

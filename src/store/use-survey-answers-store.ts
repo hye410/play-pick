@@ -43,7 +43,7 @@ export const useSurveyAnswersStore = create<SurveyAnswersState & SurveyAnswersAc
             answers: rest,
           };
         }),
-      resetAnswers: () => set(() => ({ answers: {} })),
+      resetAnswers: () => set(() => ({ answers: {}, currentQuestionIndex: 0 })),
       setUserPicks: (newPick, index) =>
         set((state) => {
           state.userPicks[index] = newPick;

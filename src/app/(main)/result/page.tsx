@@ -3,7 +3,7 @@ import RecommendList from "@/features/result/recommend-list";
 import UserPicks from "@/features/result/user-picks";
 import { Answer } from "@/types/survey-types";
 type ResultProps = {
-  searchParams: Answer;
+  searchParams: Promise<Answer>;
 };
 const Result = async ({ searchParams }: ResultProps) => {
   const queries = await searchParams;

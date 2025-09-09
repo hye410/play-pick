@@ -1,7 +1,7 @@
 export const DEFAULT_ERROR_MESSAGE = Object.freeze({
   SERVER_ERROR: "내부 서버 오류가 발생했습니다.",
   FETCH_ERROR: "데이터를 받아오는데 실패했습니다.",
-  CLIENT_ERROR: "에러가 발생했습니다.\n잠시 후 다시 시도해 주세요.",
+  CLIENT_ERROR: "에러가 발생했습니다.\n새로고침 후 다시 시도해 주세요.",
 } as const);
 
 export const TODAY_PICK_MESSAGE = Object.freeze({
@@ -25,12 +25,6 @@ export const FIND_PASSWORD_MESSAGE = Object.freeze({
   OVER_EMAIL_SEND_RATE_LIMIT: "이미 이메일이 전송되었습니다. 가입하신 이메일을 확인해 주세요.",
 } as const);
 
-export const UPDATE_PASSWORD_MESSAGE = Object.freeze({
-  FAIL_TO_CHANGE_PASSWORD: "비밀번호 변경에 실패했습니다.",
-  SUCCESS_TO_CHANGE_PASSWORD: "비밀번호가 변경되었습니다.",
-  SAME_PASSWORD: "기존 비밀번호와 같은 비밀번호로 변경할 수 없습니다.",
-});
-
 export const PREVIEW_VIDEO_MESSAGE = Object.freeze({
   UNABLE_TO_FIND_PREVIEW: "해당 예고편을 찾을 수 없습니다.",
 } as const);
@@ -49,4 +43,20 @@ export const SURVEY_MESSAGE = Object.freeze({
 
 export const RESULT_MESSAGE = Object.freeze({
   FETCH_RECOMMEND_FAIL: "추천 목록을 내려받는데 실패했습니다.",
+} as const);
+
+export const DELETE_USER_MESSAGE = Object.freeze({
+  DELETE_FAIL: "회원 탈퇴에 실패했습니다.",
+  DELETE_SUCCESS: "계정이 삭제되었습니다. 그동안 이용해 주셔서 감사합니다.",
+} as const);
+
+export const SIGN_OUT_MESSAGE = Object.freeze({
+  SIGN_OUT_FAIL: "로그아웃 중 에러가 발생했습니다.",
+  SIGN_OUT_SUCCESS: "로그아웃되었습니다.",
+} as const);
+
+export const UPDATE_PASSWORD_MESSAGE = Object.freeze({
+  UPDATE_FAIL: "비밀번호를 바꾸는데 실패했습니다. 다시 시도해 주세요.",
+  UPDATE_SUCCESS: "비밀번호가 변경되었습니다.",
+  SAME_PASSWORD_ERROR: "기존과 같은 비밀번호로 설정할 수 없습니다.",
 } as const);

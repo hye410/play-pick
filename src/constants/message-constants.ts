@@ -48,6 +48,8 @@ export const RESULT_MESSAGE = Object.freeze({
 export const DELETE_USER_MESSAGE = Object.freeze({
   DELETE_FAIL: "회원 탈퇴에 실패했습니다.",
   DELETE_SUCCESS: "계정이 삭제되었습니다. 그동안 이용해 주셔서 감사합니다.",
+  DELETE_CONFIRM: "정말 탈퇴하시겠습니까?",
+  DELETE_WARNING: "탈퇴 후 모든 데이터가 삭제됩니다.",
 } as const);
 
 export const SIGN_OUT_MESSAGE = Object.freeze({

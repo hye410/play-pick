@@ -1,6 +1,7 @@
 import { getDetailContent, getUserLikes } from "@/features/detail/api/services";
 import DetailContent from "@/features/detail/detail-content";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
+import type { USER_LIKES } from "@/types/user-likes-type";
 import { createServerSupabase } from "@/utils/supabase-server";
 
 type DetailContentProps = {
@@ -20,8 +21,9 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
   const { data } = await supabase.auth.getUser();
   let isInitialLiked = false;
   if (data?.user) {
-    const userLikes = await getUserLikes(data.user.id);
-    isInitialLiked = userLikes.includes(content.id) ?? false;
+    const userLikes: Array<USER_LIKES> = await getUserLikes(data.user.id);
+    const likesIds = userLikes.map(({ id }) => id);
+    isInitialLiked = likesIds.includes(content.id) ?? false;
   }
 
   return (

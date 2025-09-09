@@ -25,7 +25,7 @@ const DetailContent = ({ content, isInitialLiked }: DetailContentProps) => {
       <div className="flex w-[250px] justify-end gap-3 p-1">
         <dt className="hidden">찜하기</dt>
         <dd>
-          <LikeButton contentId={content.id} isInitialLiked={isInitialLiked} />
+          <LikeButton contentId={content.id} isInitialLiked={isInitialLiked} contentType={content.type} />
         </dd>
         <dt className="hidden">공유하기</dt>
         <dd>

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { SweetAlertResult } from "sweetalert2";
 import { z } from "zod";
-const { FAIL_TO_CHANGE_PASSWORD, SUCCESS_TO_CHANGE_PASSWORD, SAME_PASSWORD } = UPDATE_PASSWORD_MESSAGE;
+const { UPDATE_FAIL, UPDATE_SUCCESS, SAME_PASSWORD_ERROR } = UPDATE_PASSWORD_MESSAGE;
 const { password, confirmPassword } = FORM_CONSTANTS;
 const { ERROR, SUCCESS } = ALERT_TYPE;
 export type UpdatePasswordForm = Pick<SignUp, typeof password | typeof confirmPassword>;
@@ -29,7 +29,7 @@ const passwordSchema = z
     error: "비밀번호가 일치하지 않습니다.",
   });
 
-const SAME_PASSWORD_ERROR = "same_password";
+const SAME_PASSWORD = "same_password";
 const supabase = createClientSuperbase();
 const UpdatePassword = () => {
   const route = useRouter();
@@ -50,13 +50,13 @@ const UpdatePassword = () => {
       if (error) throw error;
       return alert({
         type: SUCCESS,
-        message: SUCCESS_TO_CHANGE_PASSWORD,
+        message: UPDATE_SUCCESS,
       }).then(() => route.replace("/"));
     } catch (error) {
       console.error(error);
-      let errorMessage: string = FAIL_TO_CHANGE_PASSWORD;
+      let errorMessage: string = UPDATE_FAIL;
       if (error instanceof AuthApiError) {
-        if (error.code === SAME_PASSWORD_ERROR) errorMessage = SAME_PASSWORD;
+        if (error.code === SAME_PASSWORD) errorMessage = SAME_PASSWORD_ERROR;
       }
       return alert({
         type: ERROR,

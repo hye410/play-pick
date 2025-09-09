@@ -15,3 +15,18 @@ export const postChangePassword = async (newPassword: string) => {
     throw error;
   }
 };
+
+export const deleteUser = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/delete-user`, {
+      method: API_METHOD.DELETE,
+      headers: API_HEADER,
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw result.message;
+    return result.message;
+  } catch (error) {
+    throw error;
+  }
+};

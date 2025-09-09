@@ -20,7 +20,7 @@ const MyPage = async ({ searchParams }: MyPageProps) => {
     <div className="mx-auto flex h-full w-[85%] flex-col">
       <Tabs currentTab={tab} />
       <div className="h-full rounded-l-lg border">
-        {tab === INFO ? <MyInfo userEmail={user.email} /> : <MyContents />}
+        {tab === INFO ? <MyInfo userEmail={user.email} /> : <MyContents user={user} />}
       </div>
     </div>
   );

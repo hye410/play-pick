@@ -62,3 +62,8 @@ export const UPDATE_PASSWORD_MESSAGE = Object.freeze({
   UPDATE_SUCCESS: "비밀번호가 변경되었습니다.",
   SAME_PASSWORD_ERROR: "기존과 같은 비밀번호로 설정할 수 없습니다.",
 } as const);
+
+export const MY_CONTENTS_MESSAGE = Object.freeze({
+  PAYLOAD_FAIL: "찜한 콘텐츠가 없습니다.",
+  FETCH_FAIL: "데이터를 내려받는 과정에서 오류가 발생했습니다.",
+} as const);

@@ -6,7 +6,7 @@ type AlertProps = {
   message: string;
 };
 
-const ALERT_COLORS = {
+export const ALERT_COLORS = {
   [SUCCESS]: "#28a745",
   [ERROR]: "#D32F2F",
   [WARNING]: "#ffc107",

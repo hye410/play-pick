@@ -5,14 +5,15 @@ import type { FilteredDetailData } from "@/types/contents-types";
 import Image from "next/image";
 import ShareButton from "@/features/detail/share-button";
 import LikeButton from "@/features/detail/like-button";
+import type { User } from "@supabase/supabase-js";
 type DetailContentProps = {
   content: FilteredDetailData;
-  isInitialLiked: boolean;
+  userId?: User["id"];
 };
 
 const MOVIE = "movie";
 
-const DetailContent = ({ content, isInitialLiked }: DetailContentProps) => {
+const DetailContent = ({ content, userId }: DetailContentProps) => {
   return (
     <dl className="flex flex-col items-center gap-3 pb-8">
       {/* ----- 포스터 이미지 ----- */}
@@ -25,7 +26,7 @@ const DetailContent = ({ content, isInitialLiked }: DetailContentProps) => {
       <div className="flex w-[250px] justify-end gap-3 p-1">
         <dt className="hidden">찜하기</dt>
         <dd>
-          <LikeButton contentId={content.id} isInitialLiked={isInitialLiked} contentType={content.type} />
+          <LikeButton contentId={content.id} contentType={content.type} userId={userId} />
         </dd>
         <dt className="hidden">공유하기</dt>
         <dd>

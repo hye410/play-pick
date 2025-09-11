@@ -1,20 +1,24 @@
 "use client";
-import { useUserLike } from "@/hook/use-user-like";
+import { useUserLikesStatus } from "@/features/detail/hook/use-user-likes-status";
+import { useUserLikesQuery } from "@/hook/use-user-likes-query";
 import type { FilteredDetailData } from "@/types/contents-types";
+import type { User } from "@supabase/supabase-js";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 
 type LikeButton = {
   contentId: FilteredDetailData["id"];
-  isInitialLiked: boolean;
   contentType: FilteredDetailData["type"];
+  userId?: User["id"];
 };
 
-const LikeButton = ({ contentId, isInitialLiked, contentType }: LikeButton) => {
-  const { handleToggle, isLiked } = useUserLike(contentType, contentId, isInitialLiked);
+const LikeButton = ({ contentId, contentType, userId }: LikeButton) => {
+  const { userLikes } = useUserLikesQuery(userId!);
+  const isLikedContent = userLikes?.some((like) => like.id === contentId) ?? false;
+  const { handleToggle, isCurrentLiked } = useUserLikesStatus(contentType, contentId, isLikedContent);
 
   return (
     <button onClick={handleToggle}>
-      {isLiked ? <GoHeartFill aria-label="찜 버튼" /> : <GoHeart aria-label="찜 해제 버튼" />}
+      {isCurrentLiked ? <GoHeartFill aria-label="찜 버튼" /> : <GoHeart aria-label="찜 해제 버튼" />}
     </button>
   );
 };

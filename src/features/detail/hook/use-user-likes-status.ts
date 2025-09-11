@@ -8,13 +8,13 @@ import { useAuthStatus } from "@/hook/use-auth-status";
 
 const { ERROR, SUCCESS, WARNING } = ALERT_TYPE;
 
-export const useUserLike = (
+export const useUserLikesStatus = (
   contentType: FilteredDetailData["type"],
   contentId: FilteredDetailData["id"],
-  isLiked: boolean,
+  isLikedContent: boolean,
 ) => {
   const { user } = useAuthStatus();
-  const [isOptimisticLiked, addOptimisticToggle] = useOptimistic(isLiked);
+  const [isOptimisticLiked, addOptimisticToggle] = useOptimistic(isLikedContent);
 
   const handleToggle = () => {
     if (!user) {
@@ -26,7 +26,7 @@ export const useUserLike = (
     startTransition(async () => {
       addOptimisticToggle(!isOptimisticLiked);
       try {
-        const res = await toggleLikeStatus(contentType, contentId, isLiked);
+        const res = await toggleLikeStatus(contentType, contentId, isLikedContent);
         alert({
           type: SUCCESS,
           message: res.message,
@@ -42,6 +42,6 @@ export const useUserLike = (
   };
   return {
     handleToggle,
-    isLiked: isOptimisticLiked,
+    isCurrentLiked: isOptimisticLiked,
   };
 };

@@ -7,7 +7,7 @@ import { getUserLikes } from "@/features/detail/api/services";
 import { postSignIn } from "@/features/sign-in/api/services";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
 import { SignIn } from "@/types/form-types";
-import type { USER_LIKES } from "@/types/user-likes-type";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { alert } from "@/utils/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SweetAlertResult } from "sweetalert2";
 const { ERROR } = ALERT_TYPE;
-const { LIKES } = QUERY_KEYS;
+const { USER_LIKES } = QUERY_KEYS;
 const SignInForm = () => {
   const route = useRouter();
   const queryClient = useQueryClient();
@@ -29,9 +29,9 @@ const SignInForm = () => {
     try {
       const userId = await postSignIn({ email: values.email, password: values.password });
       if (userId) {
-        const userLikes: Array<USER_LIKES> = await getUserLikes(userId);
+        const userLikes: Array<USER_LIKES_TYPE> = await getUserLikes(userId);
         const likesIds = userLikes.map(({ id }) => id);
-        queryClient.setQueryData([LIKES, userId], likesIds);
+        queryClient.setQueryData([USER_LIKES, userId], likesIds);
       }
       route.back();
     } catch (error) {

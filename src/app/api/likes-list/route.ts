@@ -2,7 +2,7 @@ import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
 import { DEFAULT_ERROR_MESSAGE, MY_CONTENTS_MESSAGE } from "@/constants/message-constants";
 import { TMDB_BASE_URL } from "@/constants/path-constants";
 import type { CombinedData } from "@/types/contents-types";
-import type { USER_LIKES } from "@/types/user-likes-type";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { CustomError } from "@/utils/error";
 import { NextRequest, NextResponse } from "next/server";
 const apiKey = process.env.TMDB_API_KEY;
@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest) => {
     const likes = request.nextUrl.searchParams.get("likes");
     if (!likes) throw new CustomError(PAYLOAD_FAIL);
     const decodedLikes = decodeURIComponent(likes);
-    const userLikes: Array<USER_LIKES> = JSON.parse(decodedLikes);
+    const userLikes: Array<USER_LIKES_TYPE> = JSON.parse(decodedLikes);
     const fetchUserLikesData = userLikes.map(async (userLike) => {
       const { id, type } = userLike;
       const url = `${TMDB_BASE_URL}/${type}/${id}?api_key=${apiKey}&language=ko-KR`;

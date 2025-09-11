@@ -1,6 +1,6 @@
 import { API_HEADER, API_METHOD } from "@/constants/api-constants";
 import { BASE_URL } from "@/constants/path-constants";
-import type { USER_LIKES } from "@/types/user-likes-type";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 
 export const postChangePassword = async (newPassword: string) => {
   try {
@@ -32,7 +32,7 @@ export const deleteUser = async () => {
   }
 };
 
-export const getLikesData = async (likes: Array<USER_LIKES>) => {
+export const getLikesData = async (likes: Array<USER_LIKES_TYPE>) => {
   try {
     const likesString = JSON.stringify(likes);
     const encodedLikes = encodeURIComponent(likesString);

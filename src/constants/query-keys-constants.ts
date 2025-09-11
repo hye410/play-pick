@@ -1,4 +1,4 @@
 export const QUERY_KEYS = Object.freeze({
   PREVIEW: "preview",
-  LIKES: "likes",
+  USER_LIKES: "userLikes",
 } as const);

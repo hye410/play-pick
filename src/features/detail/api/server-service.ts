@@ -1,8 +1,7 @@
 "use server";
 import { TOGGLE_LIKES_MESSAGE } from "@/constants/message-constants";
-import { FilteredDetailData } from "@/types/contents-types";
+import type { FilteredDetailData } from "@/types/contents-types";
 import { createServerSupabase } from "@/utils/supabase-server";
-import { revalidatePath } from "next/cache";
 const { LIKES_ADD_FAIL, LIKES_REMOVE_FAIL, LIKES_ADD_SUCCESS, LIKES_REMOVE_SUCCESS } = TOGGLE_LIKES_MESSAGE;
 export const toggleLikeStatus = async (
   contentType: FilteredDetailData["type"],
@@ -28,7 +27,6 @@ export const toggleLikeStatus = async (
       if (error) throw new Error(LIKES_REMOVE_FAIL);
       successMessage = LIKES_ADD_SUCCESS;
     }
-    revalidatePath(`/detail/${contentId}`);
     return { message: successMessage };
   } catch (error) {
     throw error;

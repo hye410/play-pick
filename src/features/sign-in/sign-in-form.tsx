@@ -30,8 +30,7 @@ const SignInForm = () => {
       const userId = await postSignIn({ email: values.email, password: values.password });
       if (userId) {
         const userLikes: Array<USER_LIKES_TYPE> = await getUserLikes(userId);
-        const likesIds = userLikes.map(({ id }) => id);
-        queryClient.setQueryData([USER_LIKES, userId], likesIds);
+        queryClient.setQueryData([USER_LIKES, userId], userLikes);
       }
       route.back();
     } catch (error) {

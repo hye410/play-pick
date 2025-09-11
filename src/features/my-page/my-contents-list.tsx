@@ -23,6 +23,7 @@ const MyContentsList = ({ userId }: MyContentsListProps) => {
   if (isUserLikesLoading || isLikedContentsLoading) {
     return "로딩 중 ..";
   }
+
   if (!userLikes || userLikes.length === 0) return <EmptyContents />;
 
   if (!likedContents || likedContents.length === 0) return <div>fail to fetching data</div>;

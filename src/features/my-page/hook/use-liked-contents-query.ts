@@ -15,7 +15,7 @@ export const useLikedContentsQuery = (userId: User["id"], userLikes: Array<USER_
   } = useQuery<Array<CombinedData>, Error>({
     queryKey: [LIKED_CONTENTS, userId, userLikes],
     queryFn: () => getLikedContents(userLikes),
-    enabled: !!userLikes && userLikes?.length > 0,
+    enabled: !!userLikes && userLikes.length > 0,
     staleTime: A_DAY,
   });
 

@@ -1,6 +1,5 @@
 "use client";
 import { useUserLikesStatus } from "@/features/detail/hook/use-user-likes-status";
-import { useUserLikesQuery } from "@/hook/use-user-likes-query";
 import type { FilteredDetailData } from "@/types/contents-types";
 import type { User } from "@supabase/supabase-js";
 import { GoHeart, GoHeartFill } from "react-icons/go";
@@ -8,13 +7,11 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 type LikeButton = {
   contentId: FilteredDetailData["id"];
   contentType: FilteredDetailData["type"];
-  userId?: User["id"];
+  user: User | null;
 };
 
-const LikeButton = ({ contentId, contentType, userId }: LikeButton) => {
-  const { userLikes } = useUserLikesQuery(userId!);
-  const isLikedContent = userLikes?.some((like) => like.id === contentId) ?? false;
-  const { handleToggle, isCurrentLiked } = useUserLikesStatus(contentType, contentId, isLikedContent);
+const LikeButton = ({ contentId, contentType, user }: LikeButton) => {
+  const { handleToggle, isCurrentLiked } = useUserLikesStatus(contentId, contentType, user);
 
   return (
     <button onClick={handleToggle}>

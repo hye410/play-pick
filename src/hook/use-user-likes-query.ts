@@ -15,9 +15,10 @@ export const useUserLikesQuery = (userId: User["id"]) => {
   } = useQuery<Array<USER_LIKES_TYPE>, Error>({
     queryKey: [USER_LIKES, userId],
     queryFn: () => getUserLikes(userId),
-    enabled: !userId,
+    enabled: !!userId,
     staleTime: A_DAY,
   });
+
   return {
     userLikes,
     isUserLikesLoading,

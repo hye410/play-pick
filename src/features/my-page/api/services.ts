@@ -32,11 +32,11 @@ export const deleteUser = async () => {
   }
 };
 
-export const getLikesData = async (likes: Array<USER_LIKES_TYPE>) => {
+export const getLikedContents = async (likes: Array<USER_LIKES_TYPE>) => {
   try {
     const likesString = JSON.stringify(likes);
     const encodedLikes = encodeURIComponent(likesString);
-    const res = await fetch(`${BASE_URL}/api/likes-list?likes=${encodedLikes}`);
+    const res = await fetch(`${BASE_URL}/api/liked-contents?likes=${encodedLikes}`);
     const result = await res.json();
     if (!res.ok) throw result.message;
     const { data } = result;

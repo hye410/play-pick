@@ -7,7 +7,7 @@ import { CustomError } from "@/utils/error";
 import { NextRequest, NextResponse } from "next/server";
 const apiKey = process.env.TMDB_API_KEY;
 const { SERVER_ERROR } = DEFAULT_ERROR_MESSAGE;
-const { FETCH_FAIL, PAYLOAD_FAIL } = MY_CONTENTS_MESSAGE;
+const { PAYLOAD_FAIL } = MY_CONTENTS_MESSAGE;
 export const GET = async (request: NextRequest) => {
   try {
     const likes = request.nextUrl.searchParams.get("likes");

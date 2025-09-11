@@ -17,18 +17,24 @@ export const GET = async (request: NextRequest) => {
     const fetchUserLikesData = userLikes.map(async (userLike) => {
       const { id, type } = userLike;
       const url = `${TMDB_BASE_URL}/${type}/${id}?api_key=${apiKey}&language=ko-KR`;
-      const res = await fetch(url, {
-        method: API_METHOD.GET,
-        headers: TMDB_API_HEADER,
-      });
-      if (!res.ok) {
-        console.error(`${id} fetch 과정에서 오류 발생`);
-        throw new CustomError(FETCH_FAIL);
+      try {
+        const res = await fetch(url, {
+          method: API_METHOD.GET,
+          headers: TMDB_API_HEADER,
+        });
+        if (!res.ok) {
+          console.error(`ID${id} 콘텐츠 가져오기 실패`);
+          return null;
+        }
+        return res.json();
+      } catch (error) {
+        console.error(`ID ${id} 콘텐츠 가져오기 오류 발생`, error);
+        return null;
       }
-      return res.json();
     });
     const allContents = await Promise.all(fetchUserLikesData);
-    const parsedData: Array<CombinedData> = allContents.map((content) => ({
+    const validContents = allContents.filter((content) => content !== null);
+    const parsedData: Array<CombinedData> = validContents.map((content) => ({
       id: content.id,
       type: content.release_date ? "movie" : "tv",
       imgUrl: content.poster_path,

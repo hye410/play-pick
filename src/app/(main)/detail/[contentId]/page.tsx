@@ -7,10 +7,10 @@ import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query
 
 type DetailContentProps = {
   params: Promise<{
-    contentId: Pick<CombinedData, "id">;
+    contentId: string;
   }>;
   searchParams: Promise<{
-    type: Pick<CombinedData, "type">;
+    type: CombinedData["type"];
   }>;
 };
 const { USER_LIKES } = QUERY_KEYS;
@@ -19,7 +19,7 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
   const { contentId } = await params;
   const { type } = await searchParams;
   const queryClient = new QueryClient();
-  const content: FilteredDetailData = await getDetailContent(contentId, type);
+  const content: FilteredDetailData = await getDetailContent(Number(contentId), type);
   const supabase = await createServerSupabase();
   const {
     data: { user },

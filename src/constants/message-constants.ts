@@ -66,4 +66,6 @@ export const UPDATE_PASSWORD_MESSAGE = Object.freeze({
 export const MY_CONTENTS_MESSAGE = Object.freeze({
   PAYLOAD_FAIL: "찜한 콘텐츠가 없습니다.",
   FETCH_FAIL: "데이터를 내려받는 과정에서 오류가 발생했습니다.",
+  UNKNOWN_CONTENT_TYPE: "콘텐츠 타입을 알 수 없어 데이터를 받아올 수 없습니다.",
+  NO_CONTENT_DATA: "해당 콘텐츠에 대한 데이터를 찾을 수 없습니다.",
 } as const);

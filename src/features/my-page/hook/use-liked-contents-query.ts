@@ -7,15 +7,15 @@ import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { A_DAY } from "@/constants/fetch-time-constants";
 
 const { LIKED_CONTENTS } = QUERY_KEYS;
-export const useLikedContentsQuery = (userId: User["id"], initialUserLikes: Array<USER_LIKES_TYPE>) => {
+export const useLikedContentsQuery = (userId: User["id"], userLikes: Array<USER_LIKES_TYPE>) => {
   const {
     data: likedContents,
     isLoading: isLikedContentsLoading,
     error: likedContentsError,
   } = useQuery<Array<CombinedData>, Error>({
-    queryKey: [LIKED_CONTENTS, userId, initialUserLikes],
-    queryFn: () => getLikedContents(initialUserLikes!),
-    enabled: !!initialUserLikes && initialUserLikes.length > 0,
+    queryKey: [LIKED_CONTENTS, userId, userLikes],
+    queryFn: () => getLikedContents(userLikes!),
+    enabled: !!userLikes && userLikes.length > 0,
     staleTime: A_DAY,
   });
 

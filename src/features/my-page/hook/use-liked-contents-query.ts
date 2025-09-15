@@ -13,8 +13,8 @@ export const useLikedContentsQuery = (userId: User["id"], initialUserLikes: Arra
     isLoading: isLikedContentsLoading,
     error: likedContentsError,
   } = useQuery<Array<CombinedData>, Error>({
-    queryKey: [LIKED_CONTENTS, userId],
-    queryFn: () => getLikedContents(initialUserLikes),
+    queryKey: [LIKED_CONTENTS, userId, initialUserLikes],
+    queryFn: () => getLikedContents(initialUserLikes!),
     enabled: !!initialUserLikes && initialUserLikes.length > 0,
     staleTime: A_DAY,
   });

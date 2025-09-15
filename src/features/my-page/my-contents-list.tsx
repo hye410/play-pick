@@ -20,6 +20,7 @@ const EmptyContents = () => {
 const MyContentsList = ({ userId }: MyContentsListProps) => {
   const { userLikes, isUserLikesLoading } = useUserLikesQuery(userId);
   const { likedContents, isLikedContentsLoading } = useLikedContentsQuery(userId, userLikes!);
+
   if (isUserLikesLoading || isLikedContentsLoading) {
     return "로딩 중 ..";
   }

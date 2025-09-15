@@ -1,12 +1,13 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getSingleContentData } from "@/features/my-page/api/services";
-import { CombinedData } from "@/types/contents-types";
+import type { CombinedData } from "@/types/contents-types";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { User } from "@supabase/supabase-js";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { alert } from "@/utils/alert";
 import { deleteUserLikesStatus } from "@/features/detail/api/services";
+import { MY_CONTENTS_MESSAGE } from "@/constants/message-constants";
 
 type LikedContent = {
   id: CombinedData["id"];
@@ -14,6 +15,7 @@ type LikedContent = {
 };
 const { LIKED_CONTENTS } = QUERY_KEYS;
 const { ERROR } = ALERT_TYPE;
+const { SINGLE_CONTENT_FETCH_FAIL } = MY_CONTENTS_MESSAGE;
 
 export const useLikedContentMutation = (
   userId: User["id"],
@@ -21,6 +23,7 @@ export const useLikedContentMutation = (
   contentId: CombinedData["id"],
 ) => {
   const queryClient = useQueryClient();
+
   const { mutate: getLikedContentMutate, isError: isGetLikedContentError } = useMutation<
     CombinedData,
     Error,
@@ -32,20 +35,20 @@ export const useLikedContentMutation = (
         oldData ? [...oldData, data] : [data],
       );
     },
-    onError: async (error) => {
+    onError: async () => {
       addOptimisticToggle(false);
       try {
         await deleteUserLikesStatus(userId, contentId);
         queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_LIKES, userId] });
         alert({
           type: ERROR,
-          message: "콘텐츠 정보를 가져오는 데 실패하여 찜 상태가 취소되었습니다.",
+          message: SINGLE_CONTENT_FETCH_FAIL,
         });
       } catch (dbError) {
         console.error("DB 롤백 실패:", dbError);
         alert({
           type: ERROR,
-          message: "찜 상태 동기화에 실패했습니다. 페이지를 새로고침해 주세요.",
+          message: dbError as string,
         });
       }
     },

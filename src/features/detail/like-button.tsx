@@ -1,6 +1,7 @@
 "use client";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { useUserLikesStatus } from "@/features/detail/hook/use-user-likes-status";
+import { useAuthStatus } from "@/hook/use-auth-status";
 import type { FilteredDetailData } from "@/types/contents-types";
 import { alert } from "@/utils/alert";
 import type { User } from "@supabase/supabase-js";
@@ -13,23 +14,21 @@ type LikeButton = {
 };
 const { WARNING } = ALERT_TYPE;
 const LikeButton = ({ contentId, contentType, user }: LikeButton) => {
-  const requireSignIn = () => {
-    return alert({
-      type: WARNING,
-      message: "로그인이 필요합니다.",
-    });
+  const userLikesStatus = useUserLikesStatus(contentId, contentType, user!);
+  const { user: currentUser } = useAuthStatus();
+
+  const handleChange = () => {
+    if (currentUser && userLikesStatus) userLikesStatus.handleToggle();
+    else
+      return alert({
+        type: WARNING,
+        message: "로그인이 필요합니다.",
+      });
   };
-  if (!user)
-    return (
-      <button onClick={requireSignIn}>
-        <GoHeart aria-label="찜 버튼" />
-      </button>
-    );
 
-  const { handleToggle, isCurrentLiked } = useUserLikesStatus(contentId, contentType, user);
-
+  const isCurrentLiked = userLikesStatus ? userLikesStatus.isCurrentLiked : false;
   return (
-    <button onClick={handleToggle}>
+    <button onClick={handleChange}>
       {isCurrentLiked ? <GoHeartFill aria-label="찜 해제 버튼" /> : <GoHeart aria-label="찜 버튼" />}
     </button>
   );

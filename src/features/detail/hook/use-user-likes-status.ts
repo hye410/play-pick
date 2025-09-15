@@ -9,41 +9,46 @@ import type { User } from "@supabase/supabase-js";
 import { useQueryClient } from "@tanstack/react-query";
 import { startTransition, useOptimistic } from "react";
 import { deleteUserLikesStatus, postUserLikesStatus } from "@/features/detail/api/services";
+import { TOGGLE_LIKES_MESSAGE } from "@/constants/message-constants";
 
 const { ERROR, SUCCESS } = ALERT_TYPE;
 const { USER_LIKES, LIKED_CONTENTS } = QUERY_KEYS;
+const { LIKES_ADD_SUCCESS } = TOGGLE_LIKES_MESSAGE;
+
 export const useUserLikesStatus = (
   contentId: FilteredDetailData["id"],
   contentType: FilteredDetailData["type"],
-  user: User,
+  user: User | null,
 ) => {
+  const userId = user?.id;
   const queryClient = useQueryClient();
-  const { userLikes } = useUserLikesQuery(user.id);
+  const { userLikes } = useUserLikesQuery(userId!);
   const likedIds = userLikes?.map(({ id }) => id);
   const isLikedContent = likedIds?.some((id) => id === contentId) ?? false;
   const [isOptimisticLiked, addOptimisticToggle] = useOptimistic(isLikedContent);
-  const { getLikedContentMutate } = useLikedContentMutation(user.id, addOptimisticToggle, contentId);
+  const { getLikedContentMutate } = useLikedContentMutation(userId!, addOptimisticToggle, contentId);
+  if (!user) return;
 
   const handleToggle = () => {
     startTransition(async () => {
       addOptimisticToggle(!isOptimisticLiked);
       try {
-        let resultMessage: string = "찜 목록에 추가되었습니다.";
+        let resultMessage: string = LIKES_ADD_SUCCESS;
         if (isOptimisticLiked) {
-          resultMessage = await deleteUserLikesStatus(user.id, contentId);
+          resultMessage = await deleteUserLikesStatus(userId, contentId);
           queryClient.setQueryData<Array<CombinedData>>(
-            [LIKED_CONTENTS, user?.id],
+            [LIKED_CONTENTS, userId],
             (oldData) => oldData?.filter((content) => content.id !== contentId) || [],
           );
         } else {
           await postUserLikesStatus({
             contentType,
             contentId,
-            userId: user.id,
+            userId: userId,
           });
           getLikedContentMutate({ id: contentId, type: contentType });
         }
-        queryClient.invalidateQueries({ queryKey: [USER_LIKES, user.id] });
+        queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
         alert({
           type: SUCCESS,
           message: resultMessage,

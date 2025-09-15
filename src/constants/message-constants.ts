@@ -68,4 +68,5 @@ export const MY_CONTENTS_MESSAGE = Object.freeze({
   FETCH_FAIL: "데이터를 내려받는 과정에서 오류가 발생했습니다.",
   UNKNOWN_CONTENT_TYPE: "콘텐츠 타입을 알 수 없어 데이터를 받아올 수 없습니다.",
   NO_CONTENT_DATA: "해당 콘텐츠에 대한 데이터를 찾을 수 없습니다.",
+  SINGLE_CONTENT_FETCH_FAIL: "콘텐츠 정보를 가져오는 데 실패하여 찜 상태가 취소되었습니다.",
 } as const);

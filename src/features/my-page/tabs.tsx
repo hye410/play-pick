@@ -3,7 +3,7 @@
 import { MY_PAGE } from "@/constants/path-constants";
 import { MY_PAGE_TAB_QUERY } from "@/constants/url-query-constants";
 import clsx from "clsx";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 const { INFO, CONTENTS } = MY_PAGE_TAB_QUERY;
 
 type TabsProps = {

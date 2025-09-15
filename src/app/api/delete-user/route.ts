@@ -13,7 +13,7 @@ export const DELETE = async () => {
       error,
     } = await supabase.auth.getUser();
     if (!user || !user.id || error) throw new CustomError(CLIENT_ERROR);
-    const { data, error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+    const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
     if (deleteError) throw new CustomError(DELETE_FAIL);
     return NextResponse.json({ message: DELETE_SUCCESS }, { status: 200 });
   } catch (error) {

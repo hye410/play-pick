@@ -1,4 +1,4 @@
-import ContentsBox from "@/components/Contents";
+import ContentsBox from "@/components/contents-box";
 import { getTodayPick } from "@/features/home/api/services";
 import SurveyButton from "@/features/home/survey-button";
 

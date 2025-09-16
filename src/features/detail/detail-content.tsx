@@ -1,4 +1,4 @@
-import Star from "@/components/Star";
+import Star from "@/components/star";
 import { TMDB_IMAGE_URL } from "@/constants/path-constants";
 import PreviewVideoButton from "@/features/detail/preview-video-button";
 import type { FilteredDetailData } from "@/types/contents-types";

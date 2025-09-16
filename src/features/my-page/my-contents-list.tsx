@@ -1,5 +1,5 @@
 "use client";
-import Content from "@/components/Content";
+import Content from "@/components/content";
 import { useUserLikesQuery } from "@/hook/use-user-likes-query";
 import type { User } from "@supabase/supabase-js";
 import { LuHeartOff } from "react-icons/lu";

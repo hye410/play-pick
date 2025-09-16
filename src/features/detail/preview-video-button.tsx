@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/Button";
+import Button from "@/components/button";
 import { FilteredDetailData } from "@/types/contents-types";
 import { FaYoutube } from "react-icons/fa";
 import { usePreviewHook } from "@/features/detail/hook/use-preview-hook";

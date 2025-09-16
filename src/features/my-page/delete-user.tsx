@@ -3,7 +3,7 @@
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { DELETE_USER_MESSAGE } from "@/constants/message-constants";
 import { deleteUser } from "@/features/my-page/api/services";
-import { getSignOut } from "@/features/layout/api/services";
+import { getSignOut } from "@/features/layout/api/server-services";
 import { confirmDialog } from "@/utils/confirm-dialog";
 
 const { ERROR, SUCCESS } = ALERT_TYPE;

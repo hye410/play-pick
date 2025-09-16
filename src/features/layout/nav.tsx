@@ -1,15 +1,15 @@
 "use client";
-import { ALERT_TYPE } from "@/constants/alert-constants";
-import { privateMenus, publicMenus } from "@/constants/menu-constants";
-import { getSignOut } from "@/features/layout/api/services";
-import { useAuthStatus } from "@/hook/use-auth-status";
-import type { Menu } from "@/types/menu-types";
-import { alert } from "@/utils/alert";
-import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { getSignOut } from "@/features/layout/api/server-services";
+import { useAuthStatus } from "@/hook/use-auth-status";
+import { alert } from "@/utils/alert";
+import { ALERT_TYPE } from "@/constants/alert-constants";
+import { privateMenus, publicMenus } from "@/constants/menu-constants";
+import type { Menu } from "@/types/menu-types";
 
 const { ERROR } = ALERT_TYPE;
 type NavProps = {
@@ -27,8 +27,6 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
       await getSignOut().then(() => {
         queryClient.clear();
         window.location.replace("/");
-        // router.refresh();
-        // router.replace("/");
       });
     } catch (error) {
       alert({
@@ -48,7 +46,7 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
       <h2 className="hidden">메뉴</h2>
       <ul className="flex">
         {menus.map((menu, idx) => (
-          <li key={`menu_${menu.name}`} className={clsx(idx !== menus.length - 1 ? "mr-2" : "")}>
+          <li key={`menu_${menu.name}`} className={clsx(idx !== menus.length - 1 && "mr-2")}>
             {menu.type === "link" ? (
               <Link href={menu.path as string}>{menu.name}</Link>
             ) : (

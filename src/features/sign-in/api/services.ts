@@ -3,22 +3,6 @@ import { SignIn } from "@/types/form-types";
 
 const { POST } = API_METHOD;
 
-export const postSignIn = async (payload: SignIn): Promise<string | void> => {
-  try {
-    const res = await fetch("/api/sign-in", {
-      method: POST,
-      headers: API_HEADER,
-      body: JSON.stringify(payload),
-    });
-
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.message);
-    return result.userId;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const postFindPassword = async (payload: Pick<SignIn, "email">): Promise<string> => {
   try {
     const res = await fetch("/api/find-password", {

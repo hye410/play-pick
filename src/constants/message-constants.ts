@@ -18,6 +18,7 @@ export const SIGN_UP_MESSAGE = Object.freeze({
 export const SIGN_IN_MESSAGE = Object.freeze({
   EMAIL_NOT_CONFIRMED: "이메일 인증 후 로그인해 주세요.",
   INVALID_ERROR: "아이디 혹은 비밀번호를 다시 확인해 주세요.",
+  SIGN_IN_FAIL: "서버 오류가 발생하여 로그인에 실패하였습니다.",
 } as const);
 
 export const FIND_PASSWORD_MESSAGE = Object.freeze({
@@ -54,7 +55,6 @@ export const DELETE_USER_MESSAGE = Object.freeze({
 
 export const SIGN_OUT_MESSAGE = Object.freeze({
   SIGN_OUT_FAIL: "로그아웃 중 에러가 발생했습니다.",
-  SIGN_OUT_SUCCESS: "로그아웃되었습니다.",
 } as const);
 
 export const UPDATE_PASSWORD_MESSAGE = Object.freeze({

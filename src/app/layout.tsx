@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={clsx(myFont.className, "h-[100dvh]] p-5")}>
+      <body className={clsx(myFont.className, "h-[100dvh] p-5")}>
         <Providers>{children}</Providers>
         <Script
           src={`https://t1.kakaocdn.net/kakao_js_sdk/${KAKAO_VERSION}/kakao.min.js`}

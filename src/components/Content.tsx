@@ -1,8 +1,8 @@
 import { DETAIL, TMDB_IMAGE_URL } from "@/constants/path-constants";
 import { CombinedData } from "@/types/contents-types";
+import { getPlaceholderDataURL } from "@/utils/get-placeholder-data-url";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 type ContentProps = {
   content: CombinedData;
@@ -18,6 +18,8 @@ const Content = ({ content }: ContentProps) => {
             fill
             sizes="25%"
             alt={content.title}
+            placeholder="blur"
+            blurDataURL={getPlaceholderDataURL()}
             className="rounded-[10px]"
           />
         </Link>

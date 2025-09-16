@@ -16,6 +16,6 @@ export const RESULT = "/result";
 export const FIND_PASSWORD = "/find-password";
 export const UPDATE_PASSWORD = "/update-password";
 
-//**Home > Today's Pick get api */
+//**Home > Today's Pick 데이터를 TMDB에 GET 요청 */
 export const GET_TODAY_PICK = (contentsType: "movie" | "tv") =>
-  `${TMDB_BASE_URL}/trending/${contentsType}/day?language=ko-KR`;
+  `${TMDB_BASE_URL}/trending/${contentsType}/day?language=ko-KR&page=1`;

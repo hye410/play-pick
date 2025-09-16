@@ -26,7 +26,7 @@ const FindUserInfoField = () => {
   );
 
   return (
-    <ul className="mt-5 flex gap-4">
+    <ul className="mt-10 flex gap-4">
       {findField.map((field) => (
         <li key={`find_${field.name}`}>
           <button onClick={field.onClick}>{field.name}</button>

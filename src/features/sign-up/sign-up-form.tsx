@@ -31,7 +31,7 @@ const SignUpForm = () => {
   const onSubmit: SubmitHandler<SignUp> = (data) => handleSignUp(data);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-1/2 text-center">
+    <form onSubmit={handleSubmit(onSubmit)} className="text-center">
       <FormInput<SignUp> name={email} label="이메일" type="text" control={control} autoFocus={true} />
       <FormInput<SignUp>
         name={password}

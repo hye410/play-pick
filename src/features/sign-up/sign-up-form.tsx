@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/Button";
+import Button from "@/components/button";
 import FormInput from "@/components/form-input";
 import { FORM_CONSTANTS } from "@/constants/form-constants";
 import type { SignUp } from "@/types/form-types";

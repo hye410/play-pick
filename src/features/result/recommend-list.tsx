@@ -1,4 +1,4 @@
-import Content from "@/components/Content";
+import Content from "@/components/content";
 import type { CombinedData } from "@/types/contents-types";
 type RecommendListProps = {
   list: CombinedData[];

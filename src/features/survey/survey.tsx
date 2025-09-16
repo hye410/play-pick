@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/Button";
+import Button from "@/components/button";
 import Options from "@/features/survey/options";
 import type { Question } from "@/types/survey-types";
 import clsx from "clsx";

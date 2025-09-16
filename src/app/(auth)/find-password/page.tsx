@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/components/Button";
+import Button from "@/components/button";
 import FormInput from "@/components/form-input";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { FORM_CONSTANTS } from "@/constants/form-constants";

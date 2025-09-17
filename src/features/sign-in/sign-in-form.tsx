@@ -12,7 +12,7 @@ import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { alert } from "@/utils/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 const { ERROR } = ALERT_TYPE;
@@ -23,11 +23,11 @@ const initialState: SignInFormState = {
   userId: null,
 };
 const SignInForm = () => {
-  const route = useRouter();
+  const router = useRouter();
+  const params = useSearchParams();
   const queryClient = useQueryClient();
   const [isFormPending, startTransition] = useTransition();
   const [state, requestSignIn] = useActionState(postSignIn, initialState);
-
   const { control, handleSubmit } = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
@@ -39,7 +39,8 @@ const SignInForm = () => {
       if (state.success && state.userId) {
         const userLikes: Array<USER_LIKES_TYPE> = await getUserLikes(state.userId);
         queryClient.setQueryData([USER_LIKES, state.userId], userLikes);
-        route.back();
+        const redirectPage = params.get("redirect") ?? "/";
+        router.replace(redirectPage);
       } else if (state.message) {
         alert({
           type: ERROR,
@@ -48,7 +49,7 @@ const SignInForm = () => {
       }
     };
     fetchUserLikes();
-  }, [state, queryClient, route]);
+  }, [state, queryClient, router, params]);
 
   const handleSignInSubmit = async (userInfo: SignIn) => {
     const formData = new FormData();

@@ -1,6 +1,7 @@
 import FindUserInfoField from "@/features/sign-in/find-user-info-field";
 import SignInForm from "@/features/sign-in/sign-in-form";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const Signin = () => {
   return (
@@ -9,7 +10,9 @@ const Signin = () => {
       <Link href="/" className="mb-14 text-5xl font-black">
         <span className="text-primary">P</span>LAY <span className="text-primary">P</span>ICK
       </Link>
-      <SignInForm />
+      <Suspense fallback={<div className="h-[240px]" />}>
+        <SignInForm />
+      </Suspense>
       <FindUserInfoField />
     </section>
   );

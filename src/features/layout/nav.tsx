@@ -1,15 +1,15 @@
 "use client";
-import clsx from "clsx";
-import Link from "next/link";
-import { useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import { getSignOut } from "@/features/layout/api/server-services";
-import { useAuthStatus } from "@/hook/use-auth-status";
-import { alert } from "@/utils/alert";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { privateMenus, publicMenus } from "@/constants/menu-constants";
+import { getSignOut } from "@/features/layout/api/server-services";
+import { useAuthStatus } from "@/hook/use-auth-status";
 import type { Menu } from "@/types/menu-types";
+import { alert } from "@/utils/alert";
+import { useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useCallback, useMemo } from "react";
 
 const { ERROR } = ALERT_TYPE;
 type NavProps = {
@@ -19,8 +19,6 @@ type NavProps = {
 const Nav = ({ initialIsLoggedIn }: NavProps) => {
   const queryClient = useQueryClient();
   const { isLoggedIn } = useAuthStatus(initialIsLoggedIn);
-
-  const router = useRouter();
 
   const handleSignOut = useCallback(async () => {
     try {
@@ -34,11 +32,14 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
         message: error as string,
       });
     }
-  }, [queryClient, router]);
+  }, [queryClient]);
 
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentPath = `${pathname}${searchParams.toString() ? "?" + searchParams.toString() : ""}`;
   const menus: Menu[] = useMemo(
-    () => (isLoggedIn ? privateMenus(handleSignOut) : publicMenus),
-    [isLoggedIn, handleSignOut],
+    () => (isLoggedIn ? privateMenus(handleSignOut) : publicMenus(currentPath)),
+    [isLoggedIn, handleSignOut, currentPath],
   );
 
   return (

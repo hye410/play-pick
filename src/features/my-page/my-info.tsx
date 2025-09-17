@@ -1,15 +1,17 @@
 "use client";
-
-import Button from "@/components/button";
-import FormInput from "@/components/form-input";
-import { ALERT_TYPE } from "@/constants/alert-constants";
-import { postChangePassword } from "@/features/my-page/api/services";
-import { changePasswordSchema } from "@/features/sign-up/utils/form-schema";
-import type { SignUp } from "@/types/form-types";
-import { alert } from "@/utils/alert";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import DeleteUser from "./delete-user";
+import type { SignUp } from "@/types/form-types";
+import Button from "@/components/button";
+import FormInput from "@/components/form-input";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { ALERT_TYPE } from "@/constants/alert-constants";
+import { PASSWORD_CONDITION } from "@/constants/form-constants";
+import DeleteUserField from "@/features/my-page/delete-user-field";
+import { changePasswordSchema } from "@/features/sign-up/utils/form-schema";
+import { updatePassword } from "@/features/my-page/api/server-actions";
+import { alert } from "@/utils/alert";
 
 type MyInfoProps = {
   userEmail: string;
@@ -18,6 +20,7 @@ type MyInfoProps = {
 const { ERROR, SUCCESS } = ALERT_TYPE;
 
 const MyInfo = ({ userEmail }: MyInfoProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const { control, handleSubmit, reset } = useForm({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
@@ -29,8 +32,8 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
 
   const handleChangePassword = async (values: Pick<SignUp, "password" | "confirmPassword">) => {
     try {
-      const { password } = values;
-      const successMessage = await postChangePassword(password);
+      setIsLoading(true);
+      const successMessage = await updatePassword(values);
       alert({
         type: SUCCESS,
         message: successMessage as string,
@@ -41,6 +44,8 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
         type: ERROR,
         message: error as string,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,13 +58,16 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
           name="password"
           control={control}
           autoFocus={true}
-          placeholder="8자 이상이며 대문자·소문자·숫자·특수문자를 포함"
+          placeholder="비밀번호를 입력해 주세요."
           type="password"
         />
         <FormInput name="confirmPassword" control={control} type="password" placeholder="비밀번호를 확인해 주세요." />
-        <Button type="submit">비밀번호 변경</Button>
+        <p className="mb-8 whitespace-pre-line text-sm">{PASSWORD_CONDITION}</p>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "비밀번호 변경"}
+        </Button>
       </form>
-      <DeleteUser />
+      <DeleteUserField />
     </section>
   );
 };

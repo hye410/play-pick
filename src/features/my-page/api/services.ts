@@ -3,21 +3,6 @@ import { BASE_URL } from "@/constants/path-constants";
 import type { CombinedData } from "@/types/contents-types";
 import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 
-export const postChangePassword = async (newPassword: string) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/update-password`, {
-      method: API_METHOD.POST,
-      headers: API_HEADER,
-      body: JSON.stringify({ password: newPassword }),
-    });
-    const result = await res.json();
-    if (!res.ok) throw result.message;
-    return result.message;
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const deleteUser = async () => {
   try {
     const res = await fetch(`${BASE_URL}/api/delete-user`, {

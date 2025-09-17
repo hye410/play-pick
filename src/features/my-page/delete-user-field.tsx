@@ -8,7 +8,7 @@ import { confirmDialog } from "@/utils/confirm-dialog";
 
 const { ERROR, SUCCESS } = ALERT_TYPE;
 const { DELETE_CONFIRM, DELETE_WARNING } = DELETE_USER_MESSAGE;
-const DeleteUser = () => {
+const DeleteUserField = () => {
   const requestUserDelete = async () => {
     try {
       const res = await deleteUser();
@@ -43,4 +43,4 @@ const DeleteUser = () => {
   );
 };
 
-export default DeleteUser;
+export default DeleteUserField;

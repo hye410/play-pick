@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/components/loading-spinner";
 import { alert } from "@/utils/alert";
 import { postSignUp } from "@/features/sign-up/api/server-actions";
 import { signUpDefaultValues, signUpSchema } from "@/features/sign-up/utils/form-schema";
-import { FORM_CONSTANTS } from "@/constants/form-constants";
+import { FORM_CONSTANTS, PASSWORD_CONDITION } from "@/constants/form-constants";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 
 const { email, password, confirmPassword } = FORM_CONSTANTS;
@@ -42,10 +42,7 @@ const SignUpForm = () => {
       <FormInput<SignUp> name={email} label="이메일" type="text" control={control} autoFocus={true} />
       <FormInput<SignUp> name={password} label="비밀번호" type="password" control={control} />
       <FormInput<SignUp> name={confirmPassword} label="비밀번호 확인" type="password" control={control} />
-      <p className="mb-8 ml-[25%] text-left text-sm">
-        * 비밀번호는 8자 이상이며
-        <br />* 대문자, 소문자, 숫자, 특수문자를 각각 1개 이상 포함해야 합니다
-      </p>
+      <p className="mb-8 ml-[25%] whitespace-pre-line text-left text-sm">{PASSWORD_CONDITION}</p>
       <div className="ml-[25%] w-[75%]">
         <Button type="submit" disabled={isLoading}>
           {isLoading ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "회원가입"}

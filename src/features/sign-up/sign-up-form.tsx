@@ -1,30 +1,36 @@
 "use client";
-import Button from "@/components/button";
-import FormInput from "@/components/form-input";
-import { FORM_CONSTANTS } from "@/constants/form-constants";
 import type { SignUp } from "@/types/form-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { postSignUp } from "./api/services";
-import { signUpDefaultValues, signUpSchema } from "./utils/form-schema";
-import { SweetAlertResult } from "sweetalert2";
+import Button from "@/components/button";
+import FormInput from "@/components/form-input";
+import { postSignUp } from "@/features/sign-up/api/server-actions";
+import { signUpDefaultValues, signUpSchema } from "@/features/sign-up/utils/form-schema";
 import { alert } from "@/utils/alert";
+import { FORM_CONSTANTS } from "@/constants/form-constants";
 import { ALERT_TYPE } from "@/constants/alert-constants";
+import { useState } from "react";
+import { LoadingSpinner } from "@/components/loading-spinner";
 const { email, password, confirmPassword } = FORM_CONSTANTS;
 const { ERROR, SUCCESS } = ALERT_TYPE;
 const SignUpForm = () => {
-  const { handleSubmit, control } = useForm<SignUp>({
+  const [isLoading, setIsLoading] = useState(false);
+  const { handleSubmit, control, reset } = useForm<SignUp>({
     resolver: zodResolver(signUpSchema),
     mode: "onBlur",
     defaultValues: signUpDefaultValues,
   });
 
-  const handleSignUp = async (value: SignUp): Promise<SweetAlertResult> => {
+  const handleSignUp = async (value: SignUp) => {
     try {
+      setIsLoading(true);
       const res = await postSignUp({ email: value.email, password: value.password });
-      return alert({ type: SUCCESS, message: res });
+      alert({ type: SUCCESS, message: res });
+      reset();
     } catch (error) {
-      return alert({ type: ERROR, message: error as string });
+      alert({ type: ERROR, message: error as string });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,7 +48,9 @@ const SignUpForm = () => {
       />
       <FormInput<SignUp> name={confirmPassword} label="비밀번호 확인" type="password" control={control} />
       <div className="ml-[25%] w-[75%]">
-        <Button type="submit">회원가입</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "회원가입"}
+        </Button>
       </div>
     </form>
   );

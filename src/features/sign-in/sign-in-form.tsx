@@ -1,12 +1,4 @@
 "use client";
-import type { SignIn } from "@/types/form-types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { SweetAlertResult } from "sweetalert2";
-import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import Button from "@/components/button";
 import FormInput from "@/components/form-input";
 import { LoadingSpinner } from "@/components/loading-spinner";
@@ -15,44 +7,62 @@ import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { getUserLikes } from "@/features/detail/api/services";
 import { postSignIn } from "@/features/sign-in/api/server-actions";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
+import type { SignIn, SignInFormState } from "@/types/form-types";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { alert } from "@/utils/alert";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useTransition } from "react";
+import { useForm } from "react-hook-form";
 const { ERROR } = ALERT_TYPE;
 const { USER_LIKES } = QUERY_KEYS;
+const initialState: SignInFormState = {
+  success: false,
+  message: null,
+  userId: null,
+};
 const SignInForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const route = useRouter();
   const queryClient = useQueryClient();
+  const [isFormPending, startTransition] = useTransition();
+  const [state, requestSignIn] = useActionState(postSignIn, initialState);
+
   const { control, handleSubmit } = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
     defaultValues: signInDefaultValues,
   });
 
-  const handleSignIn: SubmitHandler<SignIn> = async (values): Promise<SweetAlertResult | void> => {
-    try {
-      setIsLoading(true);
-      const userId = await postSignIn({ email: values.email, password: values.password });
-      if (userId) {
-        const userLikes: Array<USER_LIKES_TYPE> = await getUserLikes(userId);
-        queryClient.setQueryData([USER_LIKES, userId], userLikes);
+  useEffect(() => {
+    const fetchUserLikes = async () => {
+      if (state.success && state.userId) {
+        const userLikes: Array<USER_LIKES_TYPE> = await getUserLikes(state.userId);
+        queryClient.setQueryData([USER_LIKES, state.userId], userLikes);
+        route.back();
+      } else if (state.message) {
+        alert({
+          type: ERROR,
+          message: state.message as string,
+        });
       }
-      route.back();
-    } catch (error) {
-      alert({
-        type: ERROR,
-        message: error as string,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    };
+    fetchUserLikes();
+  }, [state, queryClient, route]);
+
+  const handleSignInSubmit = async (userInfo: SignIn) => {
+    const formData = new FormData();
+    formData.append("email", userInfo.email);
+    formData.append("password", userInfo.password);
+    startTransition(() => requestSignIn(formData));
   };
 
   return (
-    <form onSubmit={handleSubmit(handleSignIn)} className="w-[400px]">
+    <form onSubmit={handleSubmit(handleSignInSubmit)} className="w-[400px]">
       <FormInput name="email" autoFocus={true} control={control} placeholder="이메일 주소를 입력해 주세요." />
       <FormInput name="password" type="password" control={control} placeholder="비밀번호를 입력해 주세요." />
-      <Button type="submit" disabled={isLoading}>
-        {isLoading ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "로그인"}
+      <Button type="submit" disabled={isFormPending}>
+        {isFormPending ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "로그인"}
       </Button>
     </form>
   );

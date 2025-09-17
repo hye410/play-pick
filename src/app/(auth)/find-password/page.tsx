@@ -1,16 +1,18 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import type { SignIn } from "@/types/form-types";
 import Button from "@/components/button";
 import FormInput from "@/components/form-input";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { FORM_CONSTANTS } from "@/constants/form-constants";
-import { postFindPassword } from "@/features/sign-in/api/services";
+import { postFindPassword } from "@/features/sign-in/api/server-actions";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
-import type { SignIn } from "@/types/form-types";
 import { alert } from "@/utils/alert";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { SweetAlertResult } from "sweetalert2";
-import { z } from "zod";
+
 const { email } = FORM_CONSTANTS;
 
 const emailSchema = z.object({
@@ -21,23 +23,28 @@ const { ERROR, INFO } = ALERT_TYPE;
 type FindPasswordForm = Pick<SignIn, typeof email>;
 
 const FindPassword = () => {
-  const { control, handleSubmit } = useForm<FindPasswordForm>({
+  const [isLoading, setIsLoading] = useState(false);
+  const { control, handleSubmit, reset } = useForm<FindPasswordForm>({
     resolver: zodResolver(emailSchema),
     defaultValues: { [email]: signInDefaultValues[email] },
   });
 
-  const requestToFindPassword = async ({ email }: FindPasswordForm): Promise<SweetAlertResult> => {
+  const requestToFindPassword = async ({ email }: FindPasswordForm) => {
     try {
+      setIsLoading(true);
       const message = await postFindPassword({ email });
-      return alert({
+      alert({
         type: INFO,
         message: message,
       });
+      reset();
     } catch (error) {
-      return alert({
+      alert({
         type: ERROR,
         message: error as string,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -47,7 +54,9 @@ const FindPassword = () => {
       <span className="mb-4 text-center text-lg font-black">비밀번호를 찾고자하는 이메일을 입력해 주세요.</span>
       <form onSubmit={handleSubmit(requestToFindPassword)} className="mx-auto w-1/3">
         <FormInput type="text" name={email} control={control} placeholder="이메일을 입력해 주세요." />
-        <Button type="submit">비밀번호 찾기</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "비밀번호 찾기"}
+        </Button>
       </form>
     </section>
   );

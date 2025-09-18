@@ -1,9 +1,11 @@
 "use client";
-import Button from "@/components/button";
+import { AnimatedComponent } from "@/components/animated-component";
+import useSurveyHook from "@/features/survey/hook/use-survey-hook";
 import Options from "@/features/survey/options";
 import type { Question } from "@/types/survey-types";
 import clsx from "clsx";
-import useSurveyHook from "@/features/survey/hook/use-survey-hook";
+import { motion } from "framer-motion";
+import { FaArrowCircleLeft, FaArrowCircleRight } from "react-icons/fa";
 
 type SurveyProps = {
   initialQuestions: Question[];
@@ -18,40 +20,45 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
     getOptionValue,
     currentKey,
     isFirstQuestion,
-    isLastQuestion,
     moveToNext,
     moveToPrev,
     answers,
+    direction,
   } = useSurveyHook(initialQuestion);
 
   return (
-    <div className="flex h-full flex-col items-center justify-between">
-      <h3 className="mb-6 text-lg font-bold">{currentQuestion.question}</h3>
-      <Options
-        options={currentOptions}
-        handleSelectOption={getOptionValue}
-        haveManyOptions={currentOptions.length >= APPLY_GRID_BOUNDARY}
-        currentKey={currentKey}
-      />
+    <div className="relative mx-auto flex h-full w-[80%] flex-col items-center justify-center">
+      <AnimatedComponent direction={direction} animatedKey={currentKey}>
+        <h3 className="mb-6 text-center text-lg font-bold">{currentQuestion.question}</h3>
+        <Options
+          options={currentOptions}
+          handleSelectOption={getOptionValue}
+          haveManyOptions={currentOptions.length >= APPLY_GRID_BOUNDARY}
+          currentKey={currentKey}
+        />
+      </AnimatedComponent>
       <div
         className={clsx(
-          "mx-auto flex w-[80%] items-center gap-16",
+          "absolute bottom-5 mx-auto flex w-full items-center gap-16",
           isFirstQuestion && "justify-end",
           !isFirstQuestion && "justify-between",
         )}
       >
         {!isFirstQuestion && (
-          <div>
-            <Button onClick={moveToPrev} color="secondary" size="small">
-              이전
-            </Button>
-          </div>
+          <motion.button initial={false} aria-label="이전" onClick={moveToPrev} whileTap={{ scale: 0.9 }}>
+            <FaArrowCircleLeft size={40} />
+          </motion.button>
         )}
-        <div>
-          <Button onClick={moveToNext} size="small" disabled={!answers[currentKey]}>
-            {isLastQuestion ? "결과" : "다음"}
-          </Button>
-        </div>
+        <motion.button
+          initial={false}
+          aria-label="다음"
+          disabled={!answers[currentKey]}
+          className={clsx(!answers[currentKey] && "cursor-not-allowed")}
+          onClick={moveToNext}
+          whileTap={{ scale: 0.9 }}
+        >
+          <FaArrowCircleRight size={40} />
+        </motion.button>
       </div>
     </div>
   );

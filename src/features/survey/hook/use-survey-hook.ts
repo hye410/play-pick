@@ -15,6 +15,7 @@ const useSurveyHook = (initialQuestion: Question[]) => {
   const [questions, setQuestions] = useState<Question[]>(initialQuestion);
   const [params, setParams] = useState<Answer>({});
   const [userPicks, setUserPicks] = useState<string[]>([]);
+  const [direction, setDirection] = useState<-1 | 1>(1);
   const { answers, addToAnswers, removeFromAnswer, currentQuestionIndex, setCurrentQuestionIndex } =
     useSurveyAnswersStore();
 
@@ -78,6 +79,7 @@ const useSurveyHook = (initialQuestion: Question[]) => {
   };
 
   const moveToNext = () => {
+    setDirection(1);
     if (!isLastQuestion) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -86,6 +88,7 @@ const useSurveyHook = (initialQuestion: Question[]) => {
   };
 
   const moveToPrev = () => {
+    setDirection(-1);
     if (!isFirstQuestion) setCurrentQuestionIndex(currentQuestionIndex - 1);
   };
 
@@ -111,10 +114,10 @@ const useSurveyHook = (initialQuestion: Question[]) => {
     getOptionValue,
     currentKey,
     isFirstQuestion,
-    isLastQuestion,
     moveToPrev,
     moveToNext,
     answers,
+    direction,
   };
 };
 

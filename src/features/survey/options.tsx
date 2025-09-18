@@ -25,14 +25,14 @@ const Options = ({ options, handleSelectOption, haveManyOptions = false, current
   );
 
   return (
-    <ul className={clsx("mx-auto mb-5 w-[80%] flex-1 text-center", haveManyOptions && "grid w-[50%] grid-cols-3")}>
+    <ul className={clsx("mb-5 w-full text-center", haveManyOptions && "grid w-[50%] grid-cols-4 gap-4")}>
       {options.map((option) => (
         <li key={`option_${option.label}`}>
           <button
             type="button"
             className={clsx(
               "my-4 rounded-lg border px-4 py-2",
-              haveManyOptions && "w-32",
+              haveManyOptions && "w-36",
               !haveManyOptions && "w-64",
               isSelected(option.value) && "border-none bg-primary",
             )}

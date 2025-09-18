@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { motion } from "framer-motion";
 import { CSSProperties } from "react";
 
-export const LoadingSpinner = ({ width = "50px", height = "50px", pointColor = "primary" }) => {
+export const LoadingSpinner = ({ width = "50px", height = "50px" }) => {
   const style = {
     "--spinner-width": width,
     "--spinner-height": height,
@@ -12,7 +12,7 @@ export const LoadingSpinner = ({ width = "50px", height = "50px", pointColor = "
     <div className="flex justify-center">
       <motion.div
         className={clsx(
-          `h-[var(--spinner-height)] w-[var(--spinner-width)] transform rounded-[50%] border-4 border-t-${pointColor}`,
+          `h-[var(--spinner-height)] w-[var(--spinner-width)] transform rounded-[50%] border-4 border-t-stone-500`,
         )}
         style={style}
         animate={{ rotate: 360 }}

@@ -27,7 +27,7 @@ const SignInForm = () => {
   const router = useRouter();
   const params = useSearchParams();
   const queryClient = useQueryClient();
-  const [isFormPending, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
   const [state, requestSignIn] = useActionState(postSignIn, initialState);
   const { control, handleSubmit } = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
@@ -63,8 +63,8 @@ const SignInForm = () => {
     <form onSubmit={handleSubmit(handleSignInSubmit)} className="w-[400px]">
       <FormInput name="email" autoFocus={true} control={control} placeholder="이메일 주소를 입력해 주세요." />
       <FormInput name="password" type="password" control={control} placeholder="비밀번호를 입력해 주세요." />
-      <Button type="submit" disabled={isFormPending}>
-        {isFormPending ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "로그인"}
+      <Button type="submit" disabled={isPending}>
+        {isPending ? <LoadingSpinner width="24px" height="24px" /> : "로그인"}
       </Button>
     </form>
   );

@@ -76,7 +76,7 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
         <FormInput name="confirmPassword" control={control} type="password" placeholder="비밀번호를 확인해 주세요." />
         <p className="mb-8 whitespace-pre-line text-sm">{PASSWORD_CONDITION}</p>
         <Button type="submit" disabled={isPending}>
-          {isPending ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "비밀번호 변경"}
+          {isPending ? <LoadingSpinner width="24px" height="24px" /> : "비밀번호 변경"}
         </Button>
       </form>
       <DeleteUserField />

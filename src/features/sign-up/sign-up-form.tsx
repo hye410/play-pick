@@ -59,7 +59,7 @@ const SignUpForm = () => {
       <p className="mb-8 ml-[25%] whitespace-pre-line text-left text-sm">{PASSWORD_CONDITION}</p>
       <div className="ml-[25%] w-[75%]">
         <Button type="submit" disabled={isPending}>
-          {isPending ? <LoadingSpinner width="24px" height="24px" pointColor="secondary" /> : "회원가입"}
+          {isPending ? <LoadingSpinner width="24px" height="24px" /> : "회원가입"}
         </Button>
       </div>
     </form>

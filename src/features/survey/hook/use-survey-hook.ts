@@ -103,7 +103,7 @@ const useSurveyHook = (initialQuestion: Question[]) => {
       }
       addToAnswers(currentKey, newAnswer);
     } else {
-      if (currentKey === "type" && value !== answers["type"]) removeFromAnswer("genres");
+      if (currentKey === "type" && value !== answers["type"]) removeFromAnswer("with_genres");
       addToAnswers(currentKey, value);
     }
   };

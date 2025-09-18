@@ -1,4 +1,4 @@
-import FindUserInfoField from "@/features/sign-in/find-user-info-field";
+import { SIGN_UP } from "@/constants/path-constants";
 import SignInForm from "@/features/sign-in/sign-in-form";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -13,7 +13,9 @@ const Signin = () => {
       <Suspense fallback={<div className="h-[240px]" />}>
         <SignInForm />
       </Suspense>
-      <FindUserInfoField />
+      <Link href={SIGN_UP} className="mt-8 underline">
+        회원가입
+      </Link>
     </section>
   );
 };

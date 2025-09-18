@@ -11,10 +11,10 @@ const { SERVER_ERROR, CLIENT_ERROR } = DEFAULT_ERROR_MESSAGE;
 
 const NOT_CONFIRMED = "email_not_confirmed";
 
-export const postSignIn = async (_: SignInFormState, formData: FormData) => {
+export const postSignIn = async (_: SignInFormState, userData: FormData) => {
   const supabase = await createServerSupabase();
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const email = userData.get("email") as string;
+  const password = userData.get("password") as string;
 
   const {
     data: { user },

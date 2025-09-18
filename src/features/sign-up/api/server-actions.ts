@@ -7,7 +7,14 @@ const { DUPLICATION_ERROR, SIGN_UP_SUCCESS, OVER_SEND_LIMIT, INVALID_EMAIL_ADDRE
 
 const ALREADY_EXIST_STATUS = 429;
 const INVALID_EMAIL_ADDRESS_CODE = "email_address_invalid";
-export const postSignUp = async (_: InitReturnType, userData: FormData) => {
+
+/**
+ * 회원 가입 API를 호출하는 함수
+ * @param _ 함수의 이전 반환 값
+ * @param userData 회원 가입할 유저의 정보(이메일,비밀번호)
+ * @returns 회원 가입 성공 여부, 메시지
+ */
+export const postSignUp = async (_: InitReturnType, userData: FormData): Promise<InitReturnType> => {
   const supabase = await createServerSupabase();
   const email = userData.get("email") as string;
   const password = userData.get("password") as string;

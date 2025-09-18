@@ -24,8 +24,8 @@ export const SIGN_IN_MESSAGE = Object.freeze({
 } as const);
 
 export const FIND_PASSWORD_MESSAGE = Object.freeze({
-  SUCCESS_SENDING_EMAIL: "이메일이 전송되었습니다. 가입하신 이메일을 확인해 주세요.",
-  OVER_EMAIL_SEND_RATE_LIMIT: "이미 전송된 이메일이 있습니다. 가입하신 이메일을 확인해 주세요.",
+  SUCCESS_SENDING_EMAIL: "이메일이 전송되었습니다.<br />가입하신 이메일을 확인해 주세요.",
+  OVER_EMAIL_SEND_RATE_LIMIT: "이미 전송된 이메일이 있습니다.<br />가입하신 이메일을 확인해 주세요.",
 } as const);
 
 export const PREVIEW_VIDEO_MESSAGE = Object.freeze({

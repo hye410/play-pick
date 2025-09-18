@@ -16,7 +16,7 @@ export const ALERT_COLORS = {
 export const alert = ({ type, message }: AlertProps): Promise<SweetAlertResult> => {
   return Swal.fire({
     title: type.toUpperCase(),
-    text: message || "오류가 발생했습니다.",
+    html: message || "오류가 발생했습니다.",
     icon: type as SweetAlertIcon,
     iconColor: ALERT_COLORS[type],
     confirmButtonText: "확인",

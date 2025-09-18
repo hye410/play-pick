@@ -2,7 +2,7 @@
 
 import { DEFAULT_ERROR_MESSAGE, FIND_PASSWORD_MESSAGE, SIGN_IN_MESSAGE } from "@/constants/message-constants";
 import { BASE_URL, UPDATE_PASSWORD } from "@/constants/path-constants";
-import type { SignInFormState } from "@/types/form-types";
+import type { InitReturnType, SignInFormState } from "@/types/server-action-return-type";
 import { createServerSupabase } from "@/utils/supabase-server";
 
 // ==================== 로그인 ====================

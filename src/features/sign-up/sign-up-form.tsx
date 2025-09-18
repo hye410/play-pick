@@ -11,6 +11,7 @@ import { postSignUp } from "@/features/sign-up/api/server-actions";
 import { signUpDefaultValues, signUpSchema } from "@/features/sign-up/utils/form-schema";
 import type { SignUp } from "@/types/form-types";
 import { alert } from "@/utils/alert";
+import type { InitReturnType } from "@/types/server-action-return-type";
 
 const { email, password, confirmPassword } = FORM_CONSTANTS;
 const { ERROR, SUCCESS } = ALERT_TYPE;

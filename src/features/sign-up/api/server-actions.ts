@@ -1,5 +1,6 @@
 "use server";
 import { DEFAULT_ERROR_MESSAGE, SIGN_UP_MESSAGE } from "@/constants/message-constants";
+import type { InitReturnType } from "@/types/server-action-return-type";
 import { createServerSupabase } from "@/utils/supabase-server";
 
 const { EXPIRED_SESSION_ERROR } = DEFAULT_ERROR_MESSAGE;

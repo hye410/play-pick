@@ -1,6 +1,5 @@
 "use client";
 import { AnimatedComponent } from "@/components/animated-component";
-import { ALERT_TYPE } from "@/constants/alert-constants";
 import useSurveyHook from "@/features/survey/hook/use-survey-hook";
 import Options from "@/features/survey/options";
 import type { Question } from "@/types/survey-types";
@@ -13,8 +12,6 @@ type SurveyProps = {
 };
 
 const APPLY_GRID_BOUNDARY = 12;
-
-const { WARNING } = ALERT_TYPE;
 
 const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
   const {

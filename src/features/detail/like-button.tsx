@@ -3,8 +3,8 @@ import { ALERT_TYPE } from "@/constants/alert-constants";
 import { useUserLikesStatus } from "@/features/detail/hook/use-user-likes-status";
 import { useAuthStatus } from "@/hook/use-auth-status";
 import type { FilteredDetailData } from "@/types/contents-types";
-import { alert } from "@/utils/alert";
 import type { User } from "@supabase/supabase-js";
+import { alert } from "@/utils/alert";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 
 type LikeButton = {

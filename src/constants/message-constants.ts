@@ -73,3 +73,7 @@ export const MY_CONTENTS_MESSAGE = Object.freeze({
   NO_CONTENT_DATA: "해당 콘텐츠에 대한 데이터를 찾을 수 없습니다.",
   SINGLE_CONTENT_FETCH_FAIL: "콘텐츠 정보를 가져오는 데 실패하여 찜 상태가 취소되었습니다.",
 } as const);
+
+export const USER_LIKES_MESSAGE = Object.freeze({
+  FETCH_FAIL: "사용자의 좋아요 리스트를 받아오는데 실패했습니다.",
+});

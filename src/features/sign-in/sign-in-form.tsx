@@ -4,12 +4,12 @@ import FormInput from "@/components/form-input";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { getUserLikes } from "@/features/detail/api/services";
+import { getUserLikes } from "@/features/detail/api/server-actions";
 import { postSignIn } from "@/features/sign-in/api/server-actions";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
 import type { SignIn } from "@/types/form-types";
 import type { SignInFormState } from "@/types/server-action-return-type";
-import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
+import type { User } from "@/types/user-types";
 import { alert } from "@/utils/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,21 +36,29 @@ const SignInForm = () => {
   });
 
   useEffect(() => {
-    const fetchUserLikes = async () => {
-      if (state.success && state.userId) {
-        const userLikes: Array<USER_LIKES_TYPE> = await getUserLikes(state.userId);
-        queryClient.setQueryData([USER_LIKES, state.userId], userLikes);
-        const redirectPage = params.get("redirect") ?? "/";
-        router.replace(redirectPage);
-      } else if (state.message) {
-        alert({
-          type: ERROR,
-          message: state.message as string,
-        });
-      }
-    };
-    fetchUserLikes();
+    if (state.success && state.userId) {
+      fetchUserLikes(state.userId);
+      const redirectPage = params.get("redirect") ?? "/";
+      router.replace(redirectPage);
+    } else if (state.message) {
+      alert({
+        type: ERROR,
+        message: state.message as string,
+      });
+    }
   }, [state, queryClient, router, params]);
+
+  const fetchUserLikes = async (userId: User["id"]) => {
+    const res = await getUserLikes(userId);
+    if (res.success && res.userLikes) {
+      queryClient.setQueryData([USER_LIKES, userId], res.userLikes);
+    } else if (!res.success) {
+      alert({
+        type: ERROR,
+        message: res.message as string,
+      });
+    }
+  };
 
   const handleSignInSubmit = async (userInfo: SignIn) => {
     const formData = new FormData();

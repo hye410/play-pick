@@ -40,7 +40,7 @@ export const TOGGLE_LIKES_MESSAGE = Object.freeze({
 } as const);
 
 export const SURVEY_MESSAGE = Object.freeze({
-  FETCH_ADDED_QUESTIONS_FAIL: "추가 질문을 가져오는데 실패했습니다.",
+  FETCH_ADDED_QUESTIONS_FAIL: "추가 질문을 받아오는데 실패했습니다.<br />다시 시도해 주세요.",
   FETCH_COMMON_QUESTIONS_FAIL: "질문을 받아오는데 실패했습니다.\n새로고침 후 다시 시도해 주세요.",
   OVER_MAXIMUM_SELECTION: "최대 3개까지만 선택할 수 있습니다.",
 } as const);

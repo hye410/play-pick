@@ -1,16 +1,15 @@
 "use client";
-
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { SURVEY_DB } from "@/constants/db-constants";
 import { SURVEY_MESSAGE } from "@/constants/message-constants";
 import { RESULT } from "@/constants/path-constants";
+import { getAdditionalQuestions } from "@/features/survey/api/server-actions";
 import { makeQueryParams } from "@/features/result/util/make-query-params";
-import { getQuestionsByKey } from "@/features/survey/api/services";
 import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
 import type { Answer, Option, Question } from "@/types/survey-types";
 import { alert } from "@/utils/alert";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 
 const { ERROR, WARNING } = ALERT_TYPE;
 const { OVER_MAXIMUM_SELECTION } = SURVEY_MESSAGE;
@@ -83,14 +82,18 @@ const useSurveyHook = (initialQuestion: Array<Question>) => {
     setSelectedParams((prev) => ({ ...prev, [currentKey]: targetOption?.code || targetOption?.value }));
   };
 
-  const getRestOfQuestions = async (preferredType: string) => {
-    try {
-      const restQuestions = await getQuestionsByKey(preferredType);
-      setQuestions([...initialQuestion, ...restQuestions]);
-    } catch (error) {
+  /**
+   * 유저가 선택한 contents type에 따른 추가 질문을 fetch하는 함수
+   * @param selectedType 유저가 선택한 contents type
+   */
+  const getRestOfQuestions = async (selectedType: "tv" | "movie") => {
+    const res = await getAdditionalQuestions(selectedType);
+    if (res.success) {
+      setQuestions([...initialQuestion, ...res.questions]);
+    } else {
       alert({
         type: ERROR,
-        message: error as string,
+        message: res.message as string,
       });
     }
   };
@@ -111,7 +114,7 @@ const useSurveyHook = (initialQuestion: Array<Question>) => {
    */
   const moveToNext = () => {
     setDirection(1);
-    const currentType = answers[type] as string;
+    const currentType = answers[type] as "tv" | "movie";
     const isNotSameWithPrev = currentType !== prevTypeRef.current;
     if (currentType && isNotSameWithPrev) {
       getRestOfQuestions(currentType);

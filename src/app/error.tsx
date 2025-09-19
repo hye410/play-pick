@@ -22,7 +22,7 @@ const Error = ({ error, reset }: ErrorProps) => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-2">
       <BiSolidError size={100} />
-      <span className="font-semibold">{error.message}</span>
+      <span className="whitespace-pre-line font-semibold">{error.message}</span>
       <div>
         <Button size="small" onClick={handleReset}>
           다시 시도하기

@@ -1,15 +1,17 @@
 "use client";
 
-import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
+import { useSurveyStore } from "@/store/use-survey-store";
 import { useEffect } from "react";
 
 type UserPicksProps = {
   userPicks: string[];
 };
 const UserPicks = ({ userPicks }: UserPicksProps) => {
-  const { resetAnswers } = useSurveyAnswersStore();
+  const { resetAnswers, resetCurrentQuestionIndex, resetQuestions } = useSurveyStore();
   useEffect(() => {
     resetAnswers();
+    resetCurrentQuestionIndex();
+    resetQuestions();
   }, []);
 
   return (

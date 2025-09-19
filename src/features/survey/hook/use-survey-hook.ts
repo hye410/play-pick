@@ -1,15 +1,15 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { SURVEY_DB } from "@/constants/db-constants";
 import { SURVEY_MESSAGE } from "@/constants/message-constants";
 import { RESULT } from "@/constants/path-constants";
-import { getAdditionalQuestions } from "@/features/survey/api/server-actions";
 import { makeQueryParams } from "@/features/result/util/make-query-params";
-import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
+import { getAdditionalQuestions } from "@/features/survey/api/server-actions";
+import { useSurveyStore } from "@/store/use-survey-store";
 import type { Answer, Option, Question } from "@/types/survey-types";
 import { alert } from "@/utils/alert";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 const { ERROR, WARNING } = ALERT_TYPE;
 const { OVER_MAXIMUM_SELECTION } = SURVEY_MESSAGE;
@@ -26,16 +26,26 @@ selectedParams tmdb api 통신에 필요한 파라미터로 사용함
 `;
 
 const useSurveyHook = (initialQuestion: Array<Question>) => {
-  const [questions, setQuestions] = useState<Array<Question>>(initialQuestion);
   const [selectedParams, setSelectedParams] = useState<Answer>({});
   const [userPickLabels, setUserPickLabels] = useState<Array<string>>([]);
   const [direction, setDirection] = useState<-1 | 1>(1);
   const prevTypeRef = useRef<string | null>(null);
 
-  const { answers, addToAnswers, removeFromAnswer, currentQuestionIndex, setCurrentQuestionIndex } =
-    useSurveyAnswersStore();
+  const {
+    answers,
+    addToAnswers,
+    removeFromAnswer,
+    currentQuestionIndex,
+    setCurrentQuestionIndex,
+    questions,
+    addToQuestions,
+  } = useSurveyStore();
 
-  const currentQuestion = questions[currentQuestionIndex] ?? questions[0];
+  if (initialQuestion && questions.length === 0) {
+    addToQuestions(initialQuestion);
+  }
+
+  const currentQuestion = questions[currentQuestionIndex] ?? initialQuestion[0];
   const currentOptions = currentQuestion.options;
   const isFirstQuestion = currentQuestionIndex <= 0;
   const isLastQuestion = currentQuestionIndex + 1 >= questions.length;
@@ -89,7 +99,8 @@ const useSurveyHook = (initialQuestion: Array<Question>) => {
   const getRestOfQuestions = async (selectedType: "tv" | "movie") => {
     const res = await getAdditionalQuestions(selectedType);
     if (res.success) {
-      setQuestions([...initialQuestion, ...res.questions]);
+      // setQuestions([...initialQuestion, ...res.questions]);
+      addToQuestions([...initialQuestion, ...res.questions]);
     } else {
       alert({
         type: ERROR,
@@ -112,6 +123,7 @@ const useSurveyHook = (initialQuestion: Array<Question>) => {
    * 다음 질문으로 이동하는 함수.
    * content Type이 달라질 시, 해당 type에 맞는 추가 질문을 새로 fetch함.
    */
+
   const moveToNext = () => {
     setDirection(1);
     const currentType = answers[type] as "tv" | "movie";

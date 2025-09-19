@@ -1,5 +1,5 @@
 "use client";
-import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
+import { useSurveyStore } from "@/store/use-survey-store";
 import type { Option, Question } from "@/types/survey-types";
 import clsx from "clsx";
 import { useCallback, useMemo } from "react";
@@ -12,7 +12,7 @@ type OptionsProps = {
 };
 
 const Options = ({ options, handleSelectOptions, haveManyOptions = false, currentKey }: OptionsProps) => {
-  const { answers } = useSurveyAnswersStore();
+  const { answers } = useSurveyStore();
   const currentAnswer = useMemo(() => answers[currentKey], [answers, currentKey]);
 
   const isSelected = useCallback(

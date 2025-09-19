@@ -1,5 +1,6 @@
 "use client";
 import { AnimatedComponent } from "@/components/animated-component";
+import { ALERT_TYPE } from "@/constants/alert-constants";
 import useSurveyHook from "@/features/survey/hook/use-survey-hook";
 import Options from "@/features/survey/options";
 import type { Question } from "@/types/survey-types";
@@ -12,6 +13,8 @@ type SurveyProps = {
 };
 
 const APPLY_GRID_BOUNDARY = 12;
+
+const { WARNING } = ALERT_TYPE;
 
 const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
   const {
@@ -45,7 +48,13 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
         )}
       >
         {!isFirstQuestion && (
-          <motion.button initial={false} aria-label="이전" onClick={moveToPrev} whileTap={{ scale: 0.9 }}>
+          <motion.button
+            initial={false}
+            aria-label="이전"
+            onClick={moveToPrev}
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.1 }}
+          >
             <FaArrowCircleLeft size={40} />
           </motion.button>
         )}
@@ -55,7 +64,13 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
           disabled={!answers[currentKey]}
           className={clsx(!answers[currentKey] && "cursor-not-allowed")}
           onClick={moveToNext}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
+          animate={
+            answers[currentKey]
+              ? { scale: [1, 1.15, 1], transition: { duration: 1, repeat: Infinity, ease: "easeInOut" } }
+              : {}
+          }
         >
           <FaArrowCircleRight size={40} />
         </motion.button>

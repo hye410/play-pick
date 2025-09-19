@@ -6,7 +6,7 @@ import { createServerSupabase } from "@/utils/supabase-server";
 
 // ==================== 로그인 ====================
 const { EMAIL_NOT_CONFIRMED, INVALID_ERROR, SIGN_IN_FAIL } = SIGN_IN_MESSAGE;
-const { SERVER_ERROR, CLIENT_ERROR } = DEFAULT_ERROR_MESSAGE;
+const { SERVER_ERROR } = DEFAULT_ERROR_MESSAGE;
 
 const NOT_CONFIRMED = "email_not_confirmed";
 

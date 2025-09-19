@@ -1,10 +1,9 @@
-import { A_DAY } from "@/constants/fetch-time-constants";
 import { SURVEY_MESSAGE } from "@/constants/message-constants";
 import Survey from "@/features/survey/survey";
 import { createServerSupabase } from "@/utils/supabase-server";
 const { FETCH_COMMON_QUESTIONS_FAIL } = SURVEY_MESSAGE;
 
-export const revalidate = A_DAY;
+export const revalidate = 86400;
 const SurveyPage = async () => {
   const supabase = await createServerSupabase();
   const { data: initialQuestions, error } = await supabase

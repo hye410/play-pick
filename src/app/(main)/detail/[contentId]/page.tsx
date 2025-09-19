@@ -1,7 +1,11 @@
+import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
+import { DEFAULT_ERROR_MESSAGE } from "@/constants/message-constants";
+import { TMDB_BASE_URL } from "@/constants/path-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { getDetailContent, getUserLikes } from "@/features/detail/api/services";
+import { getUserLikes } from "@/features/detail/api/server-actions";
 import DetailContent from "@/features/detail/detail-content";
-import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
+import { filterDetailMovieData, filterDetailTvData } from "@/features/detail/utils/filter-detail-contents";
+import type { CombinedData } from "@/types/contents-types";
 import { createServerSupabase } from "@/utils/supabase-server";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
@@ -14,13 +18,23 @@ type DetailContentProps = {
   }>;
 };
 const { USER_LIKES } = QUERY_KEYS;
+const { FETCH_ERROR } = DEFAULT_ERROR_MESSAGE;
 
 const DetailContentPage = async ({ params, searchParams }: DetailContentProps) => {
   const { contentId } = await params;
   const { type } = await searchParams;
   const queryClient = new QueryClient();
-  const content: FilteredDetailData = await getDetailContent(Number(contentId), type);
   const supabase = await createServerSupabase();
+  const options = {
+    method: API_METHOD.GET,
+    headers: TMDB_API_HEADER,
+  };
+
+  const res = await fetch(`${TMDB_BASE_URL}/${type}/${contentId}?language=ko-KR&page=1`, options);
+  const data = await res.json();
+  if (!res.ok) throw new Error(FETCH_ERROR);
+  const content = type === "movie" ? filterDetailMovieData(data) : filterDetailTvData(data);
+
   const {
     data: { user },
   } = await supabase.auth.getUser();

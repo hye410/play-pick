@@ -1,6 +1,7 @@
 "use client";
 
 import { ALERT_TYPE } from "@/constants/alert-constants";
+import { SURVEY_DB } from "@/constants/db-constants";
 import { SURVEY_MESSAGE } from "@/constants/message-constants";
 import { RESULT } from "@/constants/path-constants";
 import { makeQueryParams } from "@/features/result/util/make-query-params";
@@ -9,16 +10,29 @@ import { useSurveyAnswersStore } from "@/store/use-survey-answers-store";
 import type { Answer, Option, Question } from "@/types/survey-types";
 import { alert } from "@/utils/alert";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const { ERROR, WARNING } = ALERT_TYPE;
 const { OVER_MAXIMUM_SELECTION } = SURVEY_MESSAGE;
+const { TMDB_KEY } = SURVEY_DB;
+const { genres, type } = TMDB_KEY;
 
-const useSurveyHook = (initialQuestion: Question[]) => {
-  const [questions, setQuestions] = useState<Question[]>(initialQuestion);
-  const [params, setParams] = useState<Answer>({});
-  const [userPicks, setUserPicks] = useState<string[]>([]);
+`
+selectedParams -> 유저가 선택한 값의 'code' 혹은 'value' 를 담음 (tmdb api통신 시 code가 있을 시 code를 params로 보내고, 없을 시 value를 params로 보냄) 
+userPickLabels -> 유저가 선택한 값의 'label'을 담음 
+
+마지막 결과 페이지 이동 시 (moveToResult 호출) url파라미터로 바꿔 결과 페이지에 실어 보냄
+=> result 페이지에서 searchParams를 사용해 userPickLabels 유저가 선택한 값들을 유저에게 보여주는 용도로,
+selectedParams tmdb api 통신에 필요한 파라미터로 사용함
+`;
+
+const useSurveyHook = (initialQuestion: Array<Question>) => {
+  const [questions, setQuestions] = useState<Array<Question>>(initialQuestion);
+  const [selectedParams, setSelectedParams] = useState<Answer>({});
+  const [userPickLabels, setUserPickLabels] = useState<Array<string>>([]);
   const [direction, setDirection] = useState<-1 | 1>(1);
+  const prevTypeRef = useRef<string | null>(null);
+
   const { answers, addToAnswers, removeFromAnswer, currentQuestionIndex, setCurrentQuestionIndex } =
     useSurveyAnswersStore();
 
@@ -27,7 +41,47 @@ const useSurveyHook = (initialQuestion: Question[]) => {
   const isFirstQuestion = currentQuestionIndex <= 0;
   const isLastQuestion = currentQuestionIndex + 1 >= questions.length;
   const currentKey = currentQuestion.tmdb_key;
-  const route = useRouter();
+  const router = useRouter();
+
+  useEffect(() => {
+    const currentAnswer = answers[currentKey];
+    if (currentAnswer) {
+      if (Array.isArray(currentAnswer)) processMultiAnswers(currentAnswer);
+      else processSingleAnswer(currentAnswer);
+    }
+  }, [answers[currentKey], currentOptions, currentQuestionIndex]);
+
+  /**
+   * 다중 선택 질문에 대한 응답을 처리하고 화면 표시용 라벨과 API 통신용 파라미터(코드)를 설정하는 함수
+   * @param currentAnswer 유저가 선택한 값들
+   */
+  const processMultiAnswers = (currentAnswer: Array<unknown>) => {
+    const targetOption = currentOptions.filter((option) => currentAnswer.includes(option.value));
+    const labels = targetOption.map((target) => target.label);
+    const codes = targetOption.map((target) => target.code);
+
+    setUserPickLabels((prev) => {
+      const picks = [...prev];
+      picks[currentQuestionIndex] = labels.join(" , ");
+      return picks;
+    });
+    setSelectedParams((prev) => ({ ...prev, [currentKey]: codes }));
+  };
+
+  /**
+   * 단일 선택 질문에 대한 응답을 처리하고 화면 표시용 라벨과 API 통신용 파라미터(코드)를 설정하는 함수
+   * @param currentAnswer 유저가 선택한 값
+   */
+  const processSingleAnswer = (currentAnswer: unknown) => {
+    const targetOption = currentOptions.find((option) => option.value === currentAnswer);
+    const label = targetOption?.label as string;
+    setUserPickLabels((prev) => {
+      const picks = [...prev];
+      picks[currentQuestionIndex] = label;
+      return picks;
+    });
+    setSelectedParams((prev) => ({ ...prev, [currentKey]: targetOption?.code || targetOption?.value }));
+  };
 
   const getRestOfQuestions = async (preferredType: string) => {
     try {
@@ -41,47 +95,28 @@ const useSurveyHook = (initialQuestion: Question[]) => {
     }
   };
 
-  useEffect(() => {
-    const selectedType = answers["type"] as string;
-    getRestOfQuestions(selectedType);
-  }, [answers["type"]]);
-
-  useEffect(() => {
-    const userPick = answers[currentKey];
-    if (userPick) {
-      if (Array.isArray(userPick)) {
-        const targetOption = currentOptions.filter((option) => userPick.includes(option.value));
-        const labels = targetOption.map((target) => target.label);
-        const codes = targetOption.map((target) => target.code);
-
-        setUserPicks((prev) => {
-          const picks = [...prev];
-          picks[currentQuestionIndex] = labels.join(" , ");
-          return picks;
-        });
-        setParams((prev) => ({ ...prev, [currentKey]: codes }));
-      } else {
-        const targetOption = currentOptions.find((option) => option.value === userPick);
-        const label = targetOption?.label as string;
-        setUserPicks((prev) => {
-          const picks = [...prev];
-          picks[currentQuestionIndex] = label;
-          return picks;
-        });
-        setParams((prev) => ({ ...prev, [currentKey]: targetOption?.code || targetOption?.value }));
-      }
-    }
-  }, [answers[currentKey], currentOptions, currentQuestionIndex]);
-
+  /**
+   * 화면 표시용 라벨과 API 통신용 파라미터(코드)를 URL 파라미터에 실어 Result 페이지로 이동하는 함수
+   */
   const moveToResult = () => {
-    const urlParams = makeQueryParams(params);
-    const userPicksString = userPicks.join(" / ");
+    const urlParams = makeQueryParams(selectedParams);
+    const userPicksString = userPickLabels.join(" / ");
     urlParams.append("picks", userPicksString);
-    route.replace(`${RESULT}?${urlParams.toString()}`);
+    router.replace(`${RESULT}?${urlParams.toString()}`);
   };
 
+  /**
+   * 다음 질문으로 이동하는 함수.
+   * content Type이 달라질 시, 해당 type에 맞는 추가 질문을 새로 fetch함.
+   */
   const moveToNext = () => {
     setDirection(1);
+    const currentType = answers[type] as string;
+    const isNotSameWithPrev = currentType !== prevTypeRef.current;
+    if (currentType && isNotSameWithPrev) {
+      getRestOfQuestions(currentType);
+      prevTypeRef.current = currentType;
+    }
     if (!isLastQuestion) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -89,27 +124,36 @@ const useSurveyHook = (initialQuestion: Question[]) => {
     }
   };
 
+  /**
+   * 이전 질문으로 이동하는 함수
+   */
   const moveToPrev = () => {
     setDirection(-1);
     if (!isFirstQuestion) setCurrentQuestionIndex(currentQuestionIndex - 1);
   };
 
-  const getOptionValue = (value: Option["value"]) => {
+  /**
+   * 유저가 선택한 값을 받아와 다중선택 혹은 단일선택에 따라 그 다음 처리를 요청하는 함수
+   * @param value 유저가 선택한 값
+   */
+  const handleAddAnswers = (value: Option["value"]) => {
     if (currentQuestion.is_multiple_choice) handleMultiAnswers(value);
     else handleSingleAnswer(value);
   };
 
+  /**
+   * 다중 선택일 시 선택 가능 개수 초과 검사 및 기존 응답에 새로운 값을 누적 혹은 배제하는 함수
+   * @param newAnswer 유저가 선택한 값들
+   */
   const handleMultiAnswers = (newAnswer: Option["value"]) => {
     const selectedAnswers: string[] = Array.isArray(answers[currentKey]) ? answers[currentKey] : [];
 
-    // 이미 선택한 항목을 해제하는 경우
     if (selectedAnswers.includes(newAnswer)) {
       const newAnswers = selectedAnswers.filter((selectedAnswer) => selectedAnswer !== newAnswer);
       addToAnswers(currentKey, newAnswers);
       return;
     }
 
-    // 새로운 항목을 추가하는 경우 (개수 제한 확인)
     if (selectedAnswers.length >= 3) {
       alert({
         type: WARNING,
@@ -118,20 +162,25 @@ const useSurveyHook = (initialQuestion: Question[]) => {
       return;
     }
 
-    // 새로운 항목 추가
     const newAnswers = [...selectedAnswers, newAnswer];
     addToAnswers(currentKey, newAnswers);
   };
 
+  /**
+   * 단일 선택일 시 기존 응답에 새로운 값을 추가하는 함수
+   * @param newAnswer 유저가 선택한 값
+   */
   const handleSingleAnswer = (newAnswer: Option["value"]) => {
-    if (currentKey === "type" && newAnswer !== answers["type"]) removeFromAnswer("with_genres");
+    const isTypeQuestion = currentKey === type;
+    const isTypeChanged = newAnswer !== answers[type];
+    if (isTypeQuestion && isTypeChanged) removeFromAnswer(genres);
     addToAnswers(currentKey, newAnswer);
   };
 
   return {
     currentQuestion,
     currentOptions,
-    getOptionValue,
+    getOptionValues: handleAddAnswers,
     currentKey,
     isFirstQuestion,
     moveToPrev,

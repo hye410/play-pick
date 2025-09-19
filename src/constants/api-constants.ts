@@ -1,4 +1,4 @@
-import { FilteredDetailData } from "@/types/contents-types";
+import type { FilteredDetailData } from "@/types/contents-types";
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;

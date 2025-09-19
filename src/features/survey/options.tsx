@@ -6,12 +6,12 @@ import { useCallback, useMemo } from "react";
 
 type OptionsProps = {
   options: Option[];
-  handleSelectOption: (value: Option["value"]) => void;
+  handleSelectOptions: (value: Option["value"]) => void;
   haveManyOptions?: boolean;
   currentKey: Question["tmdb_key"];
 };
 
-const Options = ({ options, handleSelectOption, haveManyOptions = false, currentKey }: OptionsProps) => {
+const Options = ({ options, handleSelectOptions, haveManyOptions = false, currentKey }: OptionsProps) => {
   const { answers } = useSurveyAnswersStore();
   const currentAnswer = useMemo(() => answers[currentKey], [answers, currentKey]);
 
@@ -36,7 +36,7 @@ const Options = ({ options, handleSelectOption, haveManyOptions = false, current
               !haveManyOptions && "w-64",
               isSelected(option.value) && "border-none bg-primary",
             )}
-            onClick={() => handleSelectOption(option.value)}
+            onClick={() => handleSelectOptions(option.value)}
           >
             {option.label}
           </button>

@@ -17,7 +17,7 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
   const {
     currentQuestion,
     currentOptions,
-    getOptionValue,
+    getOptionValues,
     currentKey,
     isFirstQuestion,
     moveToNext,
@@ -32,7 +32,7 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
         <h3 className="mb-6 text-center text-lg font-bold">{currentQuestion.question}</h3>
         <Options
           options={currentOptions}
-          handleSelectOption={getOptionValue}
+          handleSelectOptions={getOptionValues}
           haveManyOptions={currentOptions.length >= APPLY_GRID_BOUNDARY}
           currentKey={currentKey}
         />

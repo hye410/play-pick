@@ -1,68 +1,73 @@
 "use client";
-import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getPreviewVideo } from "@/features/detail/api/services";
-import { A_DAY } from "@/constants/fetch-time-constants";
-import { modal } from "@/utils/modal";
-import type { PREVIEW_VIDEO_TYPE } from "@/types/preview-types";
 import { ALERT_TYPE } from "@/constants/alert-constants";
-import { useCallback } from "react";
-import { FilteredDetailData } from "@/types/contents-types";
+import { A_DAY } from "@/constants/fetch-time-constants";
+import { QUERY_KEYS } from "@/constants/query-keys-constants";
+import { getPreviewVideo } from "@/features/detail/api/server-actions";
+import type { FilteredDetailData } from "@/types/contents-types";
+import type { PREVIEW_VIDEO_TYPE } from "@/types/preview-types";
+import { alert } from "@/utils/alert";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 const { PREVIEW } = QUERY_KEYS;
 
 const { ERROR } = ALERT_TYPE;
 export const usePreviewHook = ({ title }: Pick<FilteredDetailData, "title">) => {
   const queryClient = useQueryClient();
-  const handlePrefetch = () => {
-    queryClient.prefetchQuery({
-      queryKey: [PREVIEW, title],
-      queryFn: () => getPreviewVideo(title),
-    });
+  const [modalState, setModalState] = useState({
+    isModalOpen: false,
+    videoData: null as PREVIEW_VIDEO_TYPE | null,
+  });
+
+  const getPreviewVideoData = async () => {
+    const res = await getPreviewVideo(title);
+    if (res.success && res.data) return res.data;
+    else throw new Error(res.message as string);
   };
 
-  const { data } = useQuery({
+  const { data: youtubeData } = useQuery({
     queryKey: [PREVIEW, title],
-    queryFn: () => getPreviewVideo(title),
+    queryFn: getPreviewVideoData,
     staleTime: A_DAY,
     enabled: false,
   });
 
-  const handleSearchTheYoutube = useCallback(() => {
-    if (data) openModal({ videoId: data.videoId, videoTitle: data.videoTitle });
-    else {
-      queryClient
-        .fetchQuery({
-          queryKey: [PREVIEW, title],
-          queryFn: () => getPreviewVideo(title),
-        })
-        .then((data) => openModal(data))
-        .catch((error) => {
-          console.error(error);
-          alert({
-            type: ERROR,
-            message: error as string,
-          });
-        });
-    }
-  }, [data, queryClient, title]);
-
-  const openModal = ({ videoId, videoTitle }: PREVIEW_VIDEO_TYPE) => {
-    modal({
-      html: `
-              <iframe
-                width="100%"
-                height="400px"
-                src="https://www.youtube.com/embed/${videoId}"
-                title="${videoTitle}"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              >
-              </iframe>
-            `,
+  const handlePrefetch = useCallback(() => {
+    queryClient.prefetchQuery({
+      queryKey: [PREVIEW, title],
+      queryFn: getPreviewVideoData,
     });
-  };
+  }, [queryClient, title]);
+
+  const closeModal = useCallback(() => {
+    setModalState({
+      isModalOpen: false,
+      videoData: null,
+    });
+  }, []);
+
+  const handlePreviewVideo = useCallback(async () => {
+    if (youtubeData) {
+      setModalState({ isModalOpen: true, videoData: youtubeData });
+    } else {
+      try {
+        const data = await queryClient.fetchQuery({
+          queryKey: [PREVIEW, title],
+          queryFn: getPreviewVideoData,
+        });
+        setModalState({ isModalOpen: true, videoData: data });
+      } catch (error) {
+        alert({
+          type: ERROR,
+          message: (error as Error).message,
+        });
+      }
+    }
+  }, [queryClient, title, youtubeData]);
+
   return {
     handlePrefetch,
-    handleSearchTheYoutube,
+    handlePreviewVideo,
+    modalState,
+    closeModal,
   };
 };

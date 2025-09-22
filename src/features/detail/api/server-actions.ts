@@ -1,11 +1,13 @@
 "use server";
 
-import { TOGGLE_LIKES_MESSAGE, USER_LIKES_MESSAGE } from "@/constants/message-constants";
-import type { CombinedData } from "@/types/contents-types";
+import { DEFAULT_YOUTUBE_SEARCH_API } from "@/constants/api-constants";
+import { PREVIEW_VIDEO_MESSAGE, TOGGLE_LIKES_MESSAGE, USER_LIKES_MESSAGE } from "@/constants/message-constants";
+import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
+import type { YOUTUBE_RESPONSE_TYPE, YOUTUBE_RESULT_TYPE } from "@/types/preview-types";
 import type { InitReturnType, UserLikesState } from "@/types/server-action-return-type";
 import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
-import { createServerSupabase } from "@/utils/supabase-server";
 import type { User } from "@supabase/supabase-js";
+import { createServerSupabase } from "@/utils/supabase-server";
 
 const { FETCH_FAIL } = USER_LIKES_MESSAGE;
 /**
@@ -64,4 +66,24 @@ export const deleteFromUserLikes = async (
     return { success: false, message: LIKES_REMOVE_FAIL };
   }
   return { success: true, message: LIKES_REMOVE_SUCCESS };
+};
+
+const { FETCH_VIDEO_FAIL, UNABLE_TO_FIND_PREVIEW } = PREVIEW_VIDEO_MESSAGE;
+/**
+ * 콘텐츠 프리뷰 유튜브 데이터를 요청하는 함수
+ * @param title 프리뷰를 요청할 콘텐츠 제목
+ * @returns api 요청 성공 여부와 그에 따른 메시지 / 성공 시 데이터 id와 제목
+ */
+export const getPreviewVideo = async (title: FilteredDetailData["title"]) => {
+  const res = await fetch(DEFAULT_YOUTUBE_SEARCH_API(title));
+
+  if (!res.ok) {
+    console.error(res);
+    return { success: false, message: FETCH_VIDEO_FAIL };
+  }
+  const data: YOUTUBE_RESPONSE_TYPE = await res.json();
+  const item: YOUTUBE_RESULT_TYPE = data.items?.[0];
+
+  if (item) return { success: true, message: null, data: { videoId: item.id.videoId, videoTitle: item.snippet.title } };
+  else return { success: false, message: UNABLE_TO_FIND_PREVIEW };
 };

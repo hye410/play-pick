@@ -29,6 +29,7 @@ export const FIND_PASSWORD_MESSAGE = Object.freeze({
 } as const);
 
 export const PREVIEW_VIDEO_MESSAGE = Object.freeze({
+  FETCH_VIDEO_FAIL: "해당 콘텐츠에 대한 예고편을 받아오는데 실패했습니다.",
   UNABLE_TO_FIND_PREVIEW: "해당 예고편을 찾을 수 없습니다.",
 } as const);
 

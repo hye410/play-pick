@@ -1,5 +1,6 @@
-import { Question } from "@/types/survey-types";
-import { USER_LIKES_TYPE } from "./user-likes-type";
+import type { Question } from "@/types/survey-types";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
+import type { CombinedData } from "@/types/contents-types";
 
 export type InitReturnType = {
   success: boolean;
@@ -16,4 +17,8 @@ export type SurveyState = InitReturnType & {
 
 export type UserLikesState = InitReturnType & {
   userLikes: Array<USER_LIKES_TYPE> | Array;
+};
+
+export type LikedContentState = InitReturnType & {
+  content: CombinedData | Array;
 };

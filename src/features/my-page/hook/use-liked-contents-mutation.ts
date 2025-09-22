@@ -1,57 +1,55 @@
 "use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSingleContentData } from "@/features/my-page/api/services";
-import type { CombinedData } from "@/types/contents-types";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { User } from "@supabase/supabase-js";
-import { ALERT_TYPE } from "@/constants/alert-constants";
-import { alert } from "@/utils/alert";
-import { deleteUserLikesStatus } from "@/features/detail/api/services";
-import { MY_CONTENTS_MESSAGE } from "@/constants/message-constants";
+import { getSingleContentData } from "@/features/my-page/api/server-actions";
+import type { CombinedData } from "@/types/contents-types";
+import type { LikedContentState } from "@/types/server-action-return-type";
+import type { User } from "@supabase/supabase-js";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type LikedContent = {
   id: CombinedData["id"];
   type: CombinedData["type"];
 };
-const { LIKED_CONTENTS } = QUERY_KEYS;
-const { ERROR } = ALERT_TYPE;
-const { SINGLE_CONTENT_FETCH_FAIL } = MY_CONTENTS_MESSAGE;
+const { LIKED_CONTENTS, USER_LIKES } = QUERY_KEYS;
 
-export const useLikedContentMutation = (
-  userId: User["id"],
-  addOptimisticToggle: (isOptimisticLiked: boolean) => void,
-  contentId: CombinedData["id"],
-) => {
+export const useLikedContentMutation = (userId: User["id"]) => {
   const queryClient = useQueryClient();
 
   const { mutate: getLikedContentMutate, isError: isGetLikedContentError } = useMutation<
-    CombinedData,
+    LikedContentState,
     Error,
     LikedContent
   >({
     mutationFn: async (likedContent: LikedContent) => await getSingleContentData(likedContent.id, likedContent.type),
-    onSuccess: (data) => {
+    onSuccess: (res) => {
       queryClient.setQueryData<Array<CombinedData>>([LIKED_CONTENTS, userId], (oldData) =>
-        oldData ? [...oldData, data] : [data],
+        oldData ? [...oldData, res.content] : [],
       );
     },
-    onError: async () => {
-      addOptimisticToggle(false);
-      try {
-        await deleteUserLikesStatus(userId, contentId);
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_LIKES, userId] });
-        alert({
-          type: ERROR,
-          message: SINGLE_CONTENT_FETCH_FAIL,
-        });
-      } catch (dbError) {
-        console.error("DB 롤백 실패:", dbError);
-        alert({
-          type: ERROR,
-          message: dbError as string,
-        });
-      }
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
     },
+    // onError: async (error) => {
+    //   addOptimisticToggle(false);
+    //   alert({
+    //     type: ERROR,
+    //     message: error.message,
+    //   });
+    //   // try {
+    //   //   await deleteFromUserLikes(userId, contentId);
+    //   //   queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
+    //   //   alert({
+    //   //     type: ERROR,
+    //   //     message: SINGLE_CONTENT_FETCH_FAIL,
+    //   //   });
+    //   // } catch (dbError) {
+    //   //   console.error("DB 롤백 실패:", dbError);
+    //   //   alert({
+    //   //     type: ERROR,
+    //   //     message: dbError as string,
+    //   //   });
+    //   // }
+    // }, -> 하나의 데이터 패칭을 좋아요 눌렀을 때 실패했어도 마이페이지에서 다시 전체 데이터 패칭 시도하니까 거기서 처리해도 될 거 같음
   });
 
   return {

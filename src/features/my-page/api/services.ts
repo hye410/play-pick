@@ -31,15 +31,3 @@ export const getLikedContents = async (likes: Array<USER_LIKES_TYPE>) => {
     throw error;
   }
 };
-
-export const getSingleContentData = async (id: CombinedData["id"], type: CombinedData["type"]) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/liked-contents?id=${id}&type=${type}`);
-    const result = await res.json();
-    if (!res.ok) throw result.message;
-    const { data } = result;
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};

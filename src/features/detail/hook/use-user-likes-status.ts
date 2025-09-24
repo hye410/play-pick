@@ -1,85 +1,82 @@
-"use client";
 import { useQueryClient } from "@tanstack/react-query";
-import { startTransition, useOptimistic } from "react";
+import { useEffect, useState } from "react";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { useLikedContentMutation } from "@/features/my-page/hook/use-liked-contents-mutation";
-import { addToUserLikes, deleteFromUserLikes } from "@/features/detail/api/server-actions";
 import { useUserLikesQuery } from "@/hook/use-user-likes-query";
+import { addToUserLikes, deleteFromUserLikes } from "@/features/detail/api/server-actions";
 import type { FilteredDetailData } from "@/types/contents-types";
 import type { User } from "@supabase/supabase-js";
 import { alert } from "@/utils/alert";
+const { WARNING } = ALERT_TYPE;
 
-const { ERROR, SUCCESS } = ALERT_TYPE;
 const { USER_LIKES } = QUERY_KEYS;
 
-export const useUserLikesStatus = (
-  contentId: FilteredDetailData["id"],
-  contentType: FilteredDetailData["type"],
-  user: User | null,
-) => {
-  if (!user) return;
-  const userId = user.id;
+type UserLikesStatus = {
+  contentId: FilteredDetailData["id"];
+  contentType: FilteredDetailData["type"];
+  user: User | null;
+  isInitLiked: boolean;
+};
+export const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserLikesStatus) => {
+  const userId = user?.id ?? null;
+  const { userLikes } = useUserLikesQuery(userId);
+  const [isLiked, setIsLiked] = useState(isInitLiked);
   const queryClient = useQueryClient();
-  const { userLikes, isUserLikesError, userLikesErrorMessage } = useUserLikesQuery(userId!);
+  useEffect(() => {
+    const isCurrentLiked: boolean = userLikes?.some((userLike) => userLike.id === contentId) ?? isInitLiked;
+    setIsLiked(isCurrentLiked);
+  }, [userLikes, isInitLiked, contentId]);
 
-  if (isUserLikesError) {
-    alert({
-      type: ERROR,
-      message: userLikesErrorMessage as string,
-    });
-  }
-
-  const likedIds = userLikes?.map(({ id }) => id);
-  const isLikedContent = likedIds?.some((id) => id === contentId) ?? false;
-  const [isOptimisticLiked, addOptimisticToggle] = useOptimistic(isLikedContent);
-  const { getLikedContentMutate } = useLikedContentMutation(userId!);
-
-  const handleToggle = () => {
-    startTransition(async () => {
-      addOptimisticToggle(!isOptimisticLiked);
-      if (isOptimisticLiked) await handleRemoveFromUserLikes();
-      else await handleAddToUserLikes();
-    });
+  const handleChange = () => {
+    if (!user || !userId)
+      return alert({
+        type: WARNING,
+        message: "로그인이 필요합니다.",
+      });
+    if (!isLiked) handleAddToUserLikes();
+    else handleRemoveFromUserLikes();
   };
 
   const handleAddToUserLikes = async () => {
+    if (!userId) return;
+    setIsLiked(true);
     const res = await addToUserLikes({ contentType, contentId, userId });
     if (res.success) {
-      getLikedContentMutate({ id: contentId, type: contentType });
+      queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
       alert({
-        type: SUCCESS,
+        type: "success",
         message: res.message as string,
       });
     } else {
-      addOptimisticToggle(isOptimisticLiked);
+      setIsLiked(false);
       alert({
-        type: ERROR,
+        type: "error",
         message: res.message as string,
       });
     }
   };
 
   const handleRemoveFromUserLikes = async () => {
+    if (!userId) return;
+    setIsLiked(false);
     const res = await deleteFromUserLikes(userId, contentId);
     if (res.success) {
-      //queryKey가 연결되어 있어서 userLikes 캐싱만 처리해도 liked_contents캐싱은 자동으로 해결될 거 같음
       queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
       alert({
-        type: SUCCESS,
+        type: "success",
         message: res.message as string,
       });
     } else {
-      addOptimisticToggle(isOptimisticLiked);
+      setIsLiked(true);
       alert({
-        type: ERROR,
+        type: "error",
         message: res.message as string,
       });
     }
   };
 
   return {
-    handleToggle,
-    isCurrentLiked: isOptimisticLiked,
+    handleChange,
+    isLiked,
   };
 };

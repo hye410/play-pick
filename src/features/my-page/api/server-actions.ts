@@ -48,12 +48,10 @@ export const getSingleContentData = async (
     method: API_METHOD.GET,
     headers: TMDB_API_HEADER,
   });
-
   if (!res.ok) {
     console.error(
       `ID ${id} 콘텐츠 가져오기 실패\nDB에는 해당 콘텐츠 아이디 저장\n마이 페이지 진입 시 다시 fetching 시도`,
     );
-    // throw new Error(NO_CONTENT_DATA);
     return { success: false, message: NO_CONTENT_DATA, content: [] };
   }
 

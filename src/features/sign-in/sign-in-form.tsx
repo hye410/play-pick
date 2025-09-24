@@ -49,7 +49,7 @@ const SignInForm = () => {
   }, [state, queryClient, router, params]);
 
   const fetchUserLikes = async (userId: User["id"]) => {
-    const res = await getUserLikes(userId);
+    const res = await getUserLikes(userId!);
     if (res.success && res.userLikes) {
       queryClient.setQueryData([USER_LIKES, userId], res.userLikes);
     } else if (!res.success) {

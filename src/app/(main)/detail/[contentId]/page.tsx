@@ -6,6 +6,7 @@ import { getUserLikes } from "@/features/detail/api/server-actions";
 import DetailContent from "@/features/detail/detail-content";
 import { filterDetailMovieData, filterDetailTvData } from "@/features/detail/utils/filter-detail-contents";
 import type { CombinedData } from "@/types/contents-types";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { createServerSupabase } from "@/utils/supabase-server";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
@@ -39,10 +40,22 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
     data: { user },
   } = await supabase.auth.getUser();
 
+  let isInitLiked = false;
+
   if (user) {
     await queryClient.prefetchQuery({
       queryKey: [USER_LIKES, user.id],
-      queryFn: () => getUserLikes(user.id),
+      queryFn: async () => {
+        const res = await getUserLikes(user.id);
+        if (res.success) {
+          const userLikes: Array<USER_LIKES_TYPE> = res.userLikes;
+          const likedId = userLikes.map(({ id }) => id);
+          isInitLiked = likedId.some((id) => id === Number(contentId));
+          return userLikes;
+        } else if (!res.success && res.message) {
+          throw new Error(res.message);
+        }
+      },
     });
   }
 
@@ -50,7 +63,7 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
     <HydrationBoundary state={dehydrate(queryClient)}>
       <article className="flex h-full items-center justify-center">
         <h3 className="hidden">{content.title} 상세 페이지</h3>
-        <DetailContent content={content} user={user} />
+        <DetailContent content={content} user={user} isInitLiked={isInitLiked} />
       </article>
     </HydrationBoundary>
   );

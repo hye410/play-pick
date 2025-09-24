@@ -3,8 +3,9 @@
 import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
 import { MY_CONTENTS_MESSAGE, UPDATE_PASSWORD_MESSAGE } from "@/constants/message-constants";
 import { TMDB_BASE_URL } from "@/constants/path-constants";
-import { CombinedData } from "@/types/contents-types";
-import type { InitReturnType, LikedContentState } from "@/types/server-action-return-type";
+import type { CombinedData } from "@/types/contents-types";
+import type { InitReturnType, LikedContentsState, LikedContentState } from "@/types/server-action-return-type";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { createServerSupabase } from "@/utils/supabase-server";
 
 const { UPDATE_FAIL, UPDATE_SUCCESS, SAME_PASSWORD_ERROR } = UPDATE_PASSWORD_MESSAGE;
@@ -48,6 +49,7 @@ export const getSingleContentData = async (
     method: API_METHOD.GET,
     headers: TMDB_API_HEADER,
   });
+  console.log("하나패치");
   if (!res.ok) {
     console.error(
       `ID ${id} 콘텐츠 가져오기 실패\nDB에는 해당 콘텐츠 아이디 저장\n마이 페이지 진입 시 다시 fetching 시도`,
@@ -63,4 +65,50 @@ export const getSingleContentData = async (
     title: content.title || content.name,
   };
   return { success: true, message: null, content: filteredContent };
+};
+
+/**
+ *
+ * @param id TMDB 데이터를 요청 콘텐츠의 id
+ * @param type TMDB 데이터를 요청 콘텐츠의 type (movie || tv)
+ * @returns 요청한 TMDB 데이터 (실패한 데이터는 null로 받음)
+ */
+const fetchTmdbContent = async (id: number, type: string) => {
+  const url = `${TMDB_BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=ko-KR`;
+  const res = await fetch(url, {
+    method: API_METHOD.GET,
+    headers: TMDB_API_HEADER,
+  });
+  if (!res.ok) {
+    console.error(`ID ${id} 콘텐츠 가져오기 실패`);
+    return null;
+  }
+  return res.json();
+};
+
+/**
+ * 유저가 찜한 콘텐츠의 TMDB 데이터를 호출하는 함수
+ * @param userLikes 유저가 찜한 콘텐츠들
+ * @returns 데이터 fetch 성공 여부와 fetch 받은 데이터
+ */
+export const getLikedContents = async (userLikes: Array<USER_LIKES_TYPE>): Promise<LikedContentsState> => {
+  let hasError = false;
+  const fetchUserLikesData = userLikes.map(({ id, type }) => fetchTmdbContent(id, type));
+  const allContents = await Promise.all(fetchUserLikesData);
+
+  const validContents = allContents.filter((content) => {
+    if (content === null) hasError = true;
+    return content !== null;
+  });
+
+  const parsedData: Array<CombinedData> =
+    validContents.map((content) => ({
+      id: content.id,
+      type: content.release_date ? "movie" : "tv",
+      imgUrl: content.poster_path,
+      title: content.title || content.name,
+    })) ?? [];
+  if (hasError) return { success: false, contents: parsedData, message: "일부 데이터를 fetch하는데 실패했습니다." };
+
+  return { success: true, contents: parsedData, message: null };
 };

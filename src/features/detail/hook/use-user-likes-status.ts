@@ -4,12 +4,13 @@ import { ALERT_TYPE } from "@/constants/alert-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { useUserLikesQuery } from "@/hook/use-user-likes-query";
 import { addToUserLikes, deleteFromUserLikes } from "@/features/detail/api/server-actions";
-import type { FilteredDetailData } from "@/types/contents-types";
+import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 import type { User } from "@supabase/supabase-js";
 import { alert } from "@/utils/alert";
+import { useLikedContentMutation } from "@/features/my-page/hook/use-liked-contents-mutation";
 const { WARNING } = ALERT_TYPE;
 
-const { USER_LIKES } = QUERY_KEYS;
+const { USER_LIKES, LIKED_CONTENTS } = QUERY_KEYS;
 
 type UserLikesStatus = {
   contentId: FilteredDetailData["id"];
@@ -17,9 +18,11 @@ type UserLikesStatus = {
   user: User | null;
   isInitLiked: boolean;
 };
+const { SUCCESS, ERROR } = ALERT_TYPE;
 export const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserLikesStatus) => {
   const userId = user?.id ?? null;
   const { userLikes } = useUserLikesQuery(userId);
+  const { getLikedContentMutate } = useLikedContentMutation(userId);
   const [isLiked, setIsLiked] = useState(isInitLiked);
   const queryClient = useQueryClient();
   useEffect(() => {
@@ -42,15 +45,16 @@ export const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }
     setIsLiked(true);
     const res = await addToUserLikes({ contentType, contentId, userId });
     if (res.success) {
+      getLikedContentMutate({ id: contentId, type: contentType });
       queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
       alert({
-        type: "success",
+        type: SUCCESS,
         message: res.message as string,
       });
     } else {
       setIsLiked(false);
       alert({
-        type: "error",
+        type: ERROR,
         message: res.message as string,
       });
     }
@@ -62,14 +66,17 @@ export const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }
     const res = await deleteFromUserLikes(userId, contentId);
     if (res.success) {
       queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
+      queryClient.setQueryData([LIKED_CONTENTS, userId], (oldData: Array<CombinedData>) => {
+        return oldData.filter((d) => d.id !== contentId);
+      });
       alert({
-        type: "success",
+        type: SUCCESS,
         message: res.message as string,
       });
     } else {
       setIsLiked(true);
       alert({
-        type: "error",
+        type: ERROR,
         message: res.message as string,
       });
     }

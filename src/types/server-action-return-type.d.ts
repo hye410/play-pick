@@ -22,3 +22,7 @@ export type UserLikesState = InitReturnType & {
 export type LikedContentState = InitReturnType & {
   content: CombinedData | Array;
 };
+
+export type LikedContentsState = InitReturnType & {
+  contents: Array<CombinedData> | Array;
+};

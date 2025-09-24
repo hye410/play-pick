@@ -21,7 +21,7 @@ const DetailContent = ({ content, user, isInitLiked }: DetailContentProps) => {
       {/* ----- 포스터 이미지 ----- */}
       <dt className="hidden">{content.title} 포스터 이미지</dt>
       <dd className="relative h-[350px] w-[250px]">
-        <Image src={`${TMDB_IMAGE_URL}/${content.imgUrl}`} alt={content.title} fill sizes="auto" priority />
+        <Image src={`${TMDB_IMAGE_URL}/${content.imgUrl}`} alt={content.title} fill sizes="250px" />
       </dd>
 
       {/* ----- 찜 / 공유 필드 ----- */}

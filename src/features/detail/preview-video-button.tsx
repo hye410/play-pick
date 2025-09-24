@@ -4,6 +4,7 @@ import { Modal } from "@/components/modal";
 import { usePreviewHook } from "@/features/detail/hook/use-preview-hook";
 import type { FilteredDetailData } from "@/types/contents-types";
 import { FaYoutube } from "react-icons/fa";
+import YouTubeLiteEmbed from "./youtube-lite-embed";
 
 const PreviewVideoButton = ({ title: contentTitle }: Pick<FilteredDetailData, "title">) => {
   const { handlePrefetch, handlePreviewVideo, modalState, closeModal } = usePreviewHook({ title: contentTitle });
@@ -17,14 +18,15 @@ const PreviewVideoButton = ({ title: contentTitle }: Pick<FilteredDetailData, "t
       </Button>
       {isModalOpen && videoData && (
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <iframe
+          {/* <iframe
             width="100%"
             height="400px"
             src={`https://www.youtube.com/embed/${videoData.videoId}`}
             title={videoData.videoTitle}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-          />
+          /> */}
+          <YouTubeLiteEmbed videoId={videoData.videoId} title={videoData.videoTitle} />
         </Modal>
       )}
     </>

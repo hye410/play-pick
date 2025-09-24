@@ -6,6 +6,7 @@ import { LuHeartOff } from "react-icons/lu";
 import { useLikedContentsQuery } from "@/features/my-page/hook/use-liked-contents-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
+import { LoadingSpinner } from "@/components/loading-spinner";
 type MyContentsListProps = {
   userId: User["id"];
 };
@@ -23,12 +24,9 @@ const MyContentsList = ({ userId }: MyContentsListProps) => {
   const { userLikes, isUserLikesLoading } = useUserLikesQuery(userId);
   const { likedContents, isLikedContentsLoading } = useLikedContentsQuery(userId, userLikes!);
   const queryClient = useQueryClient();
-  if (isUserLikesLoading || isLikedContentsLoading) {
-    return "로딩 중 ..";
-  }
-
+  if (isUserLikesLoading || isLikedContentsLoading) return <LoadingSpinner />;
   if (!userLikes || userLikes.length === 0) return <EmptyContents />;
-  if (!likedContents || likedContents.length === 0) return <div>fail to fetching data</div>;
+  if (!likedContents || likedContents.length !== 0) return <div>fail to fetching data</div>;
   if (userLikes.length !== likedContents.length)
     queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LIKED_CONTENTS, userId] });
 

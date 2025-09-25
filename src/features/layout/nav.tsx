@@ -1,7 +1,7 @@
 "use client";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { privateMenus, publicMenus } from "@/constants/menu-constants";
-import { getSignOut } from "@/features/layout/api/server-services";
+import { getSignOut } from "@/features/layout/api/server-actions";
 import { useAuthStatus } from "@/hook/use-auth-status";
 import type { Menu } from "@/types/menu-types";
 import { alert } from "@/utils/alert";
@@ -21,15 +21,14 @@ const Nav = ({ initialIsLoggedIn }: NavProps) => {
   const { isLoggedIn } = useAuthStatus(initialIsLoggedIn);
 
   const handleSignOut = useCallback(async () => {
-    try {
-      await getSignOut().then(() => {
-        queryClient.clear();
-        window.location.replace("/");
-      });
-    } catch (error) {
+    const res = await getSignOut();
+    if (res.success) {
+      queryClient.clear();
+      window.location.replace("/");
+    } else {
       alert({
         type: ERROR,
-        message: error as string,
+        message: res.message as string,
       });
     }
   }, [queryClient]);

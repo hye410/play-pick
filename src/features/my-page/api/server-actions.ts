@@ -1,11 +1,12 @@
 "use server";
 
 import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
-import { MY_CONTENTS_MESSAGE, UPDATE_PASSWORD_MESSAGE } from "@/constants/message-constants";
+import { DELETE_USER_MESSAGE, MY_CONTENTS_MESSAGE, UPDATE_PASSWORD_MESSAGE } from "@/constants/message-constants";
 import { TMDB_BASE_URL } from "@/constants/path-constants";
 import type { CombinedData } from "@/types/contents-types";
 import type { InitReturnType, LikedContentsState, LikedContentState } from "@/types/server-action-return-type";
 import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
+import { createAuthSupabase } from "@/utils/supabase-auth";
 import { createServerSupabase } from "@/utils/supabase-server";
 
 const { UPDATE_FAIL, UPDATE_SUCCESS, SAME_PASSWORD_ERROR } = UPDATE_PASSWORD_MESSAGE;
@@ -49,7 +50,6 @@ export const getSingleContentData = async (
     method: API_METHOD.GET,
     headers: TMDB_API_HEADER,
   });
-  console.log("하나패치");
   if (!res.ok) {
     console.error(
       `ID ${id} 콘텐츠 가져오기 실패\nDB에는 해당 콘텐츠 아이디 저장\n마이 페이지 진입 시 다시 fetching 시도`,
@@ -111,4 +111,21 @@ export const getLikedContents = async (userLikes: Array<USER_LIKES_TYPE>): Promi
   if (hasError) return { success: false, contents: parsedData, message: "일부 데이터를 fetch하는데 실패했습니다." };
 
   return { success: true, contents: parsedData, message: null };
+};
+
+const { DELETE_FAIL, DELETE_SUCCESS } = DELETE_USER_MESSAGE;
+/**
+ * 회원 탈퇴를 요청하는 함수
+ * @returns 회원 탈퇴 요청 성공 여부와 그에 따른 메시지
+ */
+export const deleteUser = async (): Promise<InitReturnType> => {
+  const supabase = await createAuthSupabase();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  if (!user || error) return { success: false, message: "에러가 발생했습니다.<br/>새로고침 후 다시 시도해 주세요." };
+  const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+  if (deleteError) return { success: false, message: DELETE_FAIL };
+  return { success: true, message: DELETE_SUCCESS };
 };

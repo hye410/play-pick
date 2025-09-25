@@ -14,7 +14,8 @@ const MyPage = async ({ searchParams }: MyPageProps) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user || !user.email) return; //@TODO: 에러 시 처리하기
+  if (!user || !user.email)
+    throw new Error("유저 정보가 없어 마이페이지에 접근할 수 없습니다.<br /> 로그인 후 다시 시도해 주세요.");
 
   return (
     <div className="mx-auto flex h-full w-[85%] flex-col">

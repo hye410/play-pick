@@ -26,3 +26,7 @@ export type LikedContentState = InitReturnType & {
 export type LikedContentsState = InitReturnType & {
   contents: Array<CombinedData> | Array;
 };
+
+export type ResultState = InitReturnType & {
+  recommends: Array<CombinedData> | Array;
+};

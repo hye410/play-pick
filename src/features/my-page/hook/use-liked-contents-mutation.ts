@@ -13,16 +13,8 @@ type LikedContent = {
 const { LIKED_CONTENTS } = QUERY_KEYS;
 
 const useLikedContentMutation = (userId: User["id"] | null) => {
-  if (!userId) {
-    return {
-      getLikedContentMutate: () => {
-        console.warn("userId가 없어서  getLikedContentMutate함수를 정상적으로 호출할 수 없습니다.");
-      },
-      isGetLikedContentError: false,
-    };
-  }
-
   const queryClient = useQueryClient();
+
   const { mutate: getLikedContentMutate, isError: isGetLikedContentError } = useMutation<
     LikedContentState,
     Error,

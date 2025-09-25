@@ -12,6 +12,8 @@ import { signUpDefaultValues, signUpSchema } from "@/features/sign-up/utils/form
 import type { SignUp } from "@/types/form-types";
 import { alert } from "@/utils/alert";
 import type { InitReturnType } from "@/types/server-action-return-type";
+import { useRouter } from "next/navigation";
+import { SIGN_IN } from "@/constants/path-constants";
 
 const { email, password, confirmPassword } = FORM_CONSTANTS;
 const { ERROR, SUCCESS } = ALERT_TYPE;
@@ -23,18 +25,18 @@ const initialState: InitReturnType = {
 const SignUpForm = () => {
   const [isPending, startTransition] = useTransition();
   const [state, requestSignUp] = useActionState(postSignUp, initialState);
-  const { handleSubmit, control, reset } = useForm<SignUp>({
+  const { handleSubmit, control } = useForm<SignUp>({
     resolver: zodResolver(signUpSchema),
     mode: "onBlur",
     defaultValues: signUpDefaultValues,
   });
-
+  const router = useRouter();
   useEffect(() => {
     if (state.success && state.message) {
       alert({
         type: SUCCESS,
         message: state.message as string,
-      });
+      }).then(() => router.replace(SIGN_IN));
     } else if (!state.success && state.message) {
       alert({
         type: ERROR,

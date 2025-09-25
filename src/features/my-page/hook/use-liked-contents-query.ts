@@ -1,3 +1,4 @@
+import { ALERT_TYPE } from "@/constants/alert-constants";
 import { A_DAY } from "@/constants/fetch-time-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { getLikedContents } from "@/features/my-page/api/server-actions";
@@ -8,6 +9,7 @@ import type { User } from "@supabase/supabase-js";
 import { useQuery } from "@tanstack/react-query";
 
 const { LIKED_CONTENTS } = QUERY_KEYS;
+const { ERROR } = ALERT_TYPE;
 const useLikedContentsQuery = (userId: User["id"], userLikes: Array<USER_LIKES_TYPE>) => {
   const {
     data: likedContents,
@@ -18,7 +20,7 @@ const useLikedContentsQuery = (userId: User["id"], userLikes: Array<USER_LIKES_T
     queryKey: [LIKED_CONTENTS, userId],
     queryFn: async () => {
       const res = await getLikedContents(userLikes!);
-      if (!res.success && res.message) alert({ type: "error", message: res.message as string });
+      if (!res.success && res.message) alert({ type: ERROR, message: res.message as string });
       return res.contents;
     },
     enabled: !!userLikes && userLikes.length > 0,

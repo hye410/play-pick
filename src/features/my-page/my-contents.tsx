@@ -7,8 +7,10 @@ type MyContentsProps = {
 
 const MyContents = async ({ user }: MyContentsProps) => {
   return (
-    <section>
-      <h3 className="mb-4 border-b border-dotted py-5 text-center font-extrabold">{user.email}님이 찜해놓은 콘텐츠</h3>
+    <section className="h-full">
+      <h3 className="flex h-[80px] items-center justify-center border-b border-dotted font-extrabold">
+        {user.email}님이 찜해놓은 콘텐츠
+      </h3>
       <MyContentsList userId={user.id} />
     </section>
   );

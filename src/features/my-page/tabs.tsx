@@ -19,7 +19,7 @@ const Tabs = ({ currentTab }: TabsProps) => {
   };
 
   return (
-    <div className="text-right">
+    <div className="h-[50px] text-right">
       <button
         onClick={() => handleChangeTab(INFO)}
         className={clsx("w-40 rounded-tl-3xl border border-b-0 py-3", currentTab === INFO && "bg-primary")}

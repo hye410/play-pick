@@ -2,7 +2,7 @@
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { privateMenus, publicMenus } from "@/constants/menu-constants";
 import { getSignOut } from "@/features/layout/api/server-actions";
-import { useAuthStatus } from "@/hook/use-auth-status";
+import useAuthStatus from "@/hook/use-auth-status";
 import type { Menu } from "@/types/menu-types";
 import { alert } from "@/utils/alert";
 import { useQueryClient } from "@tanstack/react-query";

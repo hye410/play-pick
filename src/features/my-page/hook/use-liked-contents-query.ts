@@ -8,7 +8,7 @@ import type { User } from "@supabase/supabase-js";
 import { useQuery } from "@tanstack/react-query";
 
 const { LIKED_CONTENTS } = QUERY_KEYS;
-export const useLikedContentsQuery = (userId: User["id"], userLikes: Array<USER_LIKES_TYPE>) => {
+const useLikedContentsQuery = (userId: User["id"], userLikes: Array<USER_LIKES_TYPE>) => {
   const {
     data: likedContents,
     isLoading: isLikedContentsLoading,
@@ -32,3 +32,5 @@ export const useLikedContentsQuery = (userId: User["id"], userLikes: Array<USER_
     likedContentsError,
   };
 };
+
+export default useLikedContentsQuery;

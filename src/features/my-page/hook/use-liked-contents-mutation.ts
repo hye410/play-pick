@@ -12,7 +12,7 @@ type LikedContent = {
 };
 const { LIKED_CONTENTS } = QUERY_KEYS;
 
-export const useLikedContentMutation = (userId: User["id"] | null) => {
+const useLikedContentMutation = (userId: User["id"] | null) => {
   if (!userId) {
     return {
       getLikedContentMutate: () => {
@@ -44,3 +44,5 @@ export const useLikedContentMutation = (userId: User["id"] | null) => {
     isGetLikedContentError,
   };
 };
+
+export default useLikedContentMutation;

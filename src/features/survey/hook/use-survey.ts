@@ -25,7 +25,7 @@ userPickLabels -> 유저가 선택한 값의 'label'을 담음
 selectedParams tmdb api 통신에 필요한 파라미터로 사용함
 `;
 
-const useSurveyHook = (initialQuestion: Array<Question>) => {
+const useSurvey = (initialQuestion: Array<Question>) => {
   const [selectedParams, setSelectedParams] = useState<Answer>({});
   const [userPickLabels, setUserPickLabels] = useState<Array<string>>([]);
   const [direction, setDirection] = useState<-1 | 1>(1);
@@ -205,4 +205,4 @@ const useSurveyHook = (initialQuestion: Array<Question>) => {
   };
 };
 
-export default useSurveyHook;
+export default useSurvey;

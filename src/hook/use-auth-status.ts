@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const supabase = createClientSuperbase();
 
-export const useAuthStatus = (initialState: boolean = false) => {
+const useAuthStatus = (initialState: boolean = false) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(initialState);
   const [user, setUser] = useState<null | User>(null);
   useEffect(() => {
@@ -29,3 +29,5 @@ export const useAuthStatus = (initialState: boolean = false) => {
     user,
   };
 };
+
+export default useAuthStatus;

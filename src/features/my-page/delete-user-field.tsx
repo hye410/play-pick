@@ -1,5 +1,6 @@
 "use client";
-import { useDeleteUser } from "@/features/my-page/hook/use-delete-user";
+
+import useDeleteUser from "@/features/my-page/hook/use-delete-user";
 
 const DeleteUserField = () => {
   const { handleDeleteUser } = useDeleteUser();

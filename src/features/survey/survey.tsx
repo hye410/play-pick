@@ -1,6 +1,6 @@
 "use client";
 import { AnimatedComponent } from "@/components/animated-component";
-import useSurveyHook from "@/features/survey/hook/use-survey-hook";
+import useSurvey from "@/features/survey/hook/use-survey";
 import Options from "@/features/survey/options";
 import type { Question } from "@/types/survey-types";
 import clsx from "clsx";
@@ -24,7 +24,7 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
     moveToPrev,
     answers,
     direction,
-  } = useSurveyHook(initialQuestion);
+  } = useSurvey(initialQuestion);
 
   return (
     <div className="relative mx-auto flex h-full w-[80%] flex-col items-center justify-center">

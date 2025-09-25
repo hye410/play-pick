@@ -13,7 +13,7 @@ type UseKakaoShareHookProps = {
 };
 
 const { ERROR } = ALERT_TYPE;
-export const UseKakaoShareHook = ({ title, desc, posterUrl }: UseKakaoShareHookProps) => {
+const useKakaoShare = ({ title, desc, posterUrl }: UseKakaoShareHookProps) => {
   useEffect(() => {
     if (typeof window !== "undefined" && window.Kakao && !window.Kakao.isInitialized()) {
       window.Kakao.init(KAKAO_APP_KEY);
@@ -53,3 +53,5 @@ export const UseKakaoShareHook = ({ title, desc, posterUrl }: UseKakaoShareHookP
     handleShareByKakao,
   };
 };
+
+export default useKakaoShare;

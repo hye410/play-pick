@@ -11,7 +11,7 @@ import { useCallback, useState } from "react";
 const { PREVIEW } = QUERY_KEYS;
 
 const { ERROR } = ALERT_TYPE;
-export const usePreviewHook = ({ title }: Pick<FilteredDetailData, "title">) => {
+const usePreview = ({ title }: Pick<FilteredDetailData, "title">) => {
   const queryClient = useQueryClient();
   const [modalState, setModalState] = useState({
     isModalOpen: false,
@@ -71,3 +71,4 @@ export const usePreviewHook = ({ title }: Pick<FilteredDetailData, "title">) => 
     closeModal,
   };
 };
+export default usePreview;

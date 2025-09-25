@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const { USER_LIKES } = QUERY_KEYS;
 
-export const useUserLikesQuery = (userId: User["id"] | null) => {
+const useUserLikesQuery = (userId: User["id"] | null) => {
   const {
     data: userLikes,
     isLoading: isUserLikesLoading,
@@ -31,3 +31,5 @@ export const useUserLikesQuery = (userId: User["id"] | null) => {
     userLikesError,
   };
 };
+
+export default useUserLikesQuery;

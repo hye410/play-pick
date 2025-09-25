@@ -1,9 +1,9 @@
 "use client";
 import Content from "@/components/content";
-import { useUserLikesQuery } from "@/hook/use-user-likes-query";
+import useUserLikesQuery from "@/hook/use-user-likes-query";
 import type { User } from "@supabase/supabase-js";
 import { LuHeartOff } from "react-icons/lu";
-import { useLikedContentsQuery } from "@/features/my-page/hook/use-liked-contents-query";
+import useLikedContentsQuery from "@/features/my-page/hook/use-liked-contents-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { LoadingSpinner } from "@/components/loading-spinner";

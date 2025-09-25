@@ -1,7 +1,7 @@
 "use client";
 import { FilteredDetailData } from "@/types/contents-types";
 import { FiShare } from "react-icons/fi";
-import { UseKakaoShareHook } from "./hook/use-kakao-share-hook";
+import useKakaoShare from "@/features/detail/hook/use-kakao-share";
 
 type ShareButtonProps = {
   title: FilteredDetailData["title"];
@@ -9,7 +9,7 @@ type ShareButtonProps = {
   posterUrl: FilteredDetailData["imgUrl"];
 };
 const ShareButton = ({ title, desc, posterUrl }: ShareButtonProps) => {
-  const { handleShareByKakao } = UseKakaoShareHook({ title, desc, posterUrl });
+  const { handleShareByKakao } = useKakaoShare({ title, desc, posterUrl });
   return (
     <button onClick={handleShareByKakao}>
       <FiShare aria-label="공유하기 아이콘" />

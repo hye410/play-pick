@@ -8,7 +8,7 @@ import { alert } from "@/utils/alert";
 const { ERROR, SUCCESS } = ALERT_TYPE;
 const { DELETE_CONFIRM, DELETE_WARNING } = DELETE_USER_MESSAGE;
 
-export const useDeleteUser = () => {
+const useDeleteUser = () => {
   const requestSignout = async () => {
     await getSignOut();
     window.location.replace("/");
@@ -40,3 +40,4 @@ export const useDeleteUser = () => {
     handleDeleteUser,
   };
 };
+export default useDeleteUser;

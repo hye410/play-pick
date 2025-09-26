@@ -1,6 +1,7 @@
 import { getTodayPick } from "@/features/home/api/services";
 import { getSurveyResult } from "@/features/result/api/server-actions";
 import RecommendList from "@/features/result/recommend-list";
+import TodayPicksList from "@/features/result/today-picks-list";
 import UserPicks from "@/features/result/user-picks";
 import type { CombinedData } from "@/types/contents-types";
 import type { ResultState } from "@/types/server-action-return-type";
@@ -33,12 +34,11 @@ const Result = async ({ searchParams }: ResultProps) => {
           ? "딱 맞는 콘텐츠 추천드릴게요😉"
           : "아쉽지만 조건에 맞는 추천 콘텐츠가 없네요🥲\n대신 Today's Pick은 어떠신가요?"}
       </h3>
-      <RecommendList
-        initialResultData={initialResultData}
-        haveNoRecommend={!haveRecommends}
-        queries={queries}
-        todayPicks={todayPicks}
-      />
+      {haveRecommends ? (
+        <RecommendList initialResultData={initialResultData} queries={queries} />
+      ) : (
+        <TodayPicksList todayPicks={todayPicks} />
+      )}
     </article>
   );
 };

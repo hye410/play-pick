@@ -12,22 +12,10 @@ import { ALERT_TYPE } from "@/constants/alert-constants";
 type RecommendListProps = {
   initialResultData: ResultState;
   queries: Answer;
-  haveNoRecommend: boolean;
-  todayPicks: Array<CombinedData>;
 };
 
 const { ERROR } = ALERT_TYPE;
-const RecommendList = ({ initialResultData, queries, haveNoRecommend, todayPicks }: RecommendListProps) => {
-  if (haveNoRecommend) {
-    return (
-      <div className="mx-auto grid max-w-[1440px] grid-cols-4 gap-5">
-        {todayPicks.map((content) => (
-          <Content key={`today_pick_${content.id}`} content={content} />
-        ))}
-      </div>
-    );
-  }
-
+const RecommendList = ({ initialResultData, queries }: RecommendListProps) => {
   const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteRecommends(
     queries,
     initialResultData,

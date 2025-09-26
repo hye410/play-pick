@@ -1,5 +1,5 @@
 "use client";
-import { AnimatedComponent } from "@/components/animated-component";
+import AnimatedComponent from "@/components/animated-component";
 import useSurvey from "@/features/survey/hook/use-survey";
 import Options from "@/features/survey/options";
 import type { Question } from "@/types/survey-types";

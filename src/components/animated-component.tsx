@@ -7,7 +7,7 @@ type AnimatedComponentProps = {
   children: React.ReactNode;
 };
 
-export const AnimatedComponent = ({ animatedKey, direction, children }: AnimatedComponentProps) => {
+const AnimatedComponent = ({ animatedKey, direction, children }: AnimatedComponentProps) => {
   const variants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 100 : -100,
@@ -44,3 +44,5 @@ export const AnimatedComponent = ({ animatedKey, direction, children }: Animated
     </AnimatePresence>
   );
 };
+
+export default AnimatedComponent;

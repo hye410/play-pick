@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { motion } from "framer-motion";
 import { CSSProperties } from "react";
 
-export const LoadingSpinner = ({ width = "50px", height = "50px" }) => {
+const LoadingSpinner = ({ width = "50px", height = "50px" }) => {
   const style = {
     "--spinner-width": width,
     "--spinner-height": height,
@@ -25,3 +25,5 @@ export const LoadingSpinner = ({ width = "50px", height = "50px" }) => {
     </div>
   );
 };
+
+export default LoadingSpinner;

@@ -4,7 +4,7 @@ import { useActionState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@/components/button";
 import FormInput from "@/components/form-input";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import LoadingSpinner from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { FORM_CONSTANTS, PASSWORD_CONDITION } from "@/constants/form-constants";
 import { postSignUp } from "@/features/sign-up/api/server-actions";

@@ -6,7 +6,7 @@ import type { SignUp } from "@/types/form-types";
 import type { InitReturnType } from "@/types/server-action-return-type";
 import Button from "@/components/button";
 import FormInput from "@/components/form-input";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import LoadingSpinner from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { PASSWORD_CONDITION } from "@/constants/form-constants";
 import DeleteUserField from "@/features/my-page/delete-user-field";

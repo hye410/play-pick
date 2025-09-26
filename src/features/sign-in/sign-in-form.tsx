@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/button";
 import FormInput from "@/components/form-input";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import LoadingSpinner from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { getUserLikes } from "@/features/detail/api/server-actions";

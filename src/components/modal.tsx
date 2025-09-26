@@ -7,7 +7,7 @@ type ModalProps = {
   onClose: () => void;
 };
 
-export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
+const Modal = ({ children, isOpen, onClose }: ModalProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const modalRoot = useRef<HTMLDivElement | null>(null);
 
@@ -37,3 +37,5 @@ export const Modal = ({ children, isOpen, onClose }: ModalProps) => {
     modalRoot.current,
   );
 };
+
+export default Modal;

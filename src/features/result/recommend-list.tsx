@@ -4,7 +4,7 @@ import type { CombinedData } from "@/types/contents-types";
 import type { ResultState } from "@/types/server-action-return-type";
 import type { Answer } from "@/types/survey-types";
 import useInfiniteRecommends from "@/features/result/hook/use-infinite-recommends";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import LoadingSpinner from "@/components/loading-spinner";
 import Button from "@/components/button";
 import { alert } from "@/utils/alert";
 import { ALERT_TYPE } from "@/constants/alert-constants";

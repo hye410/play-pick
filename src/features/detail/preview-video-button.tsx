@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/components/button";
-import { Modal } from "@/components/modal";
+import Modal from "@/components/modal";
 import type { FilteredDetailData } from "@/types/contents-types";
 import { FaYoutube } from "react-icons/fa";
 import YouTubeLiteEmbed from "@/features/detail/youtube-lite-embed";

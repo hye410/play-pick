@@ -5,7 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import useLikedContentsQuery from "@/features/my-page/hook/use-liked-contents-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import LoadingSpinner from "@/components/loading-spinner";
 import EmptyContents from "@/features/my-page/empty-contents";
 import { MY_CONTENTS_MESSAGE } from "@/constants/message-constants";
 type MyContentsListProps = {

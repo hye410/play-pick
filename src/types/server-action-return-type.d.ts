@@ -29,4 +29,5 @@ export type LikedContentsState = InitReturnType & {
 
 export type ResultState = InitReturnType & {
   recommends: Array<CombinedData> | Array;
+  totalPages: number;
 };

@@ -47,7 +47,8 @@ export const SURVEY_MESSAGE = Object.freeze({
 } as const);
 
 export const RESULT_MESSAGE = Object.freeze({
-  FETCH_RECOMMEND_FAIL: "추천 목록을 내려받는데 실패했습니다.",
+  FETCH_RECOMMENDS_FAIL: "추천 목록을 내려받는데 실패했습니다.",
+  FETCH_ADDITIONAL_RECOMMENDS_FAIL: "추천 콘텐츠를 더 불러오는데 실패했습니다.",
 } as const);
 
 export const DELETE_USER_MESSAGE = Object.freeze({

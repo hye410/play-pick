@@ -70,7 +70,8 @@ export const UPDATE_PASSWORD_MESSAGE = Object.freeze({
 
 export const MY_CONTENTS_MESSAGE = Object.freeze({
   NO_LIKED_CONTENTS: "찜한 콘텐츠가 없습니다.",
-  FETCH_FAIL: "찜한 콘텐츠의 데이터를 받아오는데 실패했습니다.",
+  FETCH_ALL_FAIL: "찜한 콘텐츠의 데이터를 받아오는데 실패했습니다.",
+  FETCH_SOME_FAIL: "일부 콘텐츠 데이터를 받아오는데 실패했습니다.",
   NO_CONTENT_DATA: "해당 콘텐츠에 대한 데이터를 찾을 수 없습니다.",
 } as const);
 

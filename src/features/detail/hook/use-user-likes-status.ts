@@ -7,7 +7,7 @@ import { addToUserLikes, deleteFromUserLikes } from "@/features/detail/api/serve
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 import type { User } from "@supabase/supabase-js";
 import { alert } from "@/utils/alert";
-import useLikedContentMutation from "@/features/my-page/hook/use-liked-contents-mutation";
+import useLikedContentMutation from "@/features/detail/hook/use-liked-content-mutation";
 const { WARNING } = ALERT_TYPE;
 
 const { USER_LIKES, LIKED_CONTENTS } = QUERY_KEYS;

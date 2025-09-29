@@ -50,6 +50,7 @@ export const getSingleContentData = async (
     method: API_METHOD.GET,
     headers: TMDB_API_HEADER,
   });
+
   if (!res.ok) {
     console.error(
       `ID ${id} 콘텐츠 가져오기 실패\nDB에는 해당 콘텐츠 아이디 저장\n마이 페이지 진입 시 다시 fetching 시도`,
@@ -86,31 +87,69 @@ const fetchTmdbContent = async (id: number, type: string) => {
   return res.json();
 };
 
+const { FETCH_SOME_FAIL, FETCH_ALL_FAIL } = MY_CONTENTS_MESSAGE;
+
+const removeErrorProp = (content: any) => {
+  const { error, ...rest } = content;
+  return rest;
+};
+
 /**
  * 유저가 찜한 콘텐츠의 TMDB 데이터를 호출하는 함수
  * @param userLikes 유저가 찜한 콘텐츠들
  * @returns 데이터 fetch 성공 여부와 fetch 받은 데이터
  */
 export const getLikedContents = async (userLikes: Array<USER_LIKES_TYPE>): Promise<LikedContentsState> => {
-  let hasError = false;
   const fetchUserLikesData = userLikes.map(({ id, type }) => fetchTmdbContent(id, type));
-  const allContents = await Promise.all(fetchUserLikesData);
-
-  const validContents = allContents.filter((content) => {
-    if (content === null) hasError = true;
-    return content !== null;
+  const settled = await Promise.allSettled(fetchUserLikesData);
+  console.log("전체패치");
+  const allContents = settled.map((result, index) => {
+    if (result.status === "fulfilled" && result.value !== null) {
+      return {
+        error: false,
+        data: result.value,
+      };
+    } else {
+      console.error(`ID ${userLikes[index].id} 콘텐츠 가져오기 실패`);
+      return {
+        error: true,
+        data: null,
+        id: userLikes[index].id,
+        type: userLikes[index].type,
+      };
+    }
   });
 
-  const parsedData: Array<CombinedData> =
-    validContents.map((content) => ({
-      id: content.id,
-      type: content.release_date ? "movie" : "tv",
-      imgUrl: content.poster_path,
-      title: content.title || content.name,
-    })) ?? [];
-  if (hasError) return { success: false, contents: parsedData, message: "일부 데이터를 fetch하는데 실패했습니다." };
+  const parsedData = allContents.map((item) => {
+    if (item.error) {
+      return { id: item.id, type: item.type, error: true };
+    }
+    const content = item.data;
+    return {
+      id: content?.id,
+      type: content?.name ? "tv" : "movie",
+      imgUrl: content?.poster_path,
+      title: content?.title ?? content?.name,
+      error: false,
+    };
+  });
 
-  return { success: true, contents: parsedData, message: null };
+  const isSomeFetchFail = allContents.some((item) => item.error);
+  const validData = parsedData.filter(({ error }) => !error).map((data) => removeErrorProp(data));
+  const failedData = parsedData.filter(({ error }) => error).map((data) => removeErrorProp(data));
+  const isAllFetchFail = allContents.every((item) => item.error);
+
+  if (isAllFetchFail) return { success: false, message: FETCH_ALL_FAIL, contents: [] };
+  if (isSomeFetchFail)
+    return {
+      success: false,
+      message: FETCH_SOME_FAIL,
+      contents: {
+        validData,
+        failedData,
+      },
+    };
+  return { success: true, message: null, contents: parsedData.map((data) => removeErrorProp(data)) };
 };
 
 const { DELETE_FAIL, DELETE_SUCCESS } = DELETE_USER_MESSAGE;

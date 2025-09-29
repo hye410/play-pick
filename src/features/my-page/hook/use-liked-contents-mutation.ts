@@ -1,40 +1,64 @@
-"use client";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { getSingleContentData } from "@/features/my-page/api/server-actions";
 import type { CombinedData } from "@/types/contents-types";
-import type { LikedContentState } from "@/types/server-action-return-type";
+import type { LikedContentsState } from "@/types/server-action-return-type";
+import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import type { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getLikedContents } from "@/features/my-page/api/server-actions";
+import useFetchFailedData from "@/features/my-page/hook/use-fetch-failed-data";
 
-type LikedContent = {
-  id: CombinedData["id"];
-  type: CombinedData["type"];
-};
-const { LIKED_CONTENTS } = QUERY_KEYS;
+const { FAIL_CONTENTS, LIKED_CONTENTS } = QUERY_KEYS;
 
-const useLikedContentMutation = (userId: User["id"] | null) => {
+const useLikedContentsMutation = (userId: User["id"]) => {
   const queryClient = useQueryClient();
+  const { checkIsFailedData } = useFetchFailedData(userId);
 
-  const { mutate: getLikedContentMutate, isError: isGetLikedContentError } = useMutation<
-    LikedContentState,
-    Error,
-    LikedContent
-  >({
-    mutationFn: async (likedContent: LikedContent) => await getSingleContentData(likedContent.id, likedContent.type),
+  const {
+    mutate: getMyContents,
+    isError,
+    error,
+  } = useMutation<LikedContentsState, LikedContentsState, Array<USER_LIKES_TYPE>>({
+    mutationFn: async (dataToFetch) => await getLikedContents(dataToFetch),
     onSuccess: (res) => {
-      if (res.success) {
-        queryClient.setQueryData<Array<CombinedData>>([LIKED_CONTENTS, userId], (oldData) => {
-          const existingData = oldData ?? [];
-          return [...existingData, res.content];
-        });
-      } //실패처리는 따로 하지 않음 > 실패한다면 내 콘텐츠 진입 시 invalidateQueries를 통해 한 번 더 fetch를 시도할 예정이라 유저가 현재 에러가 난 것을 인지할 필요가 없음
+      queryClient.setQueryData<Array<USER_LIKES_TYPE>>([LIKED_CONTENTS, userId], (oldData) => {
+        const existingData = oldData ?? [];
+        return [...existingData, ...res.contents];
+      });
+    },
+    onError: (errorRes) => {
+      //전체 실패 시
+      if (errorRes.contents.length === 0) throw new Error(errorRes.message as string);
+
+      //일부 실패 시
+      const contents: { validData: Array<CombinedData> | []; failedData: Array<USER_LIKES_TYPE> | [] } =
+        errorRes.contents;
+      const validData = contents.validData;
+      const failedData = contents.failedData;
+
+      //성공한 데이터는 likedContents에 추가 캐싱함
+      queryClient.setQueryData<Array<USER_LIKES_TYPE>>([LIKED_CONTENTS, userId], (oldData) => {
+        const existingData = oldData ?? [];
+        return [...existingData, ...validData];
+      });
+
+      //실패한 데이터는 기존에 캐싱된 데이터가 있는지 확인 후 추가 캐싱함
+      let newFailedData: Array<USER_LIKES_TYPE> = [];
+      failedData.forEach((data) => {
+        if (!checkIsFailedData(data.id)) newFailedData.push(data);
+      });
+      queryClient.setQueryData<Array<USER_LIKES_TYPE>>([FAIL_CONTENTS, userId], (oldData) => {
+        const existingData = oldData ?? [];
+        return [...existingData, ...newFailedData];
+      });
+      throw new Error(errorRes.message as string);
     },
   });
 
   return {
-    getLikedContentMutate,
-    isGetLikedContentError,
+    getMyContents,
+    isError,
+    error,
   };
 };
 
-export default useLikedContentMutation;
+export default useLikedContentsMutation;

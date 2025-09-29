@@ -3,4 +3,5 @@ export const QUERY_KEYS = Object.freeze({
   USER_LIKES: "userLikes",
   LIKED_CONTENTS: "likedContents",
   RESULTS: "results",
+  FAIL_CONTENTS: "failToFetchContents",
 } as const);

@@ -50,7 +50,6 @@ export const getSingleContentData = async (
     method: API_METHOD.GET,
     headers: TMDB_API_HEADER,
   });
-  console.log("하나패치!!!");
   if (!res.ok) {
     console.error(
       `ID ${id} 콘텐츠 가져오기 실패\nDB에는 해당 콘텐츠 아이디 저장\n마이 페이지 진입 시 다시 fetching 시도`,
@@ -102,7 +101,6 @@ const removeErrorProp = (content: any) => {
 export const getLikedContents = async (userLikes: Array<USER_LIKES_TYPE>): Promise<LikedContentsState> => {
   const fetchUserLikesData = userLikes.map(({ id, type }) => fetchTmdbContent(id, type));
   const settled = await Promise.allSettled(fetchUserLikesData);
-  console.log("전체패치");
   const allContents = settled.map((result, index) => {
     if (result.status === "fulfilled" && result.value !== null) {
       return {
@@ -134,21 +132,22 @@ export const getLikedContents = async (userLikes: Array<USER_LIKES_TYPE>): Promi
     };
   });
 
-  const isSomeFetchFail = allContents.some((item) => item.error);
-  const validData = parsedData.filter(({ error }) => !error).map((data) => removeErrorProp(data));
-  const failedData = parsedData.filter(({ error }) => error).map((data) => removeErrorProp(data));
+  const isFetchFail = allContents.some((item) => item.error);
+  const validData: Array<CombinedData> = parsedData.filter(({ error }) => !error).map((data) => removeErrorProp(data));
+  const failedData: Array<USER_LIKES_TYPE> = parsedData
+    .filter(({ error }) => error)
+    .map((data) => removeErrorProp(data));
   const isAllFetchFail = allContents.every((item) => item.error);
-
-  if (isAllFetchFail) return { success: false, message: FETCH_ALL_FAIL, contents: [] };
-  if (isSomeFetchFail)
+  if (isFetchFail) {
     return {
       success: false,
-      message: FETCH_SOME_FAIL,
+      message: isAllFetchFail ? FETCH_ALL_FAIL : FETCH_SOME_FAIL,
       contents: {
         validData,
         failedData,
       },
     };
+  }
   return { success: true, message: null, contents: parsedData.map((data) => removeErrorProp(data)) };
 };
 

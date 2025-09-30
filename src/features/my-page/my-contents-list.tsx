@@ -2,28 +2,48 @@
 import Content from "@/components/content";
 import LoadingSpinner from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
+import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import useLikedContentMutation from "@/features/detail/hook/use-liked-content-mutation";
 import useFetchFailedData from "@/features/my-page/hook/use-fetch-failed-data";
 import useLikedContentsQuery from "@/features/my-page/hook/use-liked-contents-query";
 import useUserLikesQuery from "@/hook/use-user-likes-query";
-import { alert } from "@/utils/alert";
+import type { CombinedData } from "@/types/contents-types";
 import type { User } from "@supabase/supabase-js";
+import { alert } from "@/utils/alert";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 type MyContentsListProps = {
   userId: User["id"];
 };
 const { ERROR } = ALERT_TYPE;
+const { LIKED_CONTENTS } = QUERY_KEYS;
 
 const MyContentsList = ({ userId }: MyContentsListProps) => {
-  const { userLikes } = useUserLikesQuery(userId);
-  const { myContents } = useLikedContentsQuery(userId, userLikes);
+  const queryClient = useQueryClient();
+  const { userLikes, isUserLikesLoading } = useUserLikesQuery(userId);
+  const { fetchFailedData } = useFetchFailedData(userId);
+  const cachedLikedContents: Array<CombinedData> = queryClient.getQueryData([LIKED_CONTENTS, userId]) ?? [];
+  const cachedSuccessIds = new Set(cachedLikedContents.map((content) => content.id));
+  const cachedFailedIds = new Set(fetchFailedData.map((data) => data.id));
+  const dataToFetch =
+    userLikes?.filter((like) => !cachedSuccessIds.has(like.id) && !cachedFailedIds.has(like.id)) ?? [];
 
+  useEffect(() => {
+    if (!isUserLikesLoading && dataToFetch.length > 0)
+      queryClient.invalidateQueries({
+        queryKey: [LIKED_CONTENTS, userId],
+      });
+  }, [userId, isUserLikesLoading, dataToFetch.length, queryClient]);
+
+  const { myContents, isLoading: isMyContentsLoading } = useLikedContentsQuery(userId, dataToFetch);
   const {
     getLikedContentMutate,
     isError: isGetLikedContentError,
     error: getLikedContentError,
   } = useLikedContentMutation(userId);
-  const { fetchFailedData } = useFetchFailedData(userId);
-  if (!userLikes || !myContents) return <LoadingSpinner />;
+
+  if (isUserLikesLoading || isMyContentsLoading) return <LoadingSpinner />;
+
   if (isGetLikedContentError) {
     alert({ type: ERROR, message: getLikedContentError?.message as string });
   }

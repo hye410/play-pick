@@ -12,6 +12,7 @@ const { LIKED_CONTENTS, FAIL_CONTENTS } = QUERY_KEYS;
 const useLikedContentsQuery = (userId: User["id"], dataToFetch?: Array<USER_LIKES_TYPE>) => {
   const queryClient = useQueryClient();
   const { checkIsFailedData } = useFetchFailedData(userId);
+
   const {
     data: myContents,
     isLoading,
@@ -20,6 +21,7 @@ const useLikedContentsQuery = (userId: User["id"], dataToFetch?: Array<USER_LIKE
   } = useQuery<Array<CombinedData>, Error>({
     queryKey: [LIKED_CONTENTS, userId],
     queryFn: async () => {
+      const cachedContents: Array<CombinedData> = queryClient.getQueryData([LIKED_CONTENTS, userId]) ?? [];
       const res = await getLikedContents(dataToFetch!);
       if (!res.success) {
         // 모든 데이터 fetch 실패 시
@@ -37,15 +39,23 @@ const useLikedContentsQuery = (userId: User["id"], dataToFetch?: Array<USER_LIKE
         if (newFetchFailedData.length !== 0) {
           queryClient.setQueryData<Array<USER_LIKES_TYPE>>([FAIL_CONTENTS, userId], (oldData) => {
             const existingData = oldData ?? [];
-            return [...existingData, ...res.contents.failedData];
+            const allFailedData = [...existingData, ...newFetchFailedData];
+            const uniqueFailedData = allFailedData.reduce((acc, current) => {
+              if (!acc.find((item) => item.id === current.id)) {
+                acc.push(current);
+              }
+              return acc;
+            }, [] as Array<USER_LIKES_TYPE>);
+
+            return uniqueFailedData;
           });
         }
 
         // 2. fetch에 성공한 데이터는 LIKED_CONTENTS에 캐싱
-        return res.contents.validData;
+        return [...cachedContents, ...res.contents.validData];
       }
       // 3. 모든 데이터 fetch 성공 시 LIKED_CONTENTS에 캐싱
-      return res.contents;
+      return [...cachedContents, ...res.contents];
     },
     enabled: !!dataToFetch && dataToFetch.length > 0,
     staleTime: A_DAY,
@@ -53,7 +63,7 @@ const useLikedContentsQuery = (userId: User["id"], dataToFetch?: Array<USER_LIKE
   });
 
   return {
-    myContents,
+    myContents: myContents || [],
     isLoading,
     isError,
     error,

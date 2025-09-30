@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import useUserLikesQuery from "@/hook/use-user-likes-query";
+import useUserLikesQuery from "@/hook/use-user-likes";
 import { addToUserLikes, deleteFromUserLikes } from "@/features/detail/api/server-actions";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 import type { User } from "@supabase/supabase-js";

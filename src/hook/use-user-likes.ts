@@ -10,9 +10,9 @@ const { USER_LIKES } = QUERY_KEYS;
 const useUserLikesQuery = (userId: User["id"] | null) => {
   const {
     data: userLikes,
-    isLoading: isUserLikesLoading,
-    isError: isUserLikesError,
-    error: userLikesError,
+    isLoading,
+    isError,
+    error,
   } = useQuery<Array<USER_LIKES_TYPE>, Error>({
     queryKey: [USER_LIKES, userId],
     queryFn: async () => {
@@ -26,9 +26,9 @@ const useUserLikesQuery = (userId: User["id"] | null) => {
 
   return {
     userLikes,
-    isUserLikesLoading,
-    isUserLikesError,
-    userLikesError,
+    isLoading,
+    isError,
+    error,
   };
 };
 

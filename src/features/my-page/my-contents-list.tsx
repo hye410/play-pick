@@ -2,33 +2,38 @@
 import Content from "@/components/content";
 import LoadingSpinner from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
+import { MY_CONTENTS_MESSAGE } from "@/constants/message-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import useLikedContentMutation from "@/features/detail/hook/use-liked-content-mutation";
 import useFetchFailedData from "@/features/my-page/hook/use-fetch-failed-data";
 import useLikedContentsQuery from "@/features/my-page/hook/use-liked-contents-query";
-import useUserLikesQuery from "@/hook/use-user-likes-query";
-import type { CombinedData } from "@/types/contents-types";
-import type { User } from "@supabase/supabase-js";
+import useUserLikesQuery from "@/hook/use-user-likes";
 import { alert } from "@/utils/alert";
+import type { User } from "@supabase/supabase-js";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import EmptyContents from "@/features/my-page/empty-contents";
+import useDataToFetch from "@/features/my-page/hook/use-data-to-fetch";
 type MyContentsListProps = {
   userId: User["id"];
 };
 const { ERROR } = ALERT_TYPE;
 const { LIKED_CONTENTS } = QUERY_KEYS;
-
+const { NO_LIKED_CONTENTS } = MY_CONTENTS_MESSAGE;
 const MyContentsList = ({ userId }: MyContentsListProps) => {
   const queryClient = useQueryClient();
-  const { userLikes, isUserLikesLoading } = useUserLikesQuery(userId);
+  const {
+    userLikes,
+    isLoading: isUserLikesLoading,
+    isError: isUserLikesError,
+    error: userLikesError,
+  } = useUserLikesQuery(userId);
+  const { dataToFetch } = useDataToFetch(userId, userLikes);
   const { fetchFailedData } = useFetchFailedData(userId);
-  const cachedLikedContents: Array<CombinedData> = queryClient.getQueryData([LIKED_CONTENTS, userId]) ?? [];
-  const cachedSuccessIds = new Set(cachedLikedContents.map((content) => content.id));
-  const cachedFailedIds = new Set(fetchFailedData.map((data) => data.id));
-  const dataToFetch =
-    userLikes?.filter((like) => !cachedSuccessIds.has(like.id) && !cachedFailedIds.has(like.id)) ?? [];
 
   useEffect(() => {
+    // userLikes 로딩이 완료되었고, 아직 캐시에 없는 항목(dataToFetch)이 있다면
+    // LIKED_CONTENTS 쿼리를 강제로 재실행하여 전체 데이터를 fetch
     if (!isUserLikesLoading && dataToFetch.length > 0)
       queryClient.invalidateQueries({
         queryKey: [LIKED_CONTENTS, userId],
@@ -42,7 +47,10 @@ const MyContentsList = ({ userId }: MyContentsListProps) => {
     error: getLikedContentError,
   } = useLikedContentMutation(userId);
 
-  if (isUserLikesLoading || isMyContentsLoading) return <LoadingSpinner />;
+  if (isUserLikesLoading || !userLikes) return <LoadingSpinner />;
+  if (isUserLikesError) throw new Error(userLikesError?.message);
+  if (userLikes.length === 0) return <EmptyContents message={NO_LIKED_CONTENTS} />;
+  if (isMyContentsLoading || !myContents) return <LoadingSpinner />;
 
   if (isGetLikedContentError) {
     alert({ type: ERROR, message: getLikedContentError?.message as string });

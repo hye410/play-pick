@@ -35,19 +35,15 @@ const useLikedContentsQuery = (userId: User["id"], dataToFetch?: Array<USER_LIKE
           if (!checkIsFailedData(data.id)) newFetchFailedData.push(data);
         });
 
-        // 1-3. 일부 fetch 실패한 데이터가 기존 FAIL_CONTENTS에 캐싱된 데이터 외에 더 있다면 -> FAIL_CONTENTS에 추가 캐싱함
+        // 1-3. 기존 FAIL_CONTENTS에 캐싱된 데이터 외에 fetch 실패한 데이터가  더 있다면 -> FAIL_CONTENTS에 추가 캐싱함
         if (newFetchFailedData.length !== 0) {
           queryClient.setQueryData<Array<USER_LIKES_TYPE>>([FAIL_CONTENTS, userId], (oldData) => {
             const existingData = oldData ?? [];
-            const allFailedData = [...existingData, ...newFetchFailedData];
-            const uniqueFailedData = allFailedData.reduce((acc, current) => {
-              if (!acc.find((item) => item.id === current.id)) {
-                acc.push(current);
-              }
-              return acc;
-            }, [] as Array<USER_LIKES_TYPE>);
-
-            return uniqueFailedData;
+            const newDataToCache = new Map<number, USER_LIKES_TYPE>();
+            [...existingData, ...newFetchFailedData].forEach((item) => {
+              newDataToCache.set(item.id, item);
+            });
+            return Array.from(newDataToCache.values());
           });
         }
 
@@ -63,7 +59,7 @@ const useLikedContentsQuery = (userId: User["id"], dataToFetch?: Array<USER_LIKE
   });
 
   return {
-    myContents: myContents || [],
+    myContents,
     isLoading,
     isError,
     error,

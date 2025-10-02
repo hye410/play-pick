@@ -3,13 +3,10 @@ import Button from "@/components/button";
 import FormInput from "@/components/form-input";
 import LoadingSpinner from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
-import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import { getUserLikes } from "@/features/detail/api/server-actions";
 import { postSignIn } from "@/features/sign-in/api/server-actions";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
 import type { SignIn } from "@/types/form-types";
 import type { SignInFormState } from "@/types/server-action-return-type";
-import type { User } from "@/types/user-types";
 import { alert } from "@/utils/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,7 +14,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 const { ERROR } = ALERT_TYPE;
-const { USER_LIKES } = QUERY_KEYS;
 const initialState: SignInFormState = {
   success: false,
   message: null,
@@ -37,7 +33,7 @@ const SignInForm = () => {
 
   useEffect(() => {
     if (state.success && state.userId) {
-      fetchUserLikes(state.userId);
+      // fetchUserLikes(state.userId);
       const redirectPage = params.get("redirect") ?? "/";
       router.replace(redirectPage);
     } else if (state.message) {
@@ -47,18 +43,6 @@ const SignInForm = () => {
       });
     }
   }, [state, queryClient, router, params]);
-
-  const fetchUserLikes = async (userId: User["id"]) => {
-    const res = await getUserLikes(userId!);
-    if (res.success && res.userLikes) {
-      queryClient.setQueryData([USER_LIKES, userId], res.userLikes);
-    } else if (!res.success) {
-      alert({
-        type: ERROR,
-        message: res.message as string,
-      });
-    }
-  };
 
   const handleSignInSubmit = async (userInfo: SignIn) => {
     const formData = new FormData();

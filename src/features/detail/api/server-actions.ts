@@ -1,28 +1,70 @@
 "use server";
 
 import { DEFAULT_YOUTUBE_SEARCH_API } from "@/constants/api-constants";
+import { LIKES_DB } from "@/constants/db-constants";
 import { PREVIEW_VIDEO_MESSAGE, TOGGLE_LIKES_MESSAGE, USER_LIKES_MESSAGE } from "@/constants/message-constants";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
 import type { YOUTUBE_RESPONSE_TYPE, YOUTUBE_RESULT_TYPE } from "@/types/preview-types";
-import type { InitReturnType, UserLikesState } from "@/types/server-action-return-type";
+import type { CheckUserLikeState, InitReturnType, UserLikesByPageState } from "@/types/server-action-return-type";
 import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
-import type { User } from "@supabase/supabase-js";
 import { createServerSupabase } from "@/utils/supabase-server";
+import type { User } from "@supabase/supabase-js";
+const { likes, contentId: contentIdInDB, contentType: contentTypeInDB, userId: userIdInDB } = LIKES_DB;
+const { FETCH_FAIL: FAIL_FETCH_USER_LIKES } = USER_LIKES_MESSAGE;
 
-const { FETCH_FAIL } = USER_LIKES_MESSAGE;
 /**
- * 유저가 찜한 목록을 호출하는 함수
- * @param userId user의 id
- * @returns 유저가 찜한 콘텐츠의 id와 type
+ * 유저의 찜 리스트에 특정 콘텐츠가 존재하는지 확인을 요청하는 함수
+ * @param userId user의 ID
+ * @param contentId 유저의 찜 리스트에 있는지 확인하고 싶은 콘텐츠의 ID
+ * @returns 유저의 찜 리스트에 해당 콘텐츠의 존재 여부
  */
-export const getUserLikes = async (userId: User["id"]): Promise<UserLikesState> => {
+export const checkIsUserLikes = async (
+  userId: User["id"],
+  contentId: CombinedData["id"],
+): Promise<CheckUserLikeState> => {
   const supabase = await createServerSupabase();
-  const { data, error } = await supabase.from("likes").select("*").eq("user_id", userId);
+  const { data, error } = await supabase
+    .from(likes)
+    .select(contentIdInDB)
+    .eq(userIdInDB, userId)
+    .eq(contentIdInDB, contentId)
+    .limit(1);
+  if (error) return { success: false, message: FAIL_FETCH_USER_LIKES };
+  return {
+    success: true,
+    message: null,
+    isUserLikes: data.length > 0,
+  };
+};
 
-  if (error) return { success: false, message: FETCH_FAIL, userLikes: [] };
+const COUNT_PER_PAGE = 12;
+/**
+ * 특정 페이지에 대한 유저의 찜 목록을 호출하는 함수
+ * @param userId user의 ID
+ * @param pageParam 요청할 페이지
+ * @returns 해당 페이지에 대한 찜 목록
+ */
+export const getUserLikesByPage = async (userId: User["id"], pageParam: number = 1): Promise<UserLikesByPageState> => {
+  const supabase = await createServerSupabase();
+  const startIdx = (pageParam - 1) * COUNT_PER_PAGE;
+  const endIdx = startIdx + COUNT_PER_PAGE - 1;
+  const { data, error, count } = await supabase
+    .from(likes)
+    .select(`${contentIdInDB},${contentTypeInDB}`, { count: "exact" })
+    .eq(userIdInDB, userId)
+    .range(startIdx, endIdx)
+    .order("created_at", { ascending: true });
+  if (error) return { success: false, message: FAIL_FETCH_USER_LIKES, userLikes: [] };
   const userLikes: Array<USER_LIKES_TYPE> =
-    data.map((like) => ({ id: like.content_id, type: like.content_type })) ?? [];
-  return { success: true, message: null, userLikes };
+    data.map((like) => ({ id: like[contentIdInDB], type: like[contentTypeInDB] })) ?? [];
+  const totalPages = count ? Math.ceil(count / COUNT_PER_PAGE) : 0;
+  const hasNextPage = pageParam < totalPages;
+  return {
+    success: true,
+    message: null,
+    userLikes,
+    nextPage: hasNextPage ? pageParam + 1 : undefined,
+  };
 };
 
 const { LIKES_ADD_FAIL, LIKES_REMOVE_FAIL, LIKES_ADD_SUCCESS, LIKES_REMOVE_SUCCESS } = TOGGLE_LIKES_MESSAGE;
@@ -40,8 +82,8 @@ export const addToUserLikes = async (payload: {
   const supabase = await createServerSupabase();
   const { contentType, contentId, userId } = payload;
   const { error } = await supabase
-    .from("likes")
-    .insert({ content_id: contentId, user_id: userId, content_type: contentType });
+    .from(likes)
+    .insert({ [contentIdInDB]: contentId, [userIdInDB]: userId, [contentTypeInDB]: contentType });
   if (error) {
     console.error(error);
     return { success: false, message: LIKES_ADD_FAIL };
@@ -60,7 +102,10 @@ export const deleteFromUserLikes = async (
   contentId: CombinedData["id"],
 ): Promise<InitReturnType> => {
   const supabase = await createServerSupabase();
-  const { error } = await supabase.from("likes").delete().match({ user_id: userId, content_id: contentId });
+  const { error } = await supabase
+    .from(likes)
+    .delete()
+    .match({ [userIdInDB]: userId, [contentIdInDB]: contentId });
   if (error) {
     console.error(error);
     return { success: false, message: LIKES_REMOVE_FAIL };

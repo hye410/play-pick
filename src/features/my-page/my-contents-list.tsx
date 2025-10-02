@@ -1,73 +1,83 @@
 "use client";
 import Content from "@/components/content";
 import LoadingSpinner from "@/components/loading-spinner";
-import { MY_CONTENTS_MESSAGE } from "@/constants/message-constants";
-import { QUERY_KEYS } from "@/constants/query-keys-constants";
+import { DEFAULT_ERROR_MESSAGE, MY_CONTENTS_MESSAGE } from "@/constants/message-constants";
 import EmptyContents from "@/features/my-page/empty-contents";
-import useLikedContentsQuery from "@/features/my-page/hook/use-liked-contents-query";
-import useLikedContentsStatus from "@/features/my-page/hook/use-liked-contents-status";
-import useUserLikesQuery from "@/hook/use-user-likes";
-import type { User } from "@supabase/supabase-js";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import FailedContent from "@/features/my-page/failed-content";
+import useFetchFailedData from "@/features/my-page/hook/use-fetch-failed-data";
+import useLikedContentsMutation from "@/features/my-page/hook/use-liked-contents-mutation";
+import useInfiniteLikedContents from "@/hook/use-infinite-liked-contents";
+import { usePendingLikesStore } from "@/store/use-pending-likes-store";
+import type { User } from "@supabase/supabase-js";
+import { useEffect, useRef } from "react";
 type MyContentsListProps = {
   userId: User["id"];
 };
 
-const { LIKED_CONTENTS } = QUERY_KEYS;
 const { NO_LIKED_CONTENTS } = MY_CONTENTS_MESSAGE;
+const { UNKNOWN_ERROR } = DEFAULT_ERROR_MESSAGE;
 const MyContentsList = ({ userId }: MyContentsListProps) => {
-  const queryClient = useQueryClient();
-  const {
-    userLikes,
-    isLoading: isUserLikesLoading,
-    isError: isUserLikesError,
-    error: userLikesError,
-  } = useUserLikesQuery(userId);
-  const { dataToFetch, fetchFailedData } = useLikedContentsStatus(userId, userLikes);
+  const { fetchFailedData } = useFetchFailedData(userId);
+  const { getLikedContents } = useLikedContentsMutation(userId);
+  const { myContents, hasNextPage, isLoading, isError, error, isFetchingNextPage, fetchNextPage } =
+    useInfiniteLikedContents(userId);
+  const { dataToFetch } = usePendingLikesStore();
 
   useEffect(() => {
-    // userLikes 로딩이 완료되었고, 아직 캐시에 없는 항목(dataToFetch)이 있다면
-    // LIKED_CONTENTS 쿼리를 강제로 재실행하여 전체 데이터를 fetch
-    if (!isUserLikesLoading && dataToFetch.length > 0)
-      queryClient.invalidateQueries({
-        queryKey: [LIKED_CONTENTS, userId],
-      });
-  }, [userId, isUserLikesLoading, dataToFetch.length, queryClient]);
+    if (dataToFetch.length !== 0) {
+      getLikedContents(dataToFetch);
+    }
+  }, [dataToFetch.length !== 0]);
 
-  const {
-    myContents,
-    isLoading: isMyContentsLoading,
-    isError: isMyContentsError,
-    error: myContentsError,
-  } = useLikedContentsQuery(userId, dataToFetch);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  if (isUserLikesError) return <EmptyContents message={userLikesError?.message as string} />;
-  if (isUserLikesLoading || !userLikes)
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { root: null, rootMargin: "0px", threshold: 1.0 },
+    );
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (isLoading) {
     return (
       <div className="flex h-[570px] w-full items-center justify-center">
         <LoadingSpinner />
       </div>
     );
-  if (userLikes.length === 0) return <EmptyContents message={NO_LIKED_CONTENTS} />;
+  }
 
-  if (isMyContentsError) return <EmptyContents message={myContentsError?.message as string} />;
-  if (isMyContentsLoading || !myContents)
-    return (
-      <div className="flex h-[570px] w-full items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+  if (myContents.length === 0 && fetchFailedData.length === 0 && !hasNextPage) {
+    return <EmptyContents message={NO_LIKED_CONTENTS} />;
+  }
+
+  if (isError) return <EmptyContents message={error?.message || UNKNOWN_ERROR} />;
 
   return (
     <div className="grid h-[560px] grid-cols-3 gap-4 overflow-y-scroll px-4 pt-4">
       {myContents.map((content) => (
         <Content content={content} key={`success_${content.id}`} />
       ))}
-      {fetchFailedData?.map((failedData) => (
-        <FailedContent content={failedData} userId={userId} />
+
+      {fetchFailedData.map((failedData) => (
+        <FailedContent content={failedData} key={`failed_${failedData.id}`} userId={userId} />
       ))}
+
+      {hasNextPage && (
+        <div ref={loadMoreRef} className="col-span-3 flex justify-center py-4">
+          {isFetchingNextPage ? <LoadingSpinner /> : null}
+        </div>
+      )}
+
+      {!hasNextPage && (myContents.length > 0 || fetchFailedData.length > 0) && (
+        <div className="col-span-3 text-center text-gray-500">모든 찜 목록을 불러왔습니다.</div>
+      )}
     </div>
   );
 };

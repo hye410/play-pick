@@ -6,3 +6,10 @@ export const SURVEY_DB = Object.freeze({
     release: "primary_release_date",
   },
 } as const);
+
+export const LIKES_DB = Object.freeze({
+  likes: "likes",
+  contentId: "content_id",
+  contentType: "content_type",
+  userId: "user_id",
+} as const);

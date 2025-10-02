@@ -1,6 +1,7 @@
 export const DEFAULT_ERROR_MESSAGE = Object.freeze({
   SERVER_ERROR: "내부 서버 오류가 발생했습니다.",
   FETCH_ERROR: "데이터를 받아오는데 실패했습니다.",
+  UNKNOWN_ERROR: "알 수 없는 오류가 발생했습니다.",
   CLIENT_ERROR: "에러가 발생했습니다.<br />새로고침 후 다시 시도해 주세요.",
   EXPIRED_SESSION_ERROR: "세션이 만료되었습니다.<br />로그인을 다시 진행해 주세요.",
 } as const);

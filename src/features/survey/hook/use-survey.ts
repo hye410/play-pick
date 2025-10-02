@@ -99,7 +99,6 @@ const useSurvey = (initialQuestion: Array<Question>) => {
   const getRestOfQuestions = async (selectedType: "tv" | "movie") => {
     const res = await getAdditionalQuestions(selectedType);
     if (res.success) {
-      // setQuestions([...initialQuestion, ...res.questions]);
       addToQuestions([...initialQuestion, ...res.questions]);
     } else {
       alert({

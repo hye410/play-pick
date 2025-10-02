@@ -15,8 +15,13 @@ export type SurveyState = InitReturnType & {
   questions: Array<Question> | Array;
 };
 
-export type UserLikesState = InitReturnType & {
+export type CheckUserLikeState = InitReturnType & {
+  isUserLikes?: boolean;
+};
+
+export type UserLikesByPageState = InitReturnType & {
   userLikes: Array<USER_LIKES_TYPE> | Array;
+  nextPage?: number;
 };
 
 export type LikedContentState = InitReturnType & {
@@ -24,7 +29,10 @@ export type LikedContentState = InitReturnType & {
 };
 
 export type LikedContentsState = InitReturnType & {
-  contents: Array<CombinedData> | Array;
+  contents: {
+    failedData: Array<USER_LIKES_TYPE> | Array;
+    validData: Array<CombinedData> | Array;
+  };
 };
 
 export type ResultState = InitReturnType & {

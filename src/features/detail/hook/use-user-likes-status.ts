@@ -1,34 +1,28 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { ALERT_TYPE } from "@/constants/alert-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
-import useUserLikesQuery from "@/hook/use-user-likes";
 import { addToUserLikes, deleteFromUserLikes } from "@/features/detail/api/server-actions";
+import { usePendingLikesStore } from "@/store/use-pending-likes-store";
 import type { CombinedData, FilteredDetailData } from "@/types/contents-types";
+import type { USER_LIKES_BY_INFINITE_TYPE } from "@/types/user-likes-type";
 import type { User } from "@supabase/supabase-js";
 import { alert } from "@/utils/alert";
-import useLikedContentMutation from "@/features/detail/hook/use-liked-content-mutation";
-const { WARNING } = ALERT_TYPE;
-
-const { USER_LIKES, LIKED_CONTENTS } = QUERY_KEYS;
-
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { DEFAULT_ERROR_MESSAGE } from "@/constants/message-constants";
+const { LIKED_CONTENTS, IS_LIKED } = QUERY_KEYS;
+const { SUCCESS, ERROR, WARNING } = ALERT_TYPE;
+const { UNKNOWN_ERROR } = DEFAULT_ERROR_MESSAGE;
 type UserLikesStatus = {
   contentId: FilteredDetailData["id"];
   contentType: FilteredDetailData["type"];
   user: User | null;
   isInitLiked: boolean;
 };
-const { SUCCESS, ERROR } = ALERT_TYPE;
 const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserLikesStatus) => {
   const userId = user?.id ?? null;
-  const { userLikes } = useUserLikesQuery(userId);
-  const { getLikedContentMutate } = useLikedContentMutation(userId);
+  const { addToPendingLikes, removeFromPendingLikes } = usePendingLikesStore();
   const [isLiked, setIsLiked] = useState(isInitLiked);
   const queryClient = useQueryClient();
-  useEffect(() => {
-    const isCurrentLiked: boolean = userLikes?.some((userLike) => userLike.id === contentId) ?? isInitLiked;
-    setIsLiked(isCurrentLiked);
-  }, [userLikes, isInitLiked, contentId]);
 
   const handleChange = () => {
     if (!user || !userId)
@@ -45,8 +39,8 @@ const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserL
     setIsLiked(true);
     const res = await addToUserLikes({ contentType, contentId, userId });
     if (res.success) {
-      getLikedContentMutate({ id: contentId, type: contentType });
-      queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
+      queryClient.invalidateQueries({ queryKey: [IS_LIKED, userId, contentId] });
+      addToPendingLikes(contentId, contentType);
       alert({
         type: SUCCESS,
         message: res.message as string,
@@ -55,7 +49,7 @@ const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserL
       setIsLiked(false);
       alert({
         type: ERROR,
-        message: res.message as string,
+        message: res.message || UNKNOWN_ERROR,
       });
     }
   };
@@ -65,19 +59,28 @@ const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserL
     setIsLiked(false);
     const res = await deleteFromUserLikes(userId, contentId);
     if (res.success) {
-      queryClient.invalidateQueries({ queryKey: [USER_LIKES, userId] });
-      queryClient.setQueryData([LIKED_CONTENTS, userId], (oldData: Array<CombinedData>) => {
-        return oldData.filter((d) => d.id !== contentId);
-      });
       alert({
         type: SUCCESS,
         message: res.message as string,
+      });
+      removeFromPendingLikes(contentId);
+      queryClient.invalidateQueries({ queryKey: [IS_LIKED, userId, contentId] });
+      queryClient.setQueryData([LIKED_CONTENTS, userId], (oldData: USER_LIKES_BY_INFINITE_TYPE) => {
+        if (!oldData) return oldData;
+        const updatedPages = oldData.pages.map((page: { contents: Array<CombinedData> }) => ({
+          ...page,
+          contents: page.contents.filter(({ id }) => id !== contentId),
+        }));
+        return {
+          ...oldData,
+          pages: updatedPages,
+        };
       });
     } else {
       setIsLiked(true);
       alert({
         type: ERROR,
-        message: res.message as string,
+        message: res.message || UNKNOWN_ERROR,
       });
     }
   };

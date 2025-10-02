@@ -1,6 +1,6 @@
 export const QUERY_KEYS = Object.freeze({
   PREVIEW: "preview",
-  USER_LIKES: "userLikes",
+  IS_LIKED: "isUserLike",
   LIKED_CONTENTS: "likedContents",
   RESULTS: "results",
   FAIL_CONTENTS: "failToFetchContents",

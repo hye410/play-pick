@@ -3,27 +3,25 @@ import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { getSingleContentData } from "@/features/my-page/api/server-actions";
 import useFetchFailedData from "@/features/my-page/hook/use-fetch-failed-data";
 import type { CombinedData } from "@/types/contents-types";
-import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
+import type { USER_LIKES_BY_INFINITE_TYPE, USER_LIKES_TYPE } from "@/types/user-likes-type";
 import type { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const { LIKED_CONTENTS, FAIL_CONTENTS } = QUERY_KEYS;
 
-const useLikedContentMutation = (userId: User["id"] | null) => {
+const useLikedSingleContentMutation = (userId: User["id"] | null) => {
   const queryClient = useQueryClient();
   const { checkIsFailedData } = useFetchFailedData(userId!);
 
-  const asyncMutate = async (likedContent: USER_LIKES_TYPE) => {
-    const res = await getSingleContentData(likedContent.id, likedContent.type);
+  const fetchSingleData = async (contentToFetch: USER_LIKES_TYPE) => {
+    const { id, type } = contentToFetch;
+    const res = await getSingleContentData(id, type);
     if (res.success) return res.content;
     else throw new Error(res.message as string);
   };
-  const {
-    mutate: getLikedContentMutate,
-    isError,
-    error,
-  } = useMutation<CombinedData, Error, USER_LIKES_TYPE>({
-    mutationFn: (likedContent) => asyncMutate(likedContent),
+
+  const { mutate, isError, error } = useMutation<CombinedData, Error, USER_LIKES_TYPE>({
+    mutationFn: (contentToFetch) => fetchSingleData(contentToFetch),
     onSuccess: (content) => {
       // 1. 기존 FAIL_CONTENTS에 이미 캐싱되어 있는지 확인
       const wasFailedData = checkIsFailedData(content.id);
@@ -34,11 +32,21 @@ const useLikedContentMutation = (userId: User["id"] | null) => {
           return existingData.filter((data) => data.id !== content.id);
         });
       }
-
       // 2. fetch에 성공한 데이터를 LIKED_CONTENTS에 캐싱함
-      queryClient.setQueryData<Array<CombinedData>>([LIKED_CONTENTS, userId], (oldData) => {
-        const existingData = oldData ?? [];
-        return [...existingData, content];
+      queryClient.setQueryData([LIKED_CONTENTS, userId], (oldData: USER_LIKES_BY_INFINITE_TYPE) => {
+        const existingData = oldData ?? { pages: [], pageParams: [1] };
+        const firstPage = existingData.pages[0] || { contents: [], nextPage: undefined };
+        const oldContents = firstPage.contents;
+        const newContents = [content, ...oldContents];
+        const newFirstPage = {
+          ...firstPage,
+          contents: newContents,
+        };
+        const updatedPages = [newFirstPage, ...existingData.pages.slice(1)];
+        return {
+          ...existingData,
+          pages: updatedPages,
+        };
       });
     },
     onError: (_, variables) => {
@@ -54,10 +62,10 @@ const useLikedContentMutation = (userId: User["id"] | null) => {
   });
 
   return {
-    getLikedContentMutate,
+    getSingleContent: mutate,
     isError,
     error,
   };
 };
 
-export default useLikedContentMutation;
+export default useLikedSingleContentMutation;

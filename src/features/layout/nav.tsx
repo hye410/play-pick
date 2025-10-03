@@ -3,6 +3,7 @@ import { ALERT_TYPE } from "@/constants/alert-constants";
 import { privateMenus, publicMenus } from "@/constants/menu-constants";
 import { getSignOut } from "@/features/layout/api/server-actions";
 import useAuthStatus from "@/hook/use-auth-status";
+import { usePendingLikesStore } from "@/store/use-pending-likes-store";
 import type { Menu } from "@/types/menu-types";
 import { alert } from "@/utils/alert";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,11 +20,13 @@ type NavProps = {
 const Nav = ({ initialIsLoggedIn }: NavProps) => {
   const queryClient = useQueryClient();
   const { isLoggedIn } = useAuthStatus(initialIsLoggedIn);
+  const { resetDataToFetch } = usePendingLikesStore();
 
   const handleSignOut = useCallback(async () => {
     const res = await getSignOut();
     if (res.success) {
       queryClient.clear();
+      resetDataToFetch();
       window.location.replace("/");
     } else {
       alert({

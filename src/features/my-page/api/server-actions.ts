@@ -65,7 +65,7 @@ export const getSingleContentData = async (
   type: CombinedData["type"],
 ): Promise<LikedContentState> => {
   const content = await fetchTmdbContent(id, type);
-
+  console.log("싱글패치!!!");
   if (!content) return { success: false, message: NO_CONTENT_DATA, content: [] };
 
   const filteredContent: CombinedData = {

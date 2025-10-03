@@ -35,6 +35,7 @@ export const PREVIEW_VIDEO_MESSAGE = Object.freeze({
 } as const);
 
 export const TOGGLE_LIKES_MESSAGE = Object.freeze({
+  REQUIRE_SIGN_IN: "먼저 로그인을 해주세요.",
   LIKES_ADD_SUCCESS: "찜 목록에 추가되었습니다.",
   LIKES_ADD_FAIL: "찜 목록 추가에 실패했습니다.<br />다시 시도해 주세요.",
   LIKES_REMOVE_SUCCESS: "찜 목록에서 삭제되었습니다.",

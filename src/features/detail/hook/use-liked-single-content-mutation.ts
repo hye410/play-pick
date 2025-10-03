@@ -14,6 +14,7 @@ const useLikedSingleContentMutation = (userId: User["id"] | null) => {
   const { checkIsFailedData } = useFetchFailedData(userId!);
 
   const fetchSingleData = async (contentToFetch: USER_LIKES_TYPE) => {
+    if (!userId) return;
     const { id, type } = contentToFetch;
     const res = await getSingleContentData(id, type);
     if (res.success) return res.content;

@@ -1,8 +1,8 @@
 "use client";
+import useUserLikesStatus from "@/features/detail/hook/use-user-likes-status";
 import type { FilteredDetailData } from "@/types/contents-types";
 import type { User } from "@supabase/supabase-js";
 import { GoHeart, GoHeartFill } from "react-icons/go";
-import useUserLikesStatus from "@/features/detail/hook/use-user-likes-status";
 
 type LikeButton = {
   contentId: FilteredDetailData["id"];

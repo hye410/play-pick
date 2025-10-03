@@ -17,6 +17,7 @@ const Content = ({ content }: ContentProps) => {
             src={`${TMDB_IMAGE_URL}/${content.imgUrl}`}
             fill
             sizes="25%"
+            priority
             alt={content.title}
             placeholder="blur"
             blurDataURL={getPlaceholderDataURL()}

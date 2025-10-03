@@ -70,7 +70,7 @@ export const getUserLikesByPage = async (userId: User["id"], pageParam: number =
 const { LIKES_ADD_FAIL, LIKES_REMOVE_FAIL, LIKES_ADD_SUCCESS, LIKES_REMOVE_SUCCESS } = TOGGLE_LIKES_MESSAGE;
 
 /**
- * 유저의 찜 리스트에 새 콘텐츠 추가를 요청하는 함수
+ * DB에 있는 유저의 찜 리스트에 새롭게 콘텐츠를 추가할 것을 요청하는 함수
  * @param payload 추가하려는 콘텐츠 type, 추가하려는 콘텐츠 id, 유저 id
  * @returns 찜 리스트 추가 성공 여부 / 그에 따른 메시지
  */
@@ -92,7 +92,7 @@ export const addToUserLikes = async (payload: {
 };
 
 /**
- * 유저의 찜 리스트에서 특정 콘텐츠 삭제를 요청하는 함수
+ * DB에 있는 유저의 찜 리스트에서 특정 콘텐츠를 삭제하도록 요청하는 함수
  * @param userId 유저의 id
  * @param contentId 삭제하려는 콘텐츠의 id
  * @returns 찜 리스트에서 삭제 성공 여부 / 그에 따른 메시지

@@ -41,18 +41,16 @@ const DetailContent = ({ content, user, isInitLiked }: DetailContentProps) => {
       </div>
 
       {/* ---- 제목 / 원제 ---- */}
-      <div className="flex items-center">
+      <div className="flex flex-col items-center">
         <dt className="hidden">제목</dt>
-        <dd>{content.title}</dd>
+        <dd className="text-lg font-extrabold">{content.title}</dd>
         <dt className="hidden">원제</dt>
         <dd>&nbsp;({content.originalTitle})</dd>
       </div>
 
       {/* ----- 평점 ----- */}
       <dt className="hidden">평점</dt>
-      <dd>
-        <Star rating={content.rating} />
-      </dd>
+      <dd>{content.rating ? <Star rating={content.rating} /> : "평가 대기 중"}</dd>
 
       {/* ----- 장르 ----- */}
       <dt className="hidden">장르</dt>
@@ -82,7 +80,14 @@ const DetailContent = ({ content, user, isInitLiked }: DetailContentProps) => {
 
       {/* ----- 줄거리 -----  */}
       <dt className="hidden">줄거리</dt>
-      <dd className="max-w-[70%] text-justify leading-8">{content.overview}</dd>
+      <dd className="max-w-[70%] break-keep text-justify leading-8">
+        {content.overview || (
+          <p className="whitespace-nowrap text-center">
+            줄거리에 대한 내용이 없습니다.
+            <br /> 예고편을 참고해 주세요.
+          </p>
+        )}
+      </dd>
     </dl>
   );
 };

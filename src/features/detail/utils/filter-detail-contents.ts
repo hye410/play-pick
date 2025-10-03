@@ -23,7 +23,8 @@ export const filterDetailTvData = (data: DetailTVData & CombinedDetailData): Fil
     imgUrl: data.poster_path,
     type: "tv",
     overview: data.overview,
-    lastAirDate: data.last_air_date,
+    lastAirDate:
+      data.last_air_date ?? data.last_episode_to_air?.air_date ?? data.seasons[data.seasons.length - 1].air_date,
     rating: data.vote_average,
     genres: data.genres.map(({ name }) => name).join(" / "),
   };

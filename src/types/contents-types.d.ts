@@ -50,6 +50,8 @@ export type DetailTVData = {
   name: string;
   original_name: string;
   last_air_date: string;
+  last_episode_to_air: { air_date: string };
+  seasons: Array<{ air_date: string }>;
 };
 
 export type FilteredDetailData = {

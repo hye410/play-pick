@@ -1,16 +1,17 @@
+import { SURVEY_DB } from "@/constants/db-constants";
 import { SURVEY_MESSAGE } from "@/constants/message-constants";
 import Survey from "@/features/survey/survey";
 import { createServerSupabase } from "@/utils/supabase-server";
 const { FETCH_COMMON_QUESTIONS_FAIL } = SURVEY_MESSAGE;
-
+const { survey, isCommon, step } = SURVEY_DB;
 export const revalidate = 86400;
 const SurveyPage = async () => {
   const supabase = await createServerSupabase();
   const { data: initialQuestions, error } = await supabase
-    .from("survey_questions")
+    .from(survey)
     .select("*")
-    .eq("is_common", true)
-    .order("step", { ascending: true });
+    .eq(isCommon, true)
+    .order(step, { ascending: true });
 
   if (error) {
     console.error(error);

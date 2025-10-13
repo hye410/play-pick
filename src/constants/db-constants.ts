@@ -5,6 +5,10 @@ export const SURVEY_DB = Object.freeze({
     runtime: "with_runtime",
     release: "primary_release_date",
   },
+  survey: "survey_questions",
+  isCommon: "is_common",
+  step: "step",
+  separatedKey: "separated_key",
 } as const);
 
 export const LIKES_DB = Object.freeze({

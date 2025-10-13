@@ -31,7 +31,7 @@ const RecommendList = ({ initialResultData, queries }: RecommendListProps) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mx-auto grid w-full max-w-[1440px] grid-cols-4 gap-5">
+      <div className="mx-auto grid w-full max-w-screen-2xl grid-cols-4 gap-5">
         {contents.map((content) => (
           <Content key={`recommended_content_${content.id}`} content={content} />
         ))}

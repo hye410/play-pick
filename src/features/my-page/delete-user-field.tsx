@@ -6,9 +6,11 @@ const DeleteUserField = () => {
   const { handleDeleteUser } = useDeleteUser();
 
   return (
-    <button type="button" className="text-sm" onClick={handleDeleteUser}>
-      회원탈퇴
-    </button>
+    <div className="mb-auto text-center">
+      <button type="button" className="text-[12px] sm:text-sm" onClick={handleDeleteUser}>
+        회원탈퇴
+      </button>
+    </div>
   );
 };
 

@@ -42,7 +42,7 @@ const FormInput = <T extends FieldValues>({
           type={type}
           placeholder={placeholder}
           autoFocus={autoFocus}
-          className={`w-full rounded-lg px-3 py-4 ${className}`}
+          className={`w-full rounded-lg px-3 py-4 ${className} `}
           {...field}
         />
         <span className="block h-6 pl-2 pt-1 text-left text-sm font-semibold text-error">

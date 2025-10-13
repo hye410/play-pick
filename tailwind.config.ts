@@ -16,6 +16,9 @@ export default {
         white: "#F2F2F2",
         error: "#D32F2F",
       },
+      screens: {
+        xs: "480px",
+      },
     },
   },
   plugins: [],

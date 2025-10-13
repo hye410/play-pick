@@ -27,6 +27,7 @@ const initialState: InitReturnType = {
   message: null,
 };
 
+const MY_INFO_SIZE = "12.5rem"; // (HEADER_SIZE : 9.5rem) + (TAB_SIZE : 3rem)
 const MyInfo = ({ userEmail }: MyInfoProps) => {
   const [isPending, startTransition] = useTransition();
   const [state, requestUpdatePassword] = useActionState(updatePassword, initialState);
@@ -62,9 +63,14 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
   };
 
   return (
-    <section className="mx-auto flex h-full w-2/3 max-w-[600px] flex-col items-center justify-center">
+    <section className={`xs:w-2/3 mx-auto flex h-full w-[80%] flex-col overflow-y-auto lg:max-w-[600px]`}>
       <h3 className="hidden">내 정보 페이지</h3>
-      <input defaultValue={userEmail} readOnly className="mb-10 w-full rounded-lg bg-secondary px-3 py-4 text-white" />
+
+      <input
+        defaultValue={userEmail}
+        readOnly
+        className="mb-10 mt-auto w-full rounded-lg bg-secondary px-3 py-4 text-sm text-white sm:text-base"
+      />
       <form onSubmit={handleSubmit(handleUpdatePassword)} className="mb-5 w-full">
         <FormInput
           name="password"
@@ -72,9 +78,16 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
           autoFocus={true}
           placeholder="비밀번호를 입력해 주세요."
           type="password"
+          className="text-sm sm:text-base"
         />
-        <FormInput name="confirmPassword" control={control} type="password" placeholder="비밀번호를 확인해 주세요." />
-        <p className="mb-8 whitespace-pre-line text-sm">{PASSWORD_CONDITION}</p>
+        <FormInput
+          name="confirmPassword"
+          control={control}
+          type="password"
+          placeholder="비밀번호를 확인해 주세요."
+          className="text-sm sm:text-base"
+        />
+        <p className="mb-8 whitespace-pre-line text-[12px] sm:text-sm">{PASSWORD_CONDITION}</p>
         <Button type="submit" disabled={isPending}>
           {isPending ? <LoadingSpinner width="24px" height="24px" /> : "비밀번호 변경"}
         </Button>

@@ -6,6 +6,7 @@ import { Autoplay, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Content from "@/components/content";
 import { useEffect, useState } from "react";
+import clsx from "clsx";
 
 type ContentsBoxProps = {
   contents: CombinedData[];
@@ -23,6 +24,9 @@ const InitialContent = ({ contents }: Pick<ContentsBoxProps, "contents">) => {
   );
 };
 
+const MIN_DESKTOP_SIZE = 769;
+const MIN_TABLET_SIZE = 641;
+
 const ContentsBox = ({ contents }: ContentsBoxProps) => {
   const [hasSwiper, setHasSwiper] = useState(false);
 
@@ -36,7 +40,10 @@ const ContentsBox = ({ contents }: ContentsBoxProps) => {
         <InitialContent contents={contents} />
       ) : (
         <Swiper
-          className={`h-80 w-[98%] overflow-hidden transition-opacity duration-300 ${hasSwiper ? "opacity-100" : "opacity-0"}`}
+          className={clsx(
+            `h-80 w-[98%] overflow-hidden transition-opacity duration-300`,
+            hasSwiper ? "opacity-100" : "opacity-0",
+          )}
           spaceBetween={20}
           scrollbar={{ draggable: true }}
           autoplay={{
@@ -46,7 +53,17 @@ const ContentsBox = ({ contents }: ContentsBoxProps) => {
           }}
           loop={true}
           modules={[Autoplay, Scrollbar]}
-          slidesPerView={4}
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+            },
+            [MIN_TABLET_SIZE]: {
+              slidesPerView: 3,
+            },
+            [MIN_DESKTOP_SIZE]: {
+              slidesPerView: 4,
+            },
+          }}
           autoHeight={true}
         >
           {contents.map((content) => (

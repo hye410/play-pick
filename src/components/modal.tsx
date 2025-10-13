@@ -30,7 +30,7 @@ const Modal = ({ children, isOpen, onClose }: ModalProps) => {
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80" onClick={onClose}>
-      <div className="relative mx-auto h-auto w-1/2" onClick={(e) => e.stopPropagation()}>
+      <div className="relative mx-2 h-auto w-full sm:mx-6 xl:mx-auto xl:w-1/2" onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
     </div>,

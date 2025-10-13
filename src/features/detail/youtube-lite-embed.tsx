@@ -13,7 +13,7 @@ const YouTubeLiteEmbed = ({ videoId, title }: YouTubeLiteEmbedProps) => {
   if (!isLoaded) {
     return (
       <div
-        className="relative flex h-[400px] w-full cursor-pointer items-center justify-center bg-black"
+        className="relative flex h-[200px] w-full cursor-pointer items-center justify-center bg-black md:h-[400px]"
         onClick={() => setIsLoaded(true)}
       >
         <img
@@ -24,10 +24,9 @@ const YouTubeLiteEmbed = ({ videoId, title }: YouTubeLiteEmbedProps) => {
             e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
           }}
         />
-
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 transition-all hover:bg-opacity-30">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-red-600 transition-colors hover:bg-red-700">
-            <svg className="ml-1 h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 transition-colors hover:bg-red-700 md:h-20 md:w-20">
+            <svg className="ml-1 h-6 w-6 text-white md:h-8 md:w-8" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
           </div>

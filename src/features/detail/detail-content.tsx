@@ -43,9 +43,9 @@ const DetailContent = ({ content, userId, isInitLiked }: DetailContentProps) => 
       {/* ---- 제목 / 원제 ---- */}
       <div className="flex flex-col items-center">
         <dt className="hidden">제목</dt>
-        <dd className="text-lg font-extrabold">{content.title}</dd>
+        <dd className="text-base font-extrabold md:text-lg">{content.title}</dd>
         <dt className="hidden">원제</dt>
-        <dd>&nbsp;({content.originalTitle})</dd>
+        <dd className="text-sm md:text-base">&nbsp;({content.originalTitle})</dd>
       </div>
 
       {/* ----- 평점 ----- */}
@@ -54,20 +54,22 @@ const DetailContent = ({ content, userId, isInitLiked }: DetailContentProps) => 
 
       {/* ----- 장르 ----- */}
       <dt className="hidden">장르</dt>
-      <dd>{content.genres}</dd>
+      <dd className="text-sm md:text-base">{content.genres}</dd>
 
       {/* ----- 러닝타임 (* movie일 때만 노출 )----- */}
       {content.type === MOVIE && (
         <div className="flex items-center">
-          <dt className="font-bold">러닝타임&nbsp;:&nbsp;</dt>
-          <dd>{content.runtime}분</dd>
+          <dt className="text-sm font-bold md:text-base">러닝타임&nbsp;:&nbsp;</dt>
+          <dd className="text-sm md:text-base">{content.runtime}분</dd>
         </div>
       )}
 
       {/* ----- 개봉일(movie) or 최근 방영일(tv) ----- */}
       <div className="flex items-center">
-        <dt className="font-bold">{content.type === MOVIE ? "개봉일" : "최근 방영일"}&nbsp;:&nbsp;</dt>
-        <dd>{content.type === MOVIE ? content.releaseDate : content.lastAirDate}</dd>
+        <dt className="text-sm font-bold md:text-base">
+          {content.type === MOVIE ? "개봉일" : "최근 방영일"}&nbsp;:&nbsp;
+        </dt>
+        <dd className="text-sm md:text-base">{content.type === MOVIE ? content.releaseDate : content.lastAirDate}</dd>
       </div>
 
       {/* ----- 예고편 보기 ----- */}
@@ -80,9 +82,9 @@ const DetailContent = ({ content, userId, isInitLiked }: DetailContentProps) => 
 
       {/* ----- 줄거리 -----  */}
       <dt className="hidden">줄거리</dt>
-      <dd className="max-w-[70%] break-keep text-justify leading-8">
+      <dd className="break-keep text-justify text-sm leading-8 md:max-w-[80%] md:text-base xl:max-w-[70%]">
         {content.overview || (
-          <p className="whitespace-nowrap text-center">
+          <p className="whitespace-nowrap text-center text-sm md:text-base">
             줄거리에 대한 내용이 없습니다.
             <br /> 예고편을 참고해 주세요.
           </p>

@@ -68,7 +68,9 @@ const MyContentsList = ({ userId }: MyContentsListProps) => {
       )}
 
       {!hasNextPage && (myContents.length > 0 || fetchFailedData.length > 0) && (
-        <div className="col-span-3 text-center text-gray-500">모든 찜 목록을 불러왔습니다.</div>
+        <div className="col-span-3 flex flex-col justify-end text-center text-gray-500">
+          모든 찜 목록을 불러왔습니다.
+        </div>
       )}
     </div>
   );

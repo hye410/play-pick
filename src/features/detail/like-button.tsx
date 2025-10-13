@@ -11,13 +11,13 @@ const { LIKED_CONTENTS } = QUERY_KEYS;
 type LikeButton = {
   contentId: FilteredDetailData["id"];
   contentType: FilteredDetailData["type"];
-  user: User | null;
+  userId: User["id"] | null;
   isInitLiked: boolean;
 };
 
-const LikeButton = ({ contentId, contentType, user, isInitLiked }: LikeButton) => {
-  const { handleChange, isLiked } = useUserLikesStatus({ contentId, contentType, user, isInitLiked });
-  const { getSingleContent } = useLikedSingleContentMutation(user?.id!);
+const LikeButton = ({ contentId, contentType, userId, isInitLiked }: LikeButton) => {
+  const { handleChange, isLiked } = useUserLikesStatus({ contentId, contentType, userId, isInitLiked });
+  const { getSingleContent } = useLikedSingleContentMutation(userId);
   const queryClient = useQueryClient();
   const isLikedRef = useRef(isLiked);
   useEffect(() => {
@@ -29,9 +29,9 @@ const LikeButton = ({ contentId, contentType, user, isInitLiked }: LikeButton) =
       const currentLiked = isLikedRef.current;
       const updateCachedLikedContents = async () => {
         try {
-          if (!user?.id) return;
+          if (!userId) return;
           await getSingleContent({ id: contentId, type: contentType });
-          queryClient.invalidateQueries({ queryKey: [LIKED_CONTENTS, user.id] });
+          queryClient.invalidateQueries({ queryKey: [LIKED_CONTENTS, userId] });
         } catch (error) {
           console.error(`${contentId}를 LICKED_CONTENTS에 캐싱하는데 실패했습니다.\n원인 => `, error);
         }

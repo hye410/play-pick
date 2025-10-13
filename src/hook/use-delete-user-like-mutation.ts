@@ -1,7 +1,7 @@
 "use client";
 
 import { ALERT_TYPE } from "@/constants/alert-constants";
-import { DEFAULT_ERROR_MESSAGE } from "@/constants/message-constants";
+import { DEFAULT_ERROR_MESSAGE, TOGGLE_LIKES_MESSAGE } from "@/constants/message-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { deleteFromUserLikes } from "@/features/detail/api/server-actions";
 import { alert } from "@/utils/alert";
@@ -11,13 +11,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 const { IS_LIKED } = QUERY_KEYS;
 const { SUCCESS, ERROR } = ALERT_TYPE;
 const { UNKNOWN_ERROR } = DEFAULT_ERROR_MESSAGE;
-
+type IdToDelete = USER_LIKES_TYPE["id"];
+const { REQUIRE_SIGN_IN } = TOGGLE_LIKES_MESSAGE;
 const useDeleteUserLikeMutation = (userId: User["id"]) => {
   const queryClient = useQueryClient();
-
-  type IdToDelete = USER_LIKES_TYPE["id"];
-
   const handleOptimisticUpdate = async (contentId: IdToDelete) => {
+    if (!userId) throw new Error(REQUIRE_SIGN_IN);
     // 먼저 실행 중인 동기화 모두 취소
     await queryClient.cancelQueries({ queryKey: [IS_LIKED, userId, contentId] });
 

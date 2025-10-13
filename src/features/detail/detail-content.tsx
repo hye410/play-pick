@@ -9,13 +9,13 @@ import Image from "next/image";
 
 type DetailContentProps = {
   content: FilteredDetailData;
-  user: User | null;
+  userId: User["id"] | null;
   isInitLiked: boolean;
 };
 
 const MOVIE = "movie";
 
-const DetailContent = ({ content, user, isInitLiked }: DetailContentProps) => {
+const DetailContent = ({ content, userId, isInitLiked }: DetailContentProps) => {
   return (
     <dl className="flex flex-col items-center gap-3 pb-8">
       {/* ----- 포스터 이미지 ----- */}
@@ -28,7 +28,7 @@ const DetailContent = ({ content, user, isInitLiked }: DetailContentProps) => {
       <div className="flex w-[250px] justify-end gap-3 p-1">
         <dt className="hidden">찜하기</dt>
         <dd>
-          <LikeButton contentId={content.id} contentType={content.type} user={user} isInitLiked={isInitLiked} />
+          <LikeButton contentId={content.id} contentType={content.type} userId={userId} isInitLiked={isInitLiked} />
         </dd>
         <dt className="hidden">공유하기</dt>
         <dd>

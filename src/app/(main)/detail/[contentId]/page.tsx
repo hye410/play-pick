@@ -41,7 +41,7 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
 
   let isInitLiked = false;
 
-  if (user) {
+  if (user && user.id) {
     await queryClient.prefetchQuery({
       queryKey: [IS_LIKED, user.id, Number(contentId)],
       queryFn: async () => {
@@ -60,7 +60,7 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
     <HydrationBoundary state={dehydrate(queryClient)}>
       <article className="flex h-full items-center justify-center">
         <h3 className="hidden">{content.title} 상세 페이지</h3>
-        <DetailContent content={content} user={user} isInitLiked={isInitLiked} />
+        <DetailContent content={content} userId={user?.id || null} isInitLiked={isInitLiked} />
       </article>
     </HydrationBoundary>
   );

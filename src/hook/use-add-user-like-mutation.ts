@@ -23,6 +23,7 @@ const useAddUserLikeMutation = (userId: User["id"]) => {
   };
 
   const handleOptimisticUpdate = async (contentToAdd: USER_LIKES_TYPE) => {
+    if (!userId) throw new Error(REQUIRE_SIGN_IN);
     const { id: contentId } = contentToAdd;
     //현재 진행 중인 쿼리가 있다면 취소시켜주고 (충돌 방지)
     await queryClient.cancelQueries({ queryKey: [IS_LIKED, userId, contentId] });

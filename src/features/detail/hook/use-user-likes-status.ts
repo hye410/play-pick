@@ -17,14 +17,13 @@ const { LIKED_CONTENTS } = QUERY_KEYS;
 type UserLikesStatus = {
   contentId: FilteredDetailData["id"];
   contentType: FilteredDetailData["type"];
-  user: User | null;
+  userId: User["id"] | null;
   isInitLiked: boolean;
 };
-const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserLikesStatus) => {
-  const userId = user?.id ?? null;
+const useUserLikesStatus = ({ contentId, contentType, userId, isInitLiked }: UserLikesStatus) => {
   const { mutate: addToUserLikes } = useAddUserLikeMutation(userId!);
   const { mutate: deleteFromUserLikes } = useDeleteUserLikeMutation(userId!);
-  const { isUserLike } = useCheckUserLikes(user?.id!, contentId);
+  const { isUserLike } = useCheckUserLikes(userId!, contentId);
   const [isLiked, setIsLiked] = useState(isInitLiked);
   const queryClient = useQueryClient();
   useEffect(() => {
@@ -32,7 +31,7 @@ const useUserLikesStatus = ({ contentId, contentType, user, isInitLiked }: UserL
   }, [isUserLike]);
 
   const handleChange = () => {
-    if (!user || !userId)
+    if (!userId)
       return alert({
         type: WARNING,
         message: REQUIRE_SIGN_IN,

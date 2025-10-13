@@ -39,3 +39,7 @@ export type ResultState = InitReturnType & {
   recommends: Array<CombinedData> | Array;
   totalPages: number;
 };
+
+export type UserLikesCountState = InitReturnType & {
+  count: number | null;
+};

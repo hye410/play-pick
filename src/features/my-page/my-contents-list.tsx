@@ -5,9 +5,7 @@ import { DEFAULT_ERROR_MESSAGE, MY_CONTENTS_MESSAGE } from "@/constants/message-
 import EmptyContents from "@/features/my-page/empty-contents";
 import FailedContent from "@/features/my-page/failed-content";
 import useFetchFailedData from "@/features/my-page/hook/use-fetch-failed-data";
-import useLikedContentsMutation from "@/features/my-page/hook/use-liked-contents-mutation";
 import useInfiniteLikedContents from "@/hook/use-infinite-liked-contents";
-import { usePendingLikesStore } from "@/store/use-pending-likes-store";
 import type { User } from "@supabase/supabase-js";
 import { useEffect, useRef } from "react";
 type MyContentsListProps = {
@@ -16,18 +14,12 @@ type MyContentsListProps = {
 
 const { NO_LIKED_CONTENTS } = MY_CONTENTS_MESSAGE;
 const { UNKNOWN_ERROR } = DEFAULT_ERROR_MESSAGE;
+
 const MyContentsList = ({ userId }: MyContentsListProps) => {
   const { fetchFailedData } = useFetchFailedData(userId);
-  const { getLikedContents } = useLikedContentsMutation(userId);
+
   const { myContents, hasNextPage, isLoading, isError, error, isFetchingNextPage, fetchNextPage } =
     useInfiniteLikedContents(userId);
-  const { dataToFetch } = usePendingLikesStore();
-
-  useEffect(() => {
-    if (dataToFetch.length !== 0) {
-      getLikedContents(dataToFetch);
-    }
-  }, [dataToFetch.length !== 0]);
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
 

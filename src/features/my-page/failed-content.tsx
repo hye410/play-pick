@@ -1,23 +1,15 @@
-import { ALERT_TYPE } from "@/constants/alert-constants";
 import useLikedSingleContentMutation from "@/features/detail/hook/use-liked-single-content-mutation";
 import type { USER_LIKES_TYPE } from "@/types/user-likes-type";
 import type { User } from "@supabase/supabase-js";
-import { alert } from "@/utils/alert";
-import { DEFAULT_ERROR_MESSAGE } from "@/constants/message-constants";
 
 type FailedContent = {
   content: USER_LIKES_TYPE;
   userId: User["id"];
 };
 
-const { ERROR } = ALERT_TYPE;
-const { UNKNOWN_ERROR } = DEFAULT_ERROR_MESSAGE;
-
 const FailedContent = ({ content, userId }: FailedContent) => {
-  const { getSingleContent, isError, error } = useLikedSingleContentMutation(userId);
-  if (isError) {
-    alert({ type: ERROR, message: error?.message || UNKNOWN_ERROR });
-  }
+  const { getSingleContent } = useLikedSingleContentMutation(userId);
+
   return (
     <div
       key={`error_${content.id}`}

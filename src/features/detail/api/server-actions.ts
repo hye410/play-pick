@@ -53,7 +53,7 @@ export const getUserLikesByPage = async (userId: User["id"], pageParam: number =
     .select(`${contentIdInDB},${contentTypeInDB}`, { count: "exact" })
     .eq(userIdInDB, userId)
     .range(startIdx, endIdx)
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: false });
   if (error) return { success: false, message: FAIL_FETCH_USER_LIKES, userLikes: [] };
   const userLikes: Array<USER_LIKES_TYPE> =
     data.map((like) => ({ id: like[contentIdInDB], type: like[contentTypeInDB] })) ?? [];

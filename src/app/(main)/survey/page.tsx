@@ -12,7 +12,10 @@ const SurveyPage = async () => {
     .eq("is_common", true)
     .order("step", { ascending: true });
 
-  if (error) throw new Error(FETCH_COMMON_QUESTIONS_FAIL);
+  if (error) {
+    console.error(error);
+    throw new Error(FETCH_COMMON_QUESTIONS_FAIL);
+  }
 
   return (
     <section className="h-full">

@@ -1,14 +1,18 @@
 "use client";
+import { ALERT_TYPE } from "@/constants/alert-constants";
+import { DEFAULT_ERROR_MESSAGE } from "@/constants/message-constants";
 import { QUERY_KEYS } from "@/constants/query-keys-constants";
 import { getSingleContentData } from "@/features/my-page/api/server-actions";
 import useFetchFailedData from "@/features/my-page/hook/use-fetch-failed-data";
 import type { CombinedData } from "@/types/contents-types";
 import type { USER_LIKES_BY_INFINITE_TYPE, USER_LIKES_TYPE } from "@/types/user-likes-type";
+import { alert } from "@/utils/alert";
 import type { User } from "@supabase/supabase-js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const { LIKED_CONTENTS, FAIL_CONTENTS } = QUERY_KEYS;
-
+const { ERROR } = ALERT_TYPE;
+const { UNKNOWN_ERROR } = DEFAULT_ERROR_MESSAGE;
 const useLikedSingleContentMutation = (userId: User["id"] | null) => {
   const queryClient = useQueryClient();
   const { checkIsFailedData } = useFetchFailedData(userId!);
@@ -18,10 +22,10 @@ const useLikedSingleContentMutation = (userId: User["id"] | null) => {
     const { id, type } = contentToFetch;
     const res = await getSingleContentData(id, type);
     if (res.success) return res.content;
-    else throw new Error(res.message as string);
+    else throw new Error(res.message || UNKNOWN_ERROR);
   };
 
-  const { mutate, isError, error } = useMutation<CombinedData, Error, USER_LIKES_TYPE>({
+  const { mutateAsync, isError, error } = useMutation<CombinedData, Error, USER_LIKES_TYPE>({
     mutationFn: (contentToFetch) => fetchSingleData(contentToFetch),
     onSuccess: (content) => {
       // 1. 기존 FAIL_CONTENTS에 이미 캐싱되어 있는지 확인
@@ -50,7 +54,7 @@ const useLikedSingleContentMutation = (userId: User["id"] | null) => {
         };
       });
     },
-    onError: (_, variables) => {
+    onError: (error, variables) => {
       // 1. 기존 FAIL_CONTENTS에 이미 캐싱되어 있는지 확인
       const wasFailedData = checkIsFailedData(variables.id);
       // 2. 기존 FAIL_CONTENTS에 캐싱되어 있지 않다면 추가로 캐싱함
@@ -59,11 +63,15 @@ const useLikedSingleContentMutation = (userId: User["id"] | null) => {
           const existingData = oldData ?? [];
           return [...existingData, variables];
         });
+      alert({
+        type: ERROR,
+        message: error.message,
+      });
     },
   });
 
   return {
-    getSingleContent: mutate,
+    getSingleContent: mutateAsync,
     isError,
     error,
   };

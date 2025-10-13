@@ -4,10 +4,16 @@ import { API_METHOD, TMDB_API_HEADER } from "@/constants/api-constants";
 import { DELETE_USER_MESSAGE, MY_CONTENTS_MESSAGE, UPDATE_PASSWORD_MESSAGE } from "@/constants/message-constants";
 import { TMDB_BASE_URL } from "@/constants/path-constants";
 import type { CombinedData } from "@/types/contents-types";
-import type { InitReturnType, LikedContentsState, LikedContentState } from "@/types/server-action-return-type";
+import type {
+  InitReturnType,
+  LikedContentsState,
+  LikedContentState,
+  UserLikesCountState,
+} from "@/types/server-action-return-type";
 import type { ParsedData, RemoveContent, USER_LIKES_TYPE } from "@/types/user-likes-type";
 import { createAuthSupabase } from "@/utils/supabase-auth";
 import { createServerSupabase } from "@/utils/supabase-server";
+import { User } from "@supabase/supabase-js";
 
 const { UPDATE_FAIL, UPDATE_SUCCESS, SAME_PASSWORD_ERROR } = UPDATE_PASSWORD_MESSAGE;
 const SAME_PASSWORD_CODE = "same_password";
@@ -31,6 +37,14 @@ export const updatePassword = async (_: InitReturnType, userData: FormData): Pro
   }
 
   return { success: true, message: UPDATE_SUCCESS };
+};
+
+export const getUserLikesCount = async (userId: User["id"]): Promise<UserLikesCountState> => {
+  console.log("여기시작");
+  const supabase = await createServerSupabase();
+  const { error, count } = await supabase.from("likes").select("content_id", { count: "exact" }).eq("user_id", userId);
+  if (error) return { success: false, message: "좋아요 목록을 가져오는데 실패했습니다.", count: null };
+  return { success: true, count, message: null };
 };
 
 const API_KEY = process.env.TMDB_API_KEY;
@@ -65,7 +79,6 @@ export const getSingleContentData = async (
   type: CombinedData["type"],
 ): Promise<LikedContentState> => {
   const content = await fetchTmdbContent(id, type);
-  console.log("싱글패치!!!");
   if (!content) return { success: false, message: NO_CONTENT_DATA, content: [] };
 
   const filteredContent: CombinedData = {

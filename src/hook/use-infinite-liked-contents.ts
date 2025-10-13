@@ -15,7 +15,6 @@ const { LIKED_CONTENTS, FAIL_CONTENTS } = QUERY_KEYS;
 const useInfiniteLikedContents = (userId: User["id"]) => {
   const queryClient = useQueryClient();
   const { checkIsFailedData } = useFetchFailedData(userId);
-
   const { data, isLoading, isError, error, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: [LIKED_CONTENTS, userId],
     queryFn: async ({ pageParam = 1 }) => {
@@ -60,7 +59,6 @@ const useInfiniteLikedContents = (userId: User["id"]) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,
     staleTime: A_DAY,
-    refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 

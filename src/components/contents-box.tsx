@@ -26,6 +26,7 @@ const InitialContent = ({ contents }: Pick<ContentsBoxProps, "contents">) => {
 
 const MIN_DESKTOP_SIZE = 769;
 const MIN_TABLET_SIZE = 641;
+const MAX_MOBILE_SIZE = 480;
 
 const ContentsBox = ({ contents }: ContentsBoxProps) => {
   const [hasSwiper, setHasSwiper] = useState(false);
@@ -56,6 +57,9 @@ const ContentsBox = ({ contents }: ContentsBoxProps) => {
           breakpoints={{
             0: {
               slidesPerView: 1,
+            },
+            [MAX_MOBILE_SIZE]: {
+              slidesPerView: 2,
             },
             [MIN_TABLET_SIZE]: {
               slidesPerView: 3,

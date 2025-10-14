@@ -28,7 +28,7 @@ const Result = async ({ searchParams }: ResultProps) => {
 
   return (
     <article className="pb-15 h-full">
-      <h3 className="mb-10 whitespace-pre-line break-words text-center font-bold leading-7">
+      <h3 className="mb-10 whitespace-pre-line break-keep text-center text-sm font-bold leading-5 xs:text-base xs:leading-7">
         &#91;&nbsp;{<UserPicks userPicks={userPicks} />}&nbsp;&#93; <br />
         {haveRecommends
           ? "딱 맞는 콘텐츠 추천드릴게요😉"

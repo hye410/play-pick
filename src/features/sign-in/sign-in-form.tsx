@@ -33,7 +33,6 @@ const SignInForm = () => {
 
   useEffect(() => {
     if (state.success && state.userId) {
-      // fetchUserLikes(state.userId);
       const redirectPage = params.get("redirect") ?? "/";
       router.replace(redirectPage);
     } else if (state.message) {
@@ -52,7 +51,7 @@ const SignInForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(handleSignInSubmit)} className="w-[400px]">
+    <form onSubmit={handleSubmit(handleSignInSubmit)} className="mx-auto w-[98%] xs:w-[25rem]">
       <FormInput name="email" autoFocus={true} control={control} placeholder="이메일 주소를 입력해 주세요." />
       <FormInput name="password" type="password" control={control} placeholder="비밀번호를 입력해 주세요." />
       <Button type="submit" disabled={isPending}>

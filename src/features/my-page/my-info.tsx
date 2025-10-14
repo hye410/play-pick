@@ -62,7 +62,7 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
   };
 
   return (
-    <section className={`mx-auto h-full w-[90%] overflow-y-auto xs:w-2/3 lg:max-w-[600px]`}>
+    <section className={`scrollbar-hide mx-auto h-full w-[90%] overflow-y-scroll xs:w-2/3 lg:max-w-[600px]`}>
       <h3 className="hidden">내 정보 페이지</h3>
       <div className="flex h-full min-h-fit flex-col items-center justify-center py-10">
         <input

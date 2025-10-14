@@ -17,7 +17,7 @@ const MOVIE = "movie";
 
 const DetailContent = ({ content, userId, isInitLiked }: DetailContentProps) => {
   return (
-    <dl className="flex h-full flex-col items-center gap-3 overflow-y-auto pb-8">
+    <dl className="scrollbar-hide flex h-full w-full flex-col items-center gap-3 overflow-y-scroll pb-8">
       {/* ----- 포스터 이미지 ----- */}
       <dt className="hidden">{content.title} 포스터 이미지</dt>
       <dd>

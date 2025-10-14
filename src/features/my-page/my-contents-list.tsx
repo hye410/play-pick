@@ -52,9 +52,9 @@ const MyContentsList = ({ userId }: MyContentsListProps) => {
   if (isError) return <EmptyContents message={error?.message || UNKNOWN_ERROR} />;
 
   return (
-    <div className="xs:grid-cols-2 xs:gap-2 grid h-full grid-cols-1 overflow-y-scroll px-4 pt-4 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="scrollbar-hide grid h-full grid-cols-1 overflow-y-scroll px-4 pt-4 xs:grid-cols-2 xs:gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {myContents.map((content) => (
-        <div className="xs:m-0 xs:w-full mx-auto my-4 w-3/4" key={`success_${content.id}`}>
+        <div className="mx-auto my-4 w-3/4 xs:m-0 xs:w-full" key={`success_${content.id}`}>
           <Content content={content} />
         </div>
       ))}
@@ -66,14 +66,14 @@ const MyContentsList = ({ userId }: MyContentsListProps) => {
       {hasNextPage && (
         <div
           ref={loadMoreRef}
-          className="xs:col-span-2 col-span-1 flex justify-center py-4 md:col-span-3 lg:col-span-4 xl:col-span-5"
+          className="col-span-1 flex justify-center py-4 xs:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5"
         >
           {isFetchingNextPage ? <LoadingSpinner /> : null}
         </div>
       )}
 
       {!hasNextPage && (myContents.length > 0 || fetchFailedData.length > 0) && (
-        <div className="xs:col-span-2 col-span-1 mb-4 flex flex-col justify-end text-center text-gray-500 md:col-span-3 lg:col-span-4 xl:col-span-5">
+        <div className="col-span-1 mb-4 flex flex-col justify-end text-center text-gray-500 xs:col-span-2 md:col-span-3 lg:col-span-4 xl:col-span-5">
           모든 찜 목록을 불러왔습니다.
         </div>
       )}

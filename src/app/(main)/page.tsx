@@ -7,7 +7,7 @@ const Home = async () => {
 
   return (
     <section className="h-full max-h-fit">
-      <div className="flex h-full flex-col items-center justify-evenly overflow-auto py-6">
+      <div className="scrollbar-hide flex h-full flex-col items-center justify-evenly overflow-y-scroll py-6">
         <h3 className="mb-4 text-center text-3xl font-extrabold">Today&apos;s Pick</h3>
         <ContentsBox contents={contents} />
         <SurveyButton />

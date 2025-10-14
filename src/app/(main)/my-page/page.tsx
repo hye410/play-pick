@@ -19,7 +19,7 @@ const MyPage = async ({ searchParams }: MyPageProps) => {
     throw new Error("유저 정보가 없어 마이페이지에 접근할 수 없습니다.<br /> 로그인 후 다시 시도해 주세요.");
 
   return (
-    <div className="`mx-auto sm:w-[85%]` mb-5 flex h-full w-full flex-col overflow-y-hidden">
+    <div className="`mx-auto sm:w-[85%]` scrollbar-hide mb-5 flex h-full w-full flex-col overflow-y-hidden">
       <Tabs currentTab={tab} />
       <div className="h-full rounded-l-lg border">
         {tab === INFO ? <MyInfo userEmail={user.email} /> : <MyContents user={user} />}

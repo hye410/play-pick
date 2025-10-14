@@ -19,7 +19,7 @@ const Tabs = ({ currentTab }: TabsProps) => {
   };
 
   return (
-    <div className="h-12 text-right">
+    <div className="h-[var(--tab-height)] text-right">
       <button
         onClick={() => handleChangeTab(INFO)}
         className={clsx(

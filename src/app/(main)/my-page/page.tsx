@@ -21,7 +21,7 @@ const MyPage = async ({ searchParams }: MyPageProps) => {
   return (
     <div className="`mx-auto sm:w-[85%]` scrollbar-hide mb-5 flex h-full w-full flex-col overflow-y-hidden">
       <Tabs currentTab={tab} />
-      <div className="h-full rounded-l-lg border">
+      <div className="h-[var(--my-contents-height)] rounded-l-lg border">
         {tab === INFO ? <MyInfo userEmail={user.email} /> : <MyContents user={user} />}
       </div>
     </div>

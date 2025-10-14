@@ -58,7 +58,7 @@ const DetailContentPage = async ({ params, searchParams }: DetailContentProps) =
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <article className="flex h-full items-center justify-center">
+      <article className="flex h-full max-h-fit items-center justify-center">
         <h3 className="hidden">{content.title} 상세 페이지</h3>
         <DetailContent content={content} userId={user?.id || null} isInitLiked={isInitLiked} />
       </article>

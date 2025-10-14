@@ -17,11 +17,11 @@ const MOVIE = "movie";
 
 const DetailContent = ({ content, userId, isInitLiked }: DetailContentProps) => {
   return (
-    <dl className="flex flex-col items-center gap-3 pb-8">
+    <dl className="flex h-full flex-col items-center gap-3 overflow-y-auto pb-8">
       {/* ----- 포스터 이미지 ----- */}
       <dt className="hidden">{content.title} 포스터 이미지</dt>
-      <dd className="relative h-[350px] w-[250px]">
-        <Image src={`${TMDB_IMAGE_URL}/${content.imgUrl}`} alt={content.title} fill sizes="250px" />
+      <dd>
+        <Image src={`${TMDB_IMAGE_URL}/${content.imgUrl}`} alt={content.title} width={250} height={350} />
       </dd>
 
       {/* ----- 찜 / 공유 필드 ----- */}

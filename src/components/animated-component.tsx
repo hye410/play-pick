@@ -38,6 +38,7 @@ const AnimatedComponent = ({ animatedKey, direction, children }: AnimatedCompone
           x: { type: "tween", stiffness: 300, damping: 30 },
           opacity: { duration: 0.2 },
         }}
+        className="w-full overflow-y-auto"
       >
         {children}
       </motion.div>

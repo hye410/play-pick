@@ -19,7 +19,10 @@ export const getSurveyResult = async (payload: Answer, page: number = 1): Promis
     headers: TMDB_API_HEADER,
   });
   const result: TMDBResponse<MovieData | TVData> = await res.json();
-  if (!res.ok) return { success: false, message: FETCH_RECOMMENDS_FAIL, recommends: [], totalPages: 0 };
+  if (!res.ok) {
+    console.error(`!!!!Error => [${res.status}] : ${res.statusText}`);
+    return { success: false, message: FETCH_RECOMMENDS_FAIL, recommends: [], totalPages: 0 };
+  }
 
   let recommends: CombinedData[] = [];
   if (payload.type === "movie") {

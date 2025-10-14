@@ -39,7 +39,7 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
       </AnimatedComponent>
       <div
         className={clsx(
-          "absolute bottom-5 mx-auto flex w-full items-center gap-16 xs:bottom-8 xs:w-[120%]",
+          "absolute bottom-5 mx-auto flex w-full items-center gap-16",
           isFirstQuestion && "justify-end",
           !isFirstQuestion && "justify-between",
         )}
@@ -51,6 +51,7 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
             onClick={moveToPrev}
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.1 }}
+            className="z-50"
           >
             <FaArrowCircleLeft size={40} />
           </motion.button>
@@ -59,7 +60,7 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
           initial={false}
           aria-label="다음"
           disabled={!answers[currentKey]}
-          className={clsx(!answers[currentKey] && "cursor-not-allowed")}
+          className={clsx("z-50", !answers[currentKey] && "cursor-not-allowed")}
           onClick={moveToNext}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}

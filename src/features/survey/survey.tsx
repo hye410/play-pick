@@ -39,7 +39,7 @@ const Survey = ({ initialQuestions: initialQuestion }: SurveyProps) => {
       </AnimatedComponent>
       <div
         className={clsx(
-          "absolute bottom-5 mx-auto flex w-full items-center gap-16",
+          "absolute bottom-5 mx-auto flex w-full items-center gap-16 xs:bottom-8 xs:w-[120%]",
           isFirstQuestion && "justify-end",
           !isFirstQuestion && "justify-between",
         )}

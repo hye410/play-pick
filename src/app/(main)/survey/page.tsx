@@ -5,6 +5,8 @@ import { createServerSupabase } from "@/utils/supabase-server";
 const { FETCH_COMMON_QUESTIONS_FAIL } = SURVEY_MESSAGE;
 const { survey, isCommon, step } = SURVEY_DB;
 export const revalidate = 86400;
+
+const HEADER_SIZE = "6.25rem";
 const SurveyPage = async () => {
   const supabase = await createServerSupabase();
   const { data: initialQuestions, error } = await supabase
@@ -19,7 +21,7 @@ const SurveyPage = async () => {
   }
 
   return (
-    <section className="h-full">
+    <section className={`h-[calc(100dvh-${HEADER_SIZE})]`}>
       <Survey initialQuestions={initialQuestions} />
     </section>
   );

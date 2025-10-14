@@ -12,7 +12,7 @@ import type { InitReturnType } from "@/types/server-action-return-type";
 import { alert } from "@/utils/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState, useTransition } from "react";
+import { useActionState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 const { email, password, confirmPassword } = FORM_CONSTANTS;
@@ -22,7 +22,6 @@ const initialState: InitReturnType = {
   success: false,
   message: null,
 };
-const SCREEN_XS = 480;
 
 const SignUpForm = () => {
   const [isPending, startTransition] = useTransition();

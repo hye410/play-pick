@@ -13,7 +13,7 @@ const Header = async () => {
   const isLoggedIn = !!session;
 
   return (
-    <header className="mb-4 flex h-20 items-center justify-between sm:mb-8">
+    <header className="mb-5 flex h-20 items-center justify-between">
       <h1>
         <Link href="/">
           <Image src={`${SUPABASE_IMAGE_URL}/logos/play-pick-logo.png`} alt="logo" width={60} height={60} />

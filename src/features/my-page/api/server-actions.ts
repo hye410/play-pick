@@ -40,7 +40,6 @@ export const updatePassword = async (_: InitReturnType, userData: FormData): Pro
 };
 
 export const getUserLikesCount = async (userId: User["id"]): Promise<UserLikesCountState> => {
-  console.log("여기시작");
   const supabase = await createServerSupabase();
   const { error, count } = await supabase.from("likes").select("content_id", { count: "exact" }).eq("user_id", userId);
   if (error) return { success: false, message: "좋아요 목록을 가져오는데 실패했습니다.", count: null };

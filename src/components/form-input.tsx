@@ -5,9 +5,12 @@ import { FieldValues, UseControllerProps, useController } from "react-hook-form"
 type FormInputProps<T extends FieldValues> = {
   name: UseControllerProps<T>["name"];
   label?: string;
+  labelClassName?: string;
   placeholder?: string;
   type?: "text" | "password" | "email";
-  className?: string;
+  inputClassName?: string;
+  inputFieldClassName?: string;
+  errorFieldClassName?: string;
   autoFocus?: boolean;
   control: UseControllerProps<T>["control"];
 };
@@ -17,7 +20,10 @@ const FormInput = <T extends FieldValues>({
   label,
   placeholder,
   type = "text",
-  className,
+  labelClassName,
+  inputClassName,
+  inputFieldClassName,
+  errorFieldClassName,
   control,
   autoFocus,
 }: FormInputProps<T>) => {
@@ -32,20 +38,20 @@ const FormInput = <T extends FieldValues>({
   return (
     <div className="mb-3 flex items-center">
       {label && (
-        <label htmlFor={String(name)} className="mb-6 w-1/4 pr-2">
+        <label htmlFor={String(name)} className={clsx("mb-6 w-1/4 break-keep pr-2", labelClassName)}>
           {label}
         </label>
       )}
-      <div className={clsx(label ? "w-3/4" : "w-full")}>
+      <div className={clsx(label ? "w-3/4" : "w-full", inputFieldClassName)}>
         <input
           id={String(name)}
           type={type}
           placeholder={placeholder}
           autoFocus={autoFocus}
-          className={`w-full rounded-lg px-3 py-4 ${className} `}
+          className={clsx("w-full rounded-lg px-3 py-4", inputClassName)}
           {...field}
         />
-        <span className="block h-6 pl-2 pt-1 text-left text-sm font-semibold text-error">
+        <span className={clsx("block h-6 pl-2 pt-1 text-left text-sm font-semibold text-error", errorFieldClassName)}>
           {error && error.message?.toString()}
         </span>
       </div>

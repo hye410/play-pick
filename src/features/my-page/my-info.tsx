@@ -63,7 +63,7 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
   };
 
   return (
-    <section className={`xs:w-2/3 mx-auto flex h-full w-[80%] flex-col overflow-y-auto lg:max-w-[600px]`}>
+    <section className={`mx-auto flex h-full w-[80%] flex-col overflow-y-auto xs:w-2/3 lg:max-w-[600px]`}>
       <h3 className="hidden">내 정보 페이지</h3>
 
       <input
@@ -78,14 +78,14 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
           autoFocus={true}
           placeholder="비밀번호를 입력해 주세요."
           type="password"
-          className="text-sm sm:text-base"
+          inputClassName="text-sm sm:text-base"
         />
         <FormInput
           name="confirmPassword"
           control={control}
           type="password"
           placeholder="비밀번호를 확인해 주세요."
-          className="text-sm sm:text-base"
+          inputClassName="text-sm sm:text-base"
         />
         <p className="mb-8 whitespace-pre-line text-[12px] sm:text-sm">{PASSWORD_CONDITION}</p>
         <Button type="submit" disabled={isPending}>

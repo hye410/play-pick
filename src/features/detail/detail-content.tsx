@@ -4,6 +4,7 @@ import LikeButton from "@/features/detail/like-button";
 import PreviewVideoButton from "@/features/detail/preview-video-button";
 import ShareButton from "@/features/detail/share-button";
 import type { FilteredDetailData } from "@/types/contents-types";
+import { getPlaceholderDataURL } from "@/utils/get-placeholder-data-url";
 import type { User } from "@supabase/supabase-js";
 import Image from "next/image";
 
@@ -17,11 +18,19 @@ const MOVIE = "movie";
 
 const DetailContent = ({ content, userId, isInitLiked }: DetailContentProps) => {
   return (
-    <dl className="scrollbar-hide flex h-full w-full flex-col items-center gap-3 overflow-y-scroll pb-8">
+    <dl className="flex h-full w-full flex-col items-center gap-3 overflow-y-scroll pb-8 scrollbar-hide">
       {/* ----- 포스터 이미지 ----- */}
       <dt className="hidden">{content.title} 포스터 이미지</dt>
       <dd>
-        <Image src={`${TMDB_IMAGE_URL}/${content.imgUrl}`} alt={content.title} width={250} height={350} />
+        <Image
+          src={`${TMDB_IMAGE_URL}/${content.imgUrl}`}
+          alt={content.title}
+          width={250}
+          height={350}
+          placeholder="blur"
+          blurDataURL={getPlaceholderDataURL()}
+          className="rounded-[10px]"
+        />
       </dd>
 
       {/* ----- 찜 / 공유 필드 ----- */}

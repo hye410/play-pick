@@ -52,10 +52,10 @@ const MyContentsList = ({ userId }: MyContentsListProps) => {
   if (isError) return <EmptyContents message={error?.message || UNKNOWN_ERROR} />;
 
   return (
-    <div className="scrollbar-hide grid h-full grid-cols-1 overflow-y-scroll px-4 pt-4 xs:grid-cols-2 xs:gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="grid h-full grid-cols-1 overflow-y-scroll px-4 pt-4 scrollbar-hide xs:grid-cols-2 xs:gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {myContents.map((content) => (
         <div className="mx-auto my-4 w-3/4 xs:m-0 xs:w-full" key={`success_${content.id}`}>
-          <Content content={content} />
+          <Content content={content} hasSkeleton={true} />
         </div>
       ))}
 

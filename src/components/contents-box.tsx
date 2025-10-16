@@ -14,7 +14,7 @@ type ContentsBoxProps = {
 
 const InitialContent = ({ contents }: Pick<ContentsBoxProps, "contents">) => {
   return (
-    <div className={`flex w-full items-center gap-5 px-2 py-[15px] transition-opacity duration-300`}>
+    <div className="flex w-full items-center gap-5 px-2 py-[15px] transition-opacity duration-300">
       {contents.slice(0, 4).map((content) => (
         <div key={content.id} className="h-[324px] w-1/4">
           <Content content={content} />

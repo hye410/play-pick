@@ -14,11 +14,14 @@ const { FETCH_RECOMMENDS_FAIL } = RESULT_MESSAGE;
 export const getSurveyResult = async (payload: Answer, page: number = 1): Promise<ResultState> => {
   const urlSearchParams = makeQueryParams(payload);
   const tmdbApiUrl = `${TMDB_BASE_URL}/discover/${payload.type}?api_key=${TMDB_API_KEY}&page=${page}&${urlSearchParams.toString()}`;
+
   const res = await fetch(tmdbApiUrl, {
     method: API_METHOD.GET,
     headers: TMDB_API_HEADER,
   });
+
   const result: TMDBResponse<MovieData | TVData> = await res.json();
+
   if (!res.ok) {
     console.error(`!!!!Error => [${res.status}] : ${res.statusText}`);
     return { success: false, message: FETCH_RECOMMENDS_FAIL, recommends: [], totalPages: 0 };

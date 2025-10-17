@@ -6,7 +6,7 @@ import { RESULT } from "@/constants/path-constants";
 import { makeQueryParams } from "@/features/result/util/make-query-params";
 import { getAdditionalQuestions } from "@/features/survey/api/server-actions";
 import { useSurveyStore } from "@/store/use-survey-store";
-import type { Answer, Option, Question } from "@/types/survey-types";
+import type { Option, Question } from "@/types/survey-types";
 import { alert } from "@/utils/alert";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -16,29 +16,22 @@ const { OVER_MAXIMUM_SELECTION } = SURVEY_MESSAGE;
 const { TMDB_KEY } = SURVEY_DB;
 const { genres, type } = TMDB_KEY;
 
-`
-selectedParams -> 유저가 선택한 값의 'code' 혹은 'value' 를 담음 (tmdb api통신 시 code가 있을 시 code를 params로 보내고, 없을 시 value를 params로 보냄) 
-userPickLabels -> 유저가 선택한 값의 'label'을 담음 
-
-마지막 결과 페이지 이동 시 (moveToResult 호출) url파라미터로 바꿔 결과 페이지에 실어 보냄
-=> result 페이지에서 searchParams를 사용해 userPickLabels 유저가 선택한 값들을 유저에게 보여주는 용도로,
-selectedParams tmdb api 통신에 필요한 파라미터로 사용함
-`;
-
 const useSurvey = (initialQuestion: Array<Question>) => {
-  const [selectedParams, setSelectedParams] = useState<Answer>({});
-  const [userPickLabels, setUserPickLabels] = useState<Array<string>>([]);
   const [direction, setDirection] = useState<-1 | 1>(1);
   const prevTypeRef = useRef<string | null>(null);
 
   const {
     answers,
+    labels,
+    addToLabels,
     addToAnswers,
     removeFromAnswer,
     currentQuestionIndex,
     setCurrentQuestionIndex,
     questions,
     addToQuestions,
+    params,
+    addToParams,
   } = useSurveyStore();
 
   if (initialQuestion && questions.length === 0) {
@@ -66,15 +59,12 @@ const useSurvey = (initialQuestion: Array<Question>) => {
    */
   const processMultiAnswers = (currentAnswer: Array<unknown>) => {
     const targetOption = currentOptions.filter((option) => currentAnswer.includes(option.value));
-    const labels = targetOption.map((target) => target.label);
-    const codes = targetOption.map((target) => target.code);
+    if (!targetOption) return;
+    const labels = targetOption.map((target) => target.label).join("/");
+    const codes = targetOption.map((target) => target.code).join(",");
 
-    setUserPickLabels((prev) => {
-      const picks = [...prev];
-      picks[currentQuestionIndex] = labels.join(" , ");
-      return picks;
-    });
-    setSelectedParams((prev) => ({ ...prev, [currentKey]: codes }));
+    addToLabels(currentKey, labels);
+    addToParams(currentKey, codes);
   };
 
   /**
@@ -83,13 +73,10 @@ const useSurvey = (initialQuestion: Array<Question>) => {
    */
   const processSingleAnswer = (currentAnswer: unknown) => {
     const targetOption = currentOptions.find((option) => option.value === currentAnswer);
-    const label = targetOption?.label as string;
-    setUserPickLabels((prev) => {
-      const picks = [...prev];
-      picks[currentQuestionIndex] = label;
-      return picks;
-    });
-    setSelectedParams((prev) => ({ ...prev, [currentKey]: targetOption?.code || targetOption?.value }));
+
+    if (!targetOption) return;
+    addToLabels(currentKey, targetOption.label);
+    addToParams(currentKey, targetOption.code || targetOption.value);
   };
 
   /**
@@ -112,9 +99,9 @@ const useSurvey = (initialQuestion: Array<Question>) => {
    * 화면 표시용 라벨과 API 통신용 파라미터(코드)를 URL 파라미터에 실어 Result 페이지로 이동하는 함수
    */
   const moveToResult = () => {
-    const urlParams = makeQueryParams(selectedParams);
-    const userPicksString = userPickLabels.join(" / ");
-    urlParams.append("picks", userPicksString);
+    const urlParams = makeQueryParams(params);
+    const userPickLabels = Object.values(labels).join(" , ");
+    urlParams.set("picks", userPickLabels);
     router.replace(`${RESULT}?${urlParams.toString()}`);
   };
 

@@ -1,5 +1,5 @@
 "use client";
-import { useActionState, useEffect, useTransition } from "react";
+import { useActionState, useEffect, useMemo, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { SignUp } from "@/types/form-types";
@@ -19,7 +19,7 @@ type MyInfoProps = {
 };
 
 type UserInfo = Pick<SignUp, "password" | "confirmPassword">;
-
+const guestEmail = process.env.NEXT_PUBLIC_GUEST_ACCOUNT_EMAIL;
 const { ERROR, SUCCESS } = ALERT_TYPE;
 
 const initialState: InitReturnType = {
@@ -28,6 +28,7 @@ const initialState: InitReturnType = {
 };
 
 const MyInfo = ({ userEmail }: MyInfoProps) => {
+  const isGuestAccount = useMemo(() => userEmail === guestEmail, [userEmail]);
   const [isPending, startTransition] = useTransition();
   const [state, requestUpdatePassword] = useActionState(updatePassword, initialState);
   const { control, handleSubmit, reset } = useForm({
@@ -62,9 +63,12 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
   };
 
   return (
-    <section className={`scrollbar-hide mx-auto h-full w-[90%] overflow-y-scroll xs:w-2/3 lg:max-w-[600px]`}>
+    <section className={`mx-auto h-full w-[90%] overflow-y-scroll scrollbar-hide xs:w-2/3 lg:max-w-[600px]`}>
       <h3 className="hidden">내 정보 페이지</h3>
       <div className="flex h-full min-h-fit flex-col items-center justify-center py-10">
+        {isGuestAccount && (
+          <span className="text-error">공개 계정은 비밀번호를 변경하거나 회원 탈퇴를 할 수 없습니다.</span>
+        )}
         <input
           defaultValue={userEmail}
           readOnly
@@ -78,6 +82,7 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
             placeholder="비밀번호를 입력해 주세요."
             type="password"
             inputClassName="text-sm sm:text-base"
+            disabled={isGuestAccount}
           />
           <FormInput
             name="confirmPassword"
@@ -85,13 +90,14 @@ const MyInfo = ({ userEmail }: MyInfoProps) => {
             type="password"
             placeholder="비밀번호를 확인해 주세요."
             inputClassName="text-sm sm:text-base"
+            disabled={isGuestAccount}
           />
           <p className="mb-8 whitespace-pre-line text-[12px] sm:text-sm">{PASSWORD_CONDITION}</p>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending || isGuestAccount}>
             {isPending ? <LoadingSpinner width="24px" height="24px" /> : "비밀번호 변경"}
           </Button>
         </form>
-        <DeleteUserField />
+        <DeleteUserField isGuestAccount={isGuestAccount} />
       </div>
     </section>
   );

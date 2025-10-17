@@ -13,6 +13,7 @@ type FormInputProps<T extends FieldValues> = {
   errorFieldClassName?: string;
   autoFocus?: boolean;
   control: UseControllerProps<T>["control"];
+  disabled?: boolean;
 };
 
 const FormInput = <T extends FieldValues>({
@@ -26,6 +27,7 @@ const FormInput = <T extends FieldValues>({
   errorFieldClassName,
   control,
   autoFocus,
+  disabled = false,
 }: FormInputProps<T>) => {
   const {
     field,
@@ -48,6 +50,7 @@ const FormInput = <T extends FieldValues>({
           type={type}
           placeholder={placeholder}
           autoFocus={autoFocus}
+          disabled={disabled}
           className={clsx("w-full rounded-lg px-3 py-4", inputClassName)}
           {...field}
         />

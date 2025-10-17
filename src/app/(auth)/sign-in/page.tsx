@@ -5,7 +5,7 @@ import { Suspense } from "react";
 
 const Signin = () => {
   return (
-    <section className="scrollbar-hide flex h-full min-h-fit flex-col justify-center overflow-y-scroll text-center">
+    <section className="flex h-full min-h-fit flex-col justify-center overflow-y-scroll text-center scrollbar-hide">
       <h1 className="hidden">로그인 페이지</h1>
       <Link href="/" className="mb-14 block text-5xl font-black">
         <span className="text-primary">P</span>LAY <span className="text-primary">P</span>ICK

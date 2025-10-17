@@ -30,9 +30,16 @@ const useSurvey = (initialQuestion: Array<Question>) => {
     setCurrentQuestionIndex,
     questions,
     addToQuestions,
-    params,
-    addToParams,
+    tmdbApiParams,
+    addToTmdbApiParams,
   } = useSurveyStore();
+
+  `
+  3가지 모두 유저가 선택한 응답들을 관리함
+  - labels : 보이는 그대로의 값 (ex : 영화, 90분 이내(짧고 가볍게)) => 결과 페이지에서 유저가 선택한 값들을 렌더링 할 때 필요함
+  - answers : 유저가 선택한 값을 DB의 value값과 상응하도록 정제해서 저장된 값 => 재진입 시 상응하는 옵션 값이 체크되도록 할 때 필요함 (params로 사용하면 되는 거 아니냐? => TMDB API에 필요한 형태로 정제한 값이라 복잡하여 따로 value를 만듦)
+  - params : 유저가 선택한 값을 TMDB API에 필요한 형태로 바꿔 저장된 값 => 결과 페이지에서 TMDB API 요청 시 파라미터로 사용
+`;
 
   if (initialQuestion && questions.length === 0) {
     addToQuestions(initialQuestion);
@@ -64,7 +71,7 @@ const useSurvey = (initialQuestion: Array<Question>) => {
     const codes = targetOption.map((target) => target.code).join(",");
 
     addToLabels(currentKey, labels);
-    addToParams(currentKey, codes);
+    addToTmdbApiParams(currentKey, codes);
   };
 
   /**
@@ -76,7 +83,7 @@ const useSurvey = (initialQuestion: Array<Question>) => {
 
     if (!targetOption) return;
     addToLabels(currentKey, targetOption.label);
-    addToParams(currentKey, targetOption.code || targetOption.value);
+    addToTmdbApiParams(currentKey, targetOption.code || targetOption.value);
   };
 
   /**
@@ -99,7 +106,7 @@ const useSurvey = (initialQuestion: Array<Question>) => {
    * 화면 표시용 라벨과 API 통신용 파라미터(코드)를 URL 파라미터에 실어 Result 페이지로 이동하는 함수
    */
   const moveToResult = () => {
-    const urlParams = makeQueryParams(params);
+    const urlParams = makeQueryParams(tmdbApiParams);
     const userPickLabels = Object.values(labels).join(" , ");
     urlParams.set("picks", userPickLabels);
     router.replace(`${RESULT}?${urlParams.toString()}`);

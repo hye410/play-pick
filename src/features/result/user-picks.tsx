@@ -7,7 +7,7 @@ type UserPicksProps = {
   userPicks: string[];
 };
 const UserPicks = ({ userPicks }: UserPicksProps) => {
-  const { resetAnswers, resetCurrentQuestionIndex, resetQuestions, resetLabels, resetParams } = useSurveyStore();
+  const { resetAnswers, resetCurrentQuestionIndex, resetQuestions, resetLabels, resetTmdbApiParams } = useSurveyStore();
 
   useEffect(() => {
     resetAnswers();
@@ -15,7 +15,7 @@ const UserPicks = ({ userPicks }: UserPicksProps) => {
     resetQuestions();
     return () => {
       resetLabels();
-      resetParams();
+      resetTmdbApiParams();
     };
   }, []);
 

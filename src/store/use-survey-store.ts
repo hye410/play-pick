@@ -7,7 +7,7 @@ type SurveyState = {
   answers: Answer;
   questions: Array<Question>;
   labels: Record<string, Option["label"]>;
-  params: Record<string, Option["code"] | Option["value"]>;
+  tmdbApiParams: Record<string, Option["code"] | Option["value"]>;
 };
 
 type SurveyAction = {
@@ -20,8 +20,8 @@ type SurveyAction = {
   resetQuestions: () => void;
   addToLabels: (key: string, label: Option["label"]) => void;
   resetLabels: () => void;
-  addToParams: (key: string, value: Option["code"] | Option["value"]) => void;
-  resetParams: () => void;
+  addToTmdbApiParams: (key: string, value: Option["code"] | Option["value"]) => void;
+  resetTmdbApiParams: () => void;
 };
 
 const initialState: SurveyState = {
@@ -29,7 +29,7 @@ const initialState: SurveyState = {
   answers: {},
   questions: [],
   labels: {},
-  params: {},
+  tmdbApiParams: {},
 };
 
 export const useSurveyStore = create<SurveyState & SurveyAction>()(
@@ -54,8 +54,8 @@ export const useSurveyStore = create<SurveyState & SurveyAction>()(
       resetQuestions: () => set(() => ({ questions: [] })),
       addToLabels: (key, label) => set((state) => ({ labels: { ...state.labels, [key]: label } })),
       resetLabels: () => set(() => ({ labels: {} })),
-      addToParams: (key, value) => set((state) => ({ params: { ...state.params, [key]: value } })),
-      resetParams: () => set(() => ({ params: {} })),
+      addToTmdbApiParams: (key, value) => set((state) => ({ tmdbApiParams: { ...state.tmdbApiParams, [key]: value } })),
+      resetTmdbApiParams: () => set(() => ({ tmdbApiParams: {} })),
     }),
     {
       name: "user-answers",

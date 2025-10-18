@@ -2,8 +2,10 @@
 
 ## 📌 프로젝트 개요
 
+```
 Play Pick은 사용자의 취향을 분석하여 맞춤형 영화/TV 콘텐츠를 추천하는 웹 서비스입니다.
 TMDB API를 활용하여 실시간 콘텐츠 정보를 제공하며, 직관적인 설문조사를 통해 개인화된 추천을 받을 수 있습니다.
+```
 
 ## 🎯 주요 기능
 
@@ -160,7 +162,7 @@ TMDB API를 활용하여 실시간 콘텐츠 정보를 제공하며, 직관적�
 ### FrontEnd
 
 <ul>
-<li>Framework : <br>- Next.js 14 (App Router)</li>
+<li>Framework : <br>- Next.js 15 (App Router)</li>
 <li>Language: <br>- TypeScript</li>
 <li>Styling: <br>- Tailwind CSS</li>
 <li>State Management: <br>- Zustand (클라이언트 상태) <br> - React Query (서버 상태)</li>

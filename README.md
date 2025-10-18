@@ -159,7 +159,7 @@ TMDB API를 활용하여 실시간 콘텐츠 정보를 제공하며, 직관적�
 
 ## 🛠 기술 스택
 
-### FrontEnd
+### Frontend
 
 <ul>
 <li>Framework : <br>- Next.js 15 (App Router)</li>

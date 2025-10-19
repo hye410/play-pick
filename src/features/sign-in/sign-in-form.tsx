@@ -30,7 +30,6 @@ const SignInForm = () => {
   const [isPending, startTransition] = useTransition();
   const [isGuestPending, startGuestTransition] = useTransition();
   const [state, requestSignIn] = useActionState(postSignIn, signInInitialState);
-  // const [guestState, requestGuestSignIn] = useActionState(postSignIn, signInInitialState);
   const { control, handleSubmit } = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",

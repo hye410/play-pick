@@ -276,4 +276,4 @@ pnpm build
 pnpm start
 ```
 
-### 😎 Play Pick 체험하기 ➡️ <a href="https://play-pick.vercel.app/" target="blank">클릭</a>
+### 😎 Play Pick 체험하기 ➡️ <a href="https://play-pick.vercel.app/" target="_blank">클릭</a>

@@ -3,7 +3,7 @@ import Button from "@/components/button";
 import FormInput from "@/components/form-input";
 import LoadingSpinner from "@/components/loading-spinner";
 import { ALERT_TYPE } from "@/constants/alert-constants";
-import { postSignIn } from "@/features/sign-in/api/server-actions";
+import { postGuestSignIn, postSignIn } from "@/features/sign-in/api/server-actions";
 import { signInDefaultValues, signInSchema } from "@/features/sign-up/utils/form-schema";
 import type { SignIn } from "@/types/form-types";
 import type { SignInFormState } from "@/types/server-action-return-type";
@@ -30,6 +30,7 @@ const SignInForm = () => {
   const [isPending, startTransition] = useTransition();
   const [isGuestPending, startGuestTransition] = useTransition();
   const [state, requestSignIn] = useActionState(postSignIn, signInInitialState);
+  // const [guestState, requestGuestSignIn] = useActionState(postSignIn, signInInitialState);
   const { control, handleSubmit } = useForm<SignIn>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
@@ -37,16 +38,19 @@ const SignInForm = () => {
   });
 
   useEffect(() => {
-    if (state.success && state.userId) {
-      const redirectPage = params.get("redirect") ?? "/";
-      router.replace(redirectPage);
-    } else if (state.message) {
+    if (state.success && state.userId) moveToCurrentPage();
+    else if (!state.success && state.message) {
       alert({
         type: ERROR,
         message: state.message as string,
       });
     }
   }, [state, queryClient, router, params]);
+
+  const moveToCurrentPage = () => {
+    const redirectPage = params.get("redirect") ?? "/";
+    router.replace(redirectPage);
+  };
 
   const handleSignInSubmit = async (userInfo: SignIn) => {
     const formData = new FormData();
@@ -56,10 +60,14 @@ const SignInForm = () => {
   };
 
   const handleGuestSignIn = async () => {
-    const formData = new FormData();
-    formData.append("email", guestEmail);
-    formData.append("password", guestPassword);
-    startGuestTransition(() => requestSignIn(formData));
+    const res = await postGuestSignIn();
+    if (res.success && res.userId) moveToCurrentPage();
+    else if (!res.success && res.message) {
+      alert({
+        type: ERROR,
+        message: res.message as string,
+      });
+    }
   };
 
   return (
@@ -71,7 +79,7 @@ const SignInForm = () => {
           {isPending ? <LoadingSpinner width="24px" height="24px" /> : "로그인"}
         </Button>
       </form>
-      <Button color="secondary" type="button" onClick={handleGuestSignIn}>
+      <Button color="secondary" type="button" onClick={() => startGuestTransition(() => handleGuestSignIn())}>
         {isGuestPending ? <LoadingSpinner width="24px" height="24px" /> : "게스트 계정 로그인"}
       </Button>
     </div>

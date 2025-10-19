@@ -21,5 +21,6 @@ export const alert = ({ type, message }: AlertProps): Promise<SweetAlertResult> 
     iconColor: ALERT_COLORS[type],
     confirmButtonText: "확인",
     confirmButtonColor: ALERT_COLORS[type],
+    scrollbarPadding: false,
   });
 };

@@ -4,8 +4,7 @@ import { DEFAULT_ERROR_MESSAGE, SIGN_IN_MESSAGE } from "@/constants/message-cons
 import type { SignInFormState } from "@/types/server-action-return-type";
 import { createServerSupabase } from "@/utils/supabase-server";
 
-// ==================== 로그인 ====================
-const { EMAIL_NOT_CONFIRMED, INVALID_ERROR, SIGN_IN_FAIL } = SIGN_IN_MESSAGE;
+const { EMAIL_NOT_CONFIRMED, INVALID_ERROR, SIGN_IN_FAIL, GUEST_ACCOUNT_FAIL } = SIGN_IN_MESSAGE;
 const { SERVER_ERROR } = DEFAULT_ERROR_MESSAGE;
 
 const NOT_CONFIRMED = "email_not_confirmed";
@@ -36,6 +35,30 @@ export const postSignIn = async (_: SignInFormState, userData: FormData): Promis
       errorMessage = error.code === NOT_CONFIRMED ? EMAIL_NOT_CONFIRMED : INVALID_ERROR;
     } else errorMessage = SIGN_IN_FAIL;
     return { success: false, message: errorMessage, userId: null };
+  }
+  return { success: true, message: null, userId: user.id };
+};
+
+/**
+ * 게스트 계정으로 로그인을 요청하는 함수
+ * @returns 로그인 성공 여부 및 실패 시 메시지, 게스트 계정의 아이디
+ */
+export const postGuestSignIn = async (): Promise<SignInFormState> => {
+  const supabase = await createServerSupabase();
+  const email = process.env.GUEST_ACCOUNT_EMAIL as string;
+  const password = process.env.GUEST_ACCOUNT_PASSWORD as string;
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (!user || error) {
+    console.error("게스트 로그인 에러 발생 =>", error);
+    return { success: false, message: GUEST_ACCOUNT_FAIL, userId: null };
   }
   return { success: true, message: null, userId: user.id };
 };

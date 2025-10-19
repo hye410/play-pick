@@ -45,7 +45,7 @@ export const postSignIn = async (_: SignInFormState, userData: FormData): Promis
  */
 export const postGuestSignIn = async (): Promise<SignInFormState> => {
   const supabase = await createServerSupabase();
-  const email = process.env.GUEST_ACCOUNT_EMAIL as string;
+  const email = process.env.NEXT_PUBLIC_GUEST_ACCOUNT_EMAIL as string;
   const password = process.env.GUEST_ACCOUNT_PASSWORD as string;
 
   const {

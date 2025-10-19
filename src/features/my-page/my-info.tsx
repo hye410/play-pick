@@ -19,7 +19,7 @@ type MyInfoProps = {
 };
 
 type UserInfo = Pick<SignUp, "password" | "confirmPassword">;
-const guestEmail = process.env.GUEST_ACCOUNT_EMAIL;
+const guestEmail = process.env.NEXT_PUBLIC_GUEST_ACCOUNT_EMAIL;
 const { ERROR, SUCCESS } = ALERT_TYPE;
 
 const initialState: InitReturnType = {

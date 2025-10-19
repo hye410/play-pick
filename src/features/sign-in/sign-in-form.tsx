@@ -15,9 +15,6 @@ import { useActionState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 const { ERROR } = ALERT_TYPE;
 
-const guestEmail = process.env.NEXT_PUBLIC_GUEST_ACCOUNT_EMAIL as string;
-const guestPassword = process.env.NEXT_PUBLIC_GUEST_ACCOUNT_PASSWORD as string;
-
 export const signInInitialState: SignInFormState = {
   success: false,
   message: null,

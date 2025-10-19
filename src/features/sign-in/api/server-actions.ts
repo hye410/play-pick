@@ -58,8 +58,10 @@ export const postGuestSignIn = async (): Promise<SignInFormState> => {
 
   if (!user || error) {
     console.error("게스트 로그인 에러 발생 =>", error);
+    console.error("게스트 이메일 =>", email);
+    console.error("게스트 비밀번호 =>", password.length);
 
-    return { success: false, message: `에러 => ${error}\n 환경변수 잘 읽히니 => ${email}`, userId: null };
+    return { success: false, message: GUEST_ACCOUNT_FAIL, userId: null };
   }
   return { success: true, message: null, userId: user.id };
 };

@@ -13,7 +13,10 @@ const Content = ({ content, hasSkeleton = false }: ContentProps) => {
   return (
     <section className="relative h-80 w-full">
       <h4>
-        <Link className="absolute inset-0" href={`${DETAIL}/${content.id}?type=${content.type}`}>
+        <Link
+          className="absolute inset-0"
+          href={`${DETAIL}/${content.id}?type=${content.type}&title=${content.titleKR || content.title}`}
+        >
           {hasSkeleton ? (
             <ImageSkeleton src={content.imgUrl} alt={content.title} sizes="25%" isFill={true} />
           ) : (

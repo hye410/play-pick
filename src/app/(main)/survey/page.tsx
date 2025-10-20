@@ -8,7 +8,7 @@ const { survey, isCommon, step } = SURVEY_DB;
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Play Pick - 내 취향 콘텐츠 찾기 🎬",
+  title: "Play Pick | 내 취향 콘텐츠 찾기 🎬",
   description: "몇 가지 질문으로 당신에게 꼭 맞는 작품을 추천해 드릴게요.",
   icons: {
     icon: "/favicon.ico",

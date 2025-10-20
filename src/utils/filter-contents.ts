@@ -19,6 +19,7 @@ export const filterMovieData = (
   return data.map((data) => ({
     id: data.id,
     title: data.original_title,
+    titleKR: data.title,
     imgUrl: data.poster_path,
     type: data.media_type ?? "movie",
   }));
@@ -28,6 +29,7 @@ export const filterTvData = (data: Array<Omit<TVData, "poster_path"> & { poster_
   return data.map((data) => ({
     id: data.id,
     title: data.original_name,
+    titleKR: data.name,
     imgUrl: data.poster_path,
     type: data.media_type ?? "tv",
   }));

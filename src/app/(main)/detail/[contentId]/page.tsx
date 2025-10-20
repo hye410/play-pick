@@ -8,17 +8,32 @@ import { filterDetailMovieData, filterDetailTvData } from "@/features/detail/uti
 import type { CombinedData } from "@/types/contents-types";
 import { createServerSupabase } from "@/utils/supabase-server";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { Metadata } from "next";
+
+type SearchParams = {
+  searchParams: Promise<{
+    type: CombinedData["type"];
+    title: CombinedData["title"];
+  }>;
+};
 
 type DetailContentProps = {
   params: Promise<{
     contentId: string;
   }>;
-  searchParams: Promise<{
-    type: CombinedData["type"];
-  }>;
-};
+} & SearchParams;
+
 const { IS_LIKED } = QUERY_KEYS;
 const { FETCH_ERROR } = DEFAULT_ERROR_MESSAGE;
+
+export const generateMetadata = async ({ searchParams }: SearchParams): Promise<Metadata> => {
+  const { title } = await searchParams;
+
+  return {
+    title: title ? `Play Pick | ${title}` : "Play Pick",
+    description: `${title}에 대한 상세 정보를 제공합니다.`,
+  };
+};
 
 const DetailContentPage = async ({ params, searchParams }: DetailContentProps) => {
   const { contentId } = await params;

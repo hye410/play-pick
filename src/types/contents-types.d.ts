@@ -12,6 +12,7 @@ export type MovieData = {
   adult: boolean;
   poster_path: string | null;
   original_title: string;
+  title: string;
   media_type: "movie";
 };
 
@@ -20,12 +21,14 @@ export type TVData = {
   adult: boolean;
   poster_path: string | null;
   original_name: string;
+  name: string;
   media_type: "tv";
 };
 
 export type CombinedData = {
   id: number;
   title: string;
+  titleKR?: string;
   imgUrl: string;
   type: "movie" | "tv";
 };
